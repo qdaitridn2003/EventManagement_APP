@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import * as React from 'react';
-import { StyleSheet, View, Text, Pressable, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
 import { Color, FontSize, Padding, Border } from '../components/styles/GlobalStyles';
@@ -11,15 +11,8 @@ const RegisterScreen = () => {
 
   return (
     <View style={[styles.signIn, styles.signInFlexBox]}>
-      <View style={[styles.navigation, styles.dividerFlexBox]}>
-        <Image
-          style={[styles.iconBackward, styles.iconLayout]}
-          contentFit="cover"
-          source={require('../assets/icon--backward3x.png')}
-        />
-      </View>
       <View style={[styles.title, styles.titleSpaceBlock]}>
-        <Text style={styles.ngNhp}>Đăng Nhập</Text>
+        <Text style={styles.ngNhp}>Đăng Ký</Text>
       </View>
       <View>
         <TextInput
@@ -34,43 +27,15 @@ const RegisterScreen = () => {
         />
       </View>
 
-      <View style={[styles.forgotPassword, styles.titleSpaceBlock]}>
-        <Text style={[styles.qunMtKhu, styles.buttonTypo]}>Quên mật khẩu?</Text>
-      </View>
-
-      {/* <View style={[styles.loginButton, styles.titleSpaceBlock]}> */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.text}>Đăng nhập</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.text}>Đăng Ký</Text>
       </TouchableOpacity>
-      {/* <Image
-          style={[styles.iconRight, styles.iconLayout]}
-          contentFit="cover"
-          source={require('../assets/icon--right.png')}
-        /> */}
-      {/* </View> */}
-
-      <View style={[styles.divider, styles.titleSpaceBlock]}>
-        <View style={styles.dividerLayout} />
-        <Text style={[styles.hoc, styles.hocClr]}>Hoặc</Text>
-        <View style={[styles.dividerItem, styles.dividerLayout]} />
-      </View>
-
-      <View style={[styles.loginButton, styles.titleSpaceBlock]}>
-        <Pressable style={[styles.button, styles.buttonTypo]}>
-          <Text style={styles.text}>Đăng nhập bằng Google</Text>
-        </Pressable>
-        <Image
-          style={[styles.iconRight, styles.iconLayout]}
-          contentFit="cover"
-          source={require('../assets/icon--google3x.png')}
-        />
-      </View>
 
       <View style={[styles.spacer, styles.titleSpaceBlock]} />
       <View style={[styles.footer, styles.titleSpaceBlock]}>
-        <Text style={[styles.chaCTi, styles.ngKTypo]}>Chưa có tài khoản?</Text>
-        <Text style={[styles.ngK, styles.ngKTypo]} onPress={() => navigation.navigate('Register')}>
-          Đăng ký
+        <Text style={[styles.chaCTi, styles.ngKTypo]}>Đã có tài khoản?</Text>
+        <Text style={[styles.ngK, styles.ngKTypo]} onPress={() => navigation.navigate('Login')}>
+          Đăng nhập
         </Text>
       </View>
     </View>
