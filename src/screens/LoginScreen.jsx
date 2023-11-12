@@ -4,7 +4,7 @@ import * as React from 'react';
 import { StyleSheet, View, Text, Pressable, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
-import { Color, FontSize, FontFamily, Padding, Border } from '../components/styles/GlobalStyles';
+import { Color, FontSize, Padding, Border } from '../components/styles/GlobalStyles';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -39,7 +39,7 @@ const LoginScreen = () => {
       </View>
 
       {/* <View style={[styles.loginButton, styles.titleSpaceBlock]}> */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
         <Text style={styles.text}>Đăng nhập</Text>
       </TouchableOpacity>
       {/* <Image
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 24,
     fontSize: FontSize.headlines16Medium_size,
-    fontFamily: FontFamily.headlines16Medium,
   },
   hocClr: {
     color: Color.neutral2,
@@ -114,7 +113,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     lineHeight: 24,
     fontSize: FontSize.headlines16Medium_size,
-    fontFamily: FontFamily.headlines16Medium,
   },
   iconBackward: {
     overflow: 'hidden',
@@ -128,7 +126,6 @@ const styles = StyleSheet.create({
     lineHeight: 29,
     textAlign: 'center',
     color: Color.colorMidnightblue,
-    fontFamily: FontFamily.headlines16Medium,
     fontWeight: '700',
     flex: 1,
   },
@@ -184,7 +181,6 @@ const styles = StyleSheet.create({
     fontSize: FontSize.headlines16Medium_size,
     color: Color.neutral2,
     textAlign: 'center',
-    fontFamily: FontFamily.headlines16Medium,
   },
   dividerItem: {
     marginLeft: 8,

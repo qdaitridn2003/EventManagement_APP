@@ -4,8 +4,9 @@ import { Image } from 'react-native';
 
 import { ProfileScreen, EventScreen, EmployeeScreen, CustomerScreen } from '../screens';
 
+const Tab = createBottomTabNavigator();
+
 const HomeNavigation = () => {
-  const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
