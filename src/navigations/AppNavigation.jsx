@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 
-import AuthNavigation from './AuthNavigation';
-import HomeNavigation from './HomeNavigation';
+import { HomeNavigation, AuthNavigation } from './index';
 import { AppContext } from '../contexts/AppContext';
 
 const AppNavigation = () => {

@@ -1,18 +1,21 @@
+import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import * as React from 'react';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
 import { Color, FontSize, FontFamily, Padding, Border } from '../components/styles/GlobalStyles';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={[styles.signIn, styles.signInFlexBox]}>
       <View style={[styles.navigation, styles.dividerFlexBox]}>
         <Image
           style={[styles.iconBackward, styles.iconLayout]}
           contentFit="cover"
-          source={require('../assets/icon--backward.png')}
+          source={require('../assets/icon--backward3x.png')}
         />
       </View>
       <View style={[styles.title, styles.titleSpaceBlock]}>
@@ -21,12 +24,12 @@ const LoginScreen = () => {
       <View>
         <TextInput
           returnKeyType="next"
-          icon={require('../assets/icon--alternate-email.png')}
+          icon={require('../assets/icon--alternate-email3x.png')}
           text="abc@gmail.com"
         />
         <TextInput
           returnKeyType="next"
-          // source={require('../assets/icon--lock-outline@3x.png')}
+          source={require('../assets/icon--lock-outline3x.png')}
           text="********"
         />
       </View>
@@ -35,16 +38,16 @@ const LoginScreen = () => {
         <Text style={[styles.qunMtKhu, styles.buttonTypo]}>Quên mật khẩu?</Text>
       </View>
 
-      <View style={[styles.loginButton, styles.titleSpaceBlock]}>
-        <Pressable style={[styles.button, styles.buttonTypo]}>
-          <Text style={styles.text}>Đăng nhập</Text>
-        </Pressable>
-        <Image
+      {/* <View style={[styles.loginButton, styles.titleSpaceBlock]}> */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
+        <Text style={styles.text}>Đăng nhập</Text>
+      </TouchableOpacity>
+      {/* <Image
           style={[styles.iconRight, styles.iconLayout]}
           contentFit="cover"
           source={require('../assets/icon--right.png')}
-        />
-      </View>
+        /> */}
+      {/* </View> */}
 
       <View style={[styles.divider, styles.titleSpaceBlock]}>
         <View style={styles.dividerLayout} />
@@ -59,14 +62,16 @@ const LoginScreen = () => {
         <Image
           style={[styles.iconRight, styles.iconLayout]}
           contentFit="cover"
-          // source={require('../assets/icon--google@3x.png')}
+          source={require('../assets/icon--google3x.png')}
         />
       </View>
 
       <View style={[styles.spacer, styles.titleSpaceBlock]} />
       <View style={[styles.footer, styles.titleSpaceBlock]}>
         <Text style={[styles.chaCTi, styles.ngKTypo]}>Chưa có tài khoản?</Text>
-        <Text style={[styles.ngK, styles.ngKTypo]}>Đăng ký</Text>
+        <Text style={[styles.ngK, styles.ngKTypo]} onPress={() => navigation.navigate('Register')}>
+          Đăng ký
+        </Text>
       </View>
     </View>
   );
@@ -146,8 +151,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    color: Color.colorWhite,
-    textAlign: 'center',
+    marginTop: 50,
+    height: 70,
+    width: '85%',
+    backgroundColor: '#643FDB',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconRight: {
     display: 'none',

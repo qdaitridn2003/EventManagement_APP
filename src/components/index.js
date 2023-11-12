@@ -1,1 +1,1 @@
-export { default as AppLogo } from './items/AppLogo';
+export { default as GlobalStyles } from './styles/GlobalStyles';

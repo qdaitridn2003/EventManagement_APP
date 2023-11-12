@@ -1,20 +1,10 @@
-import React, { useState } from 'react';
 import { Image } from 'expo-image';
+import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
-import EventCard3 from '../components/EventCard3';
-import EventCard2 from '../components/EventCard2';
-import EventCard1 from '../components/EventCard1';
-import EventCard from '../components/EventCard';
-import { Padding, Border, Color, FontSize, FontFamily } from '../GlobalStyles';
+
+import { Padding, Border, Color, FontSize, FontFamily } from '../components/styles/GlobalStyles';
 
 const HomeScreen = () => {
-  const [eventListFlatListData, setEventListFlatListData] = useState([
-    <EventCard3 />,
-    <EventCard2 />,
-    <EventCard1 />,
-    <EventCard />,
-  ]);
-
   return (
     <View style={styles.events}>
       <View style={styles.navigationWithAddButton}>
@@ -22,7 +12,7 @@ const HomeScreen = () => {
           <Image
             style={styles.avatar44x44Icon}
             contentFit="cover"
-            source={require('../assets/avatar-44x44.png')}
+            // source={require('../assets/avatar-44x44.png')}
           />
           <View style={styles.date}>
             <Text style={styles.amThHai}>9:30 AM, thứ Hai</Text>
@@ -33,7 +23,7 @@ const HomeScreen = () => {
           <Image
             style={styles.plusIcon}
             contentFit="cover"
-            source={require('../assets/plus-icon.png')}
+            // source={require('../assets/plus-icon.png')}
           />
         </View>
       </View>
@@ -42,7 +32,7 @@ const HomeScreen = () => {
           <Image
             style={styles.vectorIcon}
             contentFit="cover"
-            source={require('../assets/vector.png')}
+            // source={require('../assets/vector.png')}
           />
           <View style={[styles.text, styles.textFlexBox]}>
             <Text style={styles.search}>Tìm kiếm sự kiện</Text>
@@ -52,7 +42,7 @@ const HomeScreen = () => {
           <Image
             style={styles.plusIcon}
             contentFit="cover"
-            source={require('../assets/tune-icon.png')}
+            // source={require('../assets/tune-icon.png')}
           />
         </View>
       </View>
@@ -75,7 +65,6 @@ const HomeScreen = () => {
       </View>
       <FlatList
         style={[styles.eventList, styles.eventListSpaceBlock]}
-        data={eventListFlatListData}
         renderItem={({ item }) => item}
         contentContainerStyle={styles.eventListFlatListContent}
       />
@@ -84,7 +73,7 @@ const HomeScreen = () => {
           <Image
             style={styles.plusIcon}
             contentFit="cover"
-            source={require('../assets/icon--event.png')}
+            // source={require('../assets/eve')}
           />
           <Text style={[styles.sKin, styles.sKinTypo]}>Sự kiện</Text>
         </View>
@@ -92,7 +81,7 @@ const HomeScreen = () => {
           <Image
             style={styles.plusIcon}
             contentFit="cover"
-            source={require('../assets/icon--group.png')}
+            // source={require('../assets/icon--group.png')}
           />
           <Text style={[styles.khchHng, styles.sKinTypo]}>Khách hàng</Text>
         </View>
@@ -100,7 +89,7 @@ const HomeScreen = () => {
           <Image
             style={styles.plusIcon}
             contentFit="cover"
-            source={require('../assets/icon--badge.png')}
+            // source={require('../assets/icon--badge.png')}
           />
           <Text style={[styles.khchHng, styles.sKinTypo]}>Nhân viên</Text>
         </View>
@@ -108,7 +97,7 @@ const HomeScreen = () => {
           <Image
             style={styles.plusIcon}
             contentFit="cover"
-            source={require('../assets/icon--person-outline.png')}
+            // source={require('../assets/icon--person-outline.png')}
           />
           <Text style={[styles.khchHng, styles.sKinTypo]}>Cá nhân</Text>
         </View>

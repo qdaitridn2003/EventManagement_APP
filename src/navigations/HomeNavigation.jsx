@@ -2,10 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Image } from 'react-native';
 
-import { CustomerScreen } from '../screens/CustomerScreen';
-import { EmployeeScreen } from '../screens/EmployeeScreen';
-import { EventScreen } from '../screens/EventScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
+import { ProfileScreen, EventScreen, EmployeeScreen, CustomerScreen } from '../screens';
 
 const HomeNavigation = () => {
   const Tab = createBottomTabNavigator();
