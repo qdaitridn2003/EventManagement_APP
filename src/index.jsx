@@ -1,12 +1,18 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import Root from './root';
+import React from 'react';
+import { Provider as RNPaperProvider } from 'react-native-paper';
+import Root from './Root';
+import { AppContextProvider } from './contexts/AppContext';
+import { NavigationContainer } from '@react-navigation/native';
 
 const App = () => {
   return (
-    <SafeAreaView>
-      <Root />
-    </SafeAreaView>
+    <NavigationContainer>
+      <RNPaperProvider>
+        <AppContextProvider>
+          <Root />
+        </AppContextProvider>
+      </RNPaperProvider>
+    </NavigationContainer>
   );
 };
 
