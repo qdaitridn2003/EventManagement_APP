@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
-import { AppContext } from '../contexts/AppContext';
-import HomeNavigation from './HomeNavigation';
+
 import AuthNavigation from './AuthNavigation';
+import HomeNavigation from './HomeNavigation';
+import { AppContext } from '../contexts/AppContext';
 
 const AppNavigation = () => {
   const { isLogin } = useContext(AppContext);

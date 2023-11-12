@@ -1,8 +1,9 @@
-import * as React from 'react';
 import { Image } from 'expo-image';
+import * as React from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
-import { Color, FontSize, FontFamily, Padding, Border } from '../components/styles/GlobalStyles';
 import { TextInput } from 'react-native-paper';
+
+import { Color, FontSize, FontFamily, Padding, Border } from '../components/styles/GlobalStyles';
 
 const LoginScreen = () => {
   return (
