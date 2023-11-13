@@ -4,9 +4,9 @@ import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
-import { Color, FontSize, Padding, Border } from '../components/styles/GlobalStyles';
+import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 
-const LoginScreen = () => {
+const ChangePasswordScreen = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
 
@@ -17,22 +17,18 @@ const LoginScreen = () => {
   const ref_input2 = React.useRef();
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Image style={styles.iconBackward} source={require('../../assets/backward.png')} />
+      </TouchableOpacity>
+
       <View style={[styles.title, styles.titleSpaceBlock]}>
-        <Text style={styles.ngNhp}>Đăng Nhập</Text>
+        <Text style={styles.ngNhp}>Đổi mật khẩu</Text>
       </View>
       <View style={styles.containerTextInput}>
         <Image
           style={styles.iconUsername}
           contentFit="cover"
-          source={require('../assets/icon--alternate-email3x.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Email" />
-      </View>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../assets/icon--lock-outline3x.png')}
+          source={require('../../assets/icon--lock-outline3x.png')}
         />
         <TextInput
           style={styles.textInput}
@@ -44,47 +40,63 @@ const LoginScreen = () => {
           <Image
             source={
               isPasswordVisible
-                ? require('../assets/eye-icon.png')
-                : require('../assets/eye-off-icon.png')
+                ? require('../../assets/eye-icon.png')
+                : require('../../assets/eye-off-icon.png')
+            }
+            style={styles.iconEyePass}
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.containerTextInput}>
+        <Image
+          style={styles.iconUsername}
+          contentFit="cover"
+          source={require('../../assets/icon--lock-outline3x.png')}
+        />
+        <TextInput
+          style={styles.textInput}
+          returnKeyType="next"
+          placeholder="Mật khẩu mới"
+          secureTextEntry
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+          <Image
+            source={
+              isPasswordVisible
+                ? require('../../assets/eye-icon.png')
+                : require('../../assets/eye-off-icon.png')
+            }
+            style={styles.iconEyePass}
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.containerTextInput}>
+        <Image
+          style={styles.iconUsername}
+          contentFit="cover"
+          source={require('../../assets/icon--lock-outline3x.png')}
+        />
+        <TextInput
+          style={styles.textInput}
+          returnKeyType="next"
+          placeholder="Xác nhận lại mật khẩu"
+          secureTextEntry
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+          <Image
+            source={
+              isPasswordVisible
+                ? require('../../assets/eye-icon.png')
+                : require('../../assets/eye-off-icon.png')
             }
             style={styles.iconEyePass}
           />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity>
-        <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.text}>Đăng Nhập</Text>
+        <Text style={styles.text}>Lưu thay đổi</Text>
       </TouchableOpacity>
-
-      <View style={[styles.divider, styles.titleSpaceBlock]}>
-        <View style={styles.dividerLayout} />
-        <Text style={[styles.hoc, styles.hocClr]}>Hoặc</Text>
-        <View style={[styles.dividerItem, styles.dividerLayout]} />
-      </View>
-
-      <TouchableOpacity>
-        <View style={styles.containerGoogle}>
-          <Image
-            style={styles.iconGoogle}
-            contentFit="cover"
-            source={require('../assets/icon--google3x.png')}
-          />
-
-          <Text>Đăng nhập bằng Google</Text>
-        </View>
-      </TouchableOpacity>
-
-      <View style={[styles.spacer, styles.titleSpaceBlock]} />
-      <View style={[styles.footer, styles.titleSpaceBlock]}>
-        <Text style={[styles.chaCTi, styles.ngKTypo]}>Đã có tài khoản?</Text>
-        <Text style={[styles.ngK, styles.ngKTypo]} onPress={() => navigation.navigate('Register')}>
-          Đăng ký
-        </Text>
-      </View>
     </View>
   );
 };
@@ -122,6 +134,10 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: 12,
+  },
+  iconBackward: {
+    width: 25,
+    height: 25,
   },
   textInput: {
     flex: 1,
@@ -239,4 +255,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default ChangePasswordScreen;
