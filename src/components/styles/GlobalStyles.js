@@ -14,7 +14,7 @@ export const FontSize = {
 export const Color = {
   colorWhite: '#fff',
   colorMidnightblue: '#1c1243',
-  neutral2: '#a29eb6',
+  neutral4: '#a29eb6',
   colorDarkorange: '#ff8a00',
   colorBlueviolet: '#643fdb',
   colorWhitesmoke: '#eff1f3',

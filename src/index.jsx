@@ -3,7 +3,7 @@ import { Platform, StatusBar } from 'react-native';
 import { Provider as RNPaperProvider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import Root from './Root';
+import Root from './root';
 import { AppContextProvider } from './contexts/AppContext';
 
 const App = () => {
