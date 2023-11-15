@@ -9,21 +9,39 @@ import { Color, FontSize, Padding, Border } from '../components/styles/GlobalSty
 const RegisterScreen = () => {
   const navigation = useNavigation();
 
+  const ref_input2 = React.useRef();
   return (
-    <View style={[styles.signIn, styles.signInFlexBox]}>
+    <View style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đăng Ký</Text>
       </View>
-      <View>
-        <TextInput
-          returnKeyType="next"
-          icon={require('../assets/icon--alternate-email3x.png')}
-          text="abc@gmail.com"
+      <View style={styles.containerTextInput}>
+        <Image
+          style={styles.iconUsername}
+          contentFit="cover"
+          source={require('../assets/icons8-profile-50.png')}
+        />
+        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Team Cook" />
+      </View>
+      <View style={styles.containerTextInput}>
+        <Image
+          style={styles.iconUsername}
+          contentFit="cover"
+          source={require('../assets/icon--alternate-email3x.png')}
+        />
+        <TextInput style={styles.textInput} returnKeyType="next" placeholder="abc@gmail.com" />
+      </View>
+      <View style={styles.containerTextInput}>
+        <Image
+          style={styles.iconUsername}
+          contentFit="cover"
+          source={require('../assets/icon--lock-outline3x.png')}
         />
         <TextInput
+          underlineColorAndroid="transparent"
+          style={styles.textInput}
           returnKeyType="next"
-          source={require('../assets/icon--lock-outline3x.png')}
-          text="********"
+          placeholder="*********"
         />
       </View>
 
@@ -43,48 +61,48 @@ const RegisterScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  signInFlexBox: {
+  container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
+    width: '100%',
+    height: 812,
+    paddingHorizontal: Padding.p_5xl,
+    paddingVertical: Padding.p_base,
   },
-  dividerFlexBox: {
-    alignItems: 'center',
+  containerTextInput: {
+    marginTop: 16,
+    width: '100%',
     flexDirection: 'row',
-  },
-  iconLayout: {
-    height: 24,
-    width: 24,
+    alignItems: 'center',
+    borderRadius: 16,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 1,
+    elevation: 3,
     overflow: 'hidden',
   },
+  iconUsername: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+    marginLeft: 24,
+  },
+  textInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    height: 40,
+  },
+
   titleSpaceBlock: {
     marginTop: 16,
     alignSelf: 'stretch',
-  },
-  buttonTypo: {
-    fontWeight: '500',
-    lineHeight: 24,
-    fontSize: FontSize.headlines16Medium_size,
-  },
-  hocClr: {
-    color: Color.neutral2,
-    fontWeight: '500',
-  },
-  dividerLayout: {
-    height: 2,
-    backgroundColor: Color.colorWhitesmoke,
-    flex: 1,
   },
   ngKTypo: {
     textAlign: 'left',
     lineHeight: 24,
     fontSize: FontSize.headlines16Medium_size,
-  },
-  iconBackward: {
-    overflow: 'hidden',
-  },
-  navigation: {
-    alignSelf: 'stretch',
-    alignItems: 'center',
   },
   ngNhp: {
     fontSize: FontSize.title24Bold_size,
@@ -95,64 +113,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    padding: Padding.p_3xs,
-    marginTop: 16,
+    padding: 10,
+    margin: 16,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  qunMtKhu: {
-    textAlign: 'right',
-    color: Color.colorMidnightblue,
-  },
   forgotPassword: {
     justifyContent: 'flex-end',
-    padding: Padding.p_3xs,
+    textAlign: 'right',
     marginTop: 16,
+    color: Color.colorMidnightblue,
     alignItems: 'center',
     flexDirection: 'row',
   },
   button: {
-    marginTop: 50,
-    height: 70,
-    width: '85%',
+    marginTop: 16,
+    height: 48,
     backgroundColor: '#643FDB',
-    borderRadius: 50,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  iconRight: {
-    display: 'none',
-    marginLeft: 8,
-    overflow: 'hidden',
+    marginBottom: 10,
   },
   text: {
-    position: 'absolute',
-    marginTop: -12,
-    marginLeft: -42.5,
-    top: '50%',
-    left: '50%',
-    flexDirection: 'row',
-  },
-  loginButton: {
-    borderRadius: Border.br_base,
-    backgroundColor: Color.colorBlueviolet,
-    height: 48,
-    overflow: 'hidden',
-  },
-  hoc: {
-    marginLeft: 8,
-    lineHeight: 24,
-    fontSize: FontSize.headlines16Medium_size,
-    color: Color.neutral2,
-    textAlign: 'center',
-  },
-  dividerItem: {
-    marginLeft: 8,
-  },
-  divider: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    color: '#FFFFFF',
+    fontSize: 16,
   },
   spacer: {
     overflow: 'hidden',
@@ -172,12 +158,6 @@ const styles = StyleSheet.create({
   footer: {
     justifyContent: 'center',
     flexDirection: 'row',
-  },
-  signIn: {
-    width: '100%',
-    height: 812,
-    paddingHorizontal: Padding.p_5xl,
-    paddingVertical: Padding.p_base,
   },
 });
 
