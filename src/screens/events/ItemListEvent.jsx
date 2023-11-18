@@ -1,26 +1,27 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import {Padding, Color, FontSize, Border, FontFamily} from '../../components/styles/GlobalStyles' 
-import React from 'react'
+import React from 'react';
+import { StyleSheet, Text, View, Image } from 'react-native';
 
-const ItemListEvent = (props) => {
-  const {data} = props
+import { Color, FontSize, Border } from '../../components/styles/GlobalStyles';
+
+const ItemListEvent = props => {
+  const { data } = props;
   return (
     <View style={styles.eventList}>
       <View style={styles.cardEvent}>
         <Image
           style={[styles.avatarIcon, styles.avatarIconLayout]}
           contentFit="cover"
-          source={require("../../assets/avatar-28x2813x.png")}
+          source={require('../../assets/avatar-28x2813x.png')}
         />
         <Image
           style={[styles.avatarIcon1, styles.avatarIconLayout]}
           contentFit="cover"
-          source={require("../../assets/avatar-28x2823x.png")}
+          source={require('../../assets/avatar-28x2823x.png')}
         />
         <Image
           style={[styles.avatarIcon2, styles.avatarIconLayout]}
           contentFit="cover"
-          source={require("../../assets/avatar-28x283x.png")}
+          source={require('../../assets/avatar-28x283x.png')}
         />
         <View style={[styles.avtarPlus, styles.avatarIconLayout]}>
           <Text style={[styles.textPlus, styles.textTypo]}>+4</Text>
@@ -38,35 +39,32 @@ const ItemListEvent = (props) => {
         </View>
         <Image
           style={[styles.iconCalendar, styles.iconLayout]}
-          source={require("../../assets/calendar2.png")}
+          source={require('../../assets/calendar2.png')}
         />
         <Image
           style={[styles.iconCalendar1, styles.iconLayout]}
-          source={require("../../assets/calendar.png")}
+          source={require('../../assets/calendar.png')}
         />
-        <Image
-          style={styles.arrowIcon}
-          source={require("../../assets/arrow.png")}
-        />
+        <Image style={styles.arrowIcon} source={require('../../assets/arrow.png')} />
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default ItemListEvent
+export default ItemListEvent;
 
 const styles = StyleSheet.create({
-  eventList:{
+  eventList: {
     marginTop: 16,
-    alignSelf: "stretch",
-    alignItems: "center",
+    alignSelf: 'stretch',
+    alignItems: 'center',
   },
   cardEvent: {
     borderRadius: Border.br_base,
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     backgroundColor: Color.colorWhite,
     height: 148,
-    overflow: "hidden",
+    overflow: 'hidden',
     elevation: 5,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 2 },
@@ -77,94 +75,90 @@ const styles = StyleSheet.create({
     height: 28,
     width: 28,
     top: 24,
-    position: "absolute",
+    position: 'absolute',
   },
-  avatarIcon:{
+  avatarIcon: {
     left: 215,
   },
-  avatarIcon1:{
+  avatarIcon1: {
     left: 235,
   },
-  avatarIcon2:{
+  avatarIcon2: {
     left: 255,
   },
-  avtarPlus:{
+  avtarPlus: {
     left: 275,
     borderRadius: Border.br_13xl,
     backgroundColor: Color.colorDarkorange,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
-  textPlus:{
+  textPlus: {
     marginTop: -10,
     marginLeft: -8,
-    top: "50%",
-    left: "50%",
+    top: '50%',
+    left: '50%',
     color: Color.colorWhite,
-    position: "absolute",
-    textAlign: "left",
+    position: 'absolute',
+    textAlign: 'left',
   },
   textTypo: {
     fontSize: FontSize.size_xs,
     lineHeight: 20,
-    fontWeight: "500",
-    fontFamily: FontFamily.title24Bold,
+    fontWeight: '500',
   },
-  textNameEvent:{
+  textNameEvent: {
     fontSize: FontSize.headlines18Bold_size,
     lineHeight: 28,
     left: 24,
     top: 24,
-    position: "absolute",
-    textAlign: "left",
+    position: 'absolute',
+    textAlign: 'left',
     color: Color.neutral1,
-    fontFamily: FontFamily.title24Bold,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   text1: {
     left: 48,
     color: Color.neutral2,
-    textAlign: "left",
+    textAlign: 'left',
   },
   text2: {
     left: 227,
     lineHeight: 20,
     fontSize: FontSize.body14Medium_size,
     top: 68,
-    position: "absolute",
-    fontWeight: "500",
-    fontFamily: FontFamily.title24Bold,
+    position: 'absolute',
+    fontWeight: '500',
   },
   text3: {
     marginTop: -10,
     marginLeft: -8,
-    top: "50%",
-    left: "50%",
+    top: '50%',
+    left: '50%',
     color: Color.neutral4,
-    position: "absolute",
-    textAlign: "left",
+    position: 'absolute',
+    textAlign: 'left',
   },
   text4: {
     top: 104,
     left: 24,
-    position: "absolute",
+    position: 'absolute',
   },
-  text5:{
-    textAlign: "left",
+  text5: {
+    textAlign: 'left',
     color: Color.colorBlueviolet,
   },
-  textTypo1:{
+  textTypo1: {
     lineHeight: 20,
     fontSize: FontSize.body14Medium_size,
     top: 68,
-    position: "absolute",
-    fontWeight: "500",
-    fontFamily: FontFamily.headlines16Medium,
+    position: 'absolute',
+    fontWeight: '500',
   },
-  sKinClr:{
+  sKinClr: {
     color: Color.colorBlueviolet,
-    textAlign: "left",
+    textAlign: 'left',
   },
-  indicator:{
+  indicator: {
     height: 8,
     width: 167,
     marginLeft: 8,
@@ -185,18 +179,17 @@ const styles = StyleSheet.create({
     height: 8,
     left: 28,
     top: -13,
-    position: "absolute",
+    position: 'absolute',
   },
   tasks: {
     marginLeft: 8,
-    textAlign: "left",
+    textAlign: 'left',
     color: Color.neutral1,
   },
-  textTypo: {
+  textTypo2: {
     fontSize: FontSize.caption12Medium_size,
     lineHeight: 20,
-    fontWeight: "500",
-    fontFamily: FontFamily.title24Bold,
+    fontWeight: '500',
   },
   iconCalendar: {
     left: 24,
@@ -208,14 +201,14 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
     top: 70,
-    position: "absolute",
-    overflow: "hidden",
+    position: 'absolute',
+    overflow: 'hidden',
   },
   arrowIcon: {
     top: 71,
     left: 134,
     width: 59,
     height: 14,
-    position: "absolute",
+    position: 'absolute',
   },
-})
+});

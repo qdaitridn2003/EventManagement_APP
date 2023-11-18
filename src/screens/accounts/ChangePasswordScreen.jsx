@@ -1,8 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 

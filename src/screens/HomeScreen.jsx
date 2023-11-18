@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 
-import { Padding, Border, Color, FontSize, FontFamily } from '../components/styles/GlobalStyles';
+import { Padding, Border, Color, FontSize } from '../components/styles/GlobalStyles';
 
 const HomeScreen = () => {
   return (
@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontSize: FontSize.headlines16Medium_size,
     fontWeight: '700',
-    fontFamily: FontFamily.headlines16Medium,
   },
   smallSpaceBlock: {
     marginLeft: 12,
@@ -152,7 +151,6 @@ const styles = StyleSheet.create({
   sKinTypo: {
     fontSize: FontSize.size_xs,
     textAlign: 'left',
-    fontFamily: FontFamily.headlines16Medium,
     fontWeight: '500',
     lineHeight: 20,
   },
@@ -165,7 +163,6 @@ const styles = StyleSheet.create({
   amThHai: {
     fontSize: FontSize.body14Medium_size,
     textAlign: 'left',
-    fontFamily: FontFamily.headlines16Medium,
     fontWeight: '500',
     lineHeight: 20,
     color: Color.neutral2,
@@ -177,7 +174,6 @@ const styles = StyleSheet.create({
     color: Color.colorMidnightblue,
     fontWeight: '700',
     textAlign: 'left',
-    fontFamily: FontFamily.headlines16Medium,
     alignSelf: 'stretch',
   },
   date: {
@@ -209,7 +205,6 @@ const styles = StyleSheet.create({
     fontSize: FontSize.headlines16Medium_size,
     textAlign: 'left',
     color: Color.neutral2,
-    fontFamily: FontFamily.headlines16Medium,
     fontWeight: '500',
   },
   text: {

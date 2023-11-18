@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-const CustomerScreen = () => {
+const ClientScreen = () => {
   return (
     <View>
-      <Text>CustomerScreen</Text>
+      <Text>ClientScreen</Text>
     </View>
   );
 };
 
-export default CustomerScreen;
+export default ClientScreen;
