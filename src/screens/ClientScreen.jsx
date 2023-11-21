@@ -1,20 +1,23 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 // Rename the component directly in the import statement
-import SeacrchClients from './clients/SearchClients';
-import { Border, Color, FontSize, Padding } from '../components/styles/GlobalStyles';
 import DummyDataClients from './clients/DummyDataClients';
+import { Border, Color, FontSize, Padding } from '../components/styles/GlobalStyles';
 
 // Navigation Clients
 const HeaderClients = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.nameScreenAndBtnAdd}>
       <View style={styles.textFlexBox}>
         <Text style={styles.dashboard}>Khách hàng</Text>
-        <Image style={styles.logoClients} source={require('../assets/Group.png')}></Image>
+        <Image style={styles.logoClients} source={require('../assets/Group.png')} />
       </View>
-      <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')}></Image>
+      <TouchableOpacity onPress={() => navigation.navigate('AddClient')}>
+        <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -34,7 +37,7 @@ const CustomSearchComponent = () => {
       />
     </View>
   );
-}
+};
 
 const ClientListItem = ({ data }) => {
   // Replace this with your actual rendering logic for a single client item
@@ -65,7 +68,6 @@ const ClientScreen = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -106,7 +108,6 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorBlueviolet,
   },
   SearchClients: {
-    
     height: 48,
     paddingVertical: 0,
     marginTop: 16,
@@ -117,7 +118,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: Color.colorWhitesmoke,
     elevation: 10,
-  
   },
   imageSearch: {
     height: 20,
@@ -157,5 +157,5 @@ const styles = StyleSheet.create({
   clientRole: {
     color: '#888',
   },
-})
+});
 export default ClientScreen;

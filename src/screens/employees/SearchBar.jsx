@@ -9,7 +9,7 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
         <Feather name="search" size={20} color="black" style={{ marginLeft: 1 }} />
         <TextInput
           style={styles.input}
-          placeholder="Tìm kiếm khách hàng"
+          placeholder="Tìm kiếm nhân viên"
           value={searchPhrase}
           onChangeText={setSearchPhrase}
           onFocus={() => {
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     width: '100%',
+    margin: 5,
   },
   searchBar__unclicked: {
     padding: 10,

@@ -1,19 +1,33 @@
-import { StyleSheet, Text, View, Image, FlatList, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 
 import DumyDataEvent from './events/DummyDataEvent';
 import ItemListEvent from './events/ItemListEvent';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 
 // EventHeader component
-const EventHeader = () => (
-  <View style={styles.nameScreenAndBtnAdd}>
-    <View style={styles.textFlexBox}>
-      <Text style={styles.dashboard}>Sự kiện</Text>
-      <Image style={styles.logoEvent} source={require('../assets/icon--event2.png')} />
+const EventHeader = () => {
+  const navigation = useNavigation();
+  return (
+    <View style={styles.nameScreenAndBtnAdd}>
+      <View style={styles.textFlexBox}>
+        <Text style={styles.dashboard}>Sự kiện</Text>
+        <Image style={styles.logoEvent} source={require('../assets/icon--event2.png')} />
+      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('AddEvent')}>
+        <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
+      </TouchableOpacity>
     </View>
-    <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
-  </View>
-);
+  );
+};
 
 // SearchEvent component
 const SearchEvent = () => (

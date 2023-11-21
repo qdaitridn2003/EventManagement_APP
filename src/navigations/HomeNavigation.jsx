@@ -23,15 +23,24 @@ const HomeNavigation = () => {
             iconSource = require('../assets/icon--profile.png');
           }
 
-          return <Image style={{ width: 25, height: 25, tintColor: color }} source={iconSource} />;
+          return (
+            <Image
+              style={{ width: 25, height: 25, tintColor: color, marginTop: 10, marginBottom: 5 }}
+              source={iconSource}
+            />
+          );
+        },
+        tabBarStyle: {
+          marginHorizontal: 5,
+          height: 55,
+          borderRadius: 12,
+          paddingHorizontal: 20,
         },
         tabBarActiveTintColor: '#643FDB',
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: {
           fontWeight: 'bold',
-        },
-        tabBarStyle: {
-          backgroundColor: '#fff',
+          marginBottom: 5,
         },
         headerShown: false,
         tabBarHideOnKeyboard: true,

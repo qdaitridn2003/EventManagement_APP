@@ -1,5 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 import DummyDataEmployee from './employees/DummyDataEmployee';
 import List from './employees/ListEmployee';
@@ -7,13 +8,16 @@ import SearchBar from './employees/SearchBar';
 import { Border, Color, FontSize, Padding } from '../components/styles/GlobalStyles';
 
 const ToolbarEmployee = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.nameScreenAndBtnAdd}>
       <View style={styles.textFlexBox}>
-        <Text style={styles.dashboard}>Sự kiện</Text>
-        <Image style={styles.logoEvent} source={require('../assets/icon--event2.png')} />
+        <Text style={styles.dashboard}>Nhân viên</Text>
+        <Image style={styles.logoEvent} source={require('../assets/icon--employee2.png')} />
       </View>
-      <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
+      <TouchableOpacity onPress={() => navigation.navigate('AddEmpolyee')}>
+        <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -74,12 +78,11 @@ const styles = StyleSheet.create({
     width: 24,
   },
   buttonFab: {
-    width: 24,
-    height: 24,
+    width: 44,
+    height: 44,
     overflow: 'hidden',
     borderRadius: Border.br_xs,
     backgroundColor: Color.colorBlueviolet,
-    padding: 25,
   },
   title: {
     width: '100%',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import Root from './root';
+import Root from './Root';
 import { AppContextProvider } from './contexts/AppContext';
 
 const App = () => {
