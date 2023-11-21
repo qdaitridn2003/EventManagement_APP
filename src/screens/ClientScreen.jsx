@@ -40,10 +40,10 @@ const ClientListItem = ({ data }) => {
   // Replace this with your actual rendering logic for a single client item
   return (
     <View style={styles.clientContainer}>
-      <Image style={styles.clientAvatar} source={{ uri: data.avatarUrl }} />
+      <Image style={styles.clientAvatar} source={require('../assets/avatar-28x2813x.png')} />
       <View style={styles.clientInfo}>
         <Text style={styles.clientName}>{data.name}</Text>
-        <Text style={styles.clientRole}>{data.role}</Text>
+        <Text style={styles.clientRole}>{data.details}</Text>
       </View>
     </View>
   );
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Padding.p_5xl,
     borderRadius: Border.br_base,
     alignSelf: 'stretch',
-    backgroundColor: Color.colorWhite,
+    backgroundColor: Color.colorWhitesmoke,
     elevation: 10,
   
   },
