@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^6.5.11",
@@ -28,9 +29,11 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.22.20",
-    "eslint": "^8.49.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-config-universe": "^12.0.0",
-    "prettier": "^3.0.3"
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0"
   },
   "private": true
 }
