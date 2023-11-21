@@ -12,9 +12,24 @@ export const FontSize = {
 };
 /* Colors */
 export const Color = {
+  primary: "#643fdb",
+  secondary: "#ff8a00",
+  neutral1: "#1c1243",
+  neutral2: "#a29eb6",
+  neutral4: "#fff",
+  neutral3: "#eff1f3",
+  semanticRed: "#ff5d4f",
+  semanticGreen: "#47c272",
+  overlayPink: "#e15a93",
+  overlayRed: "#ff6a5d",
+  overlayPurple: "#b37be7",
+  overlayGreen2: "#deeded",
+  overlayYellow2: "#ffe7cc",
+  overlayRed2: "#ffd7d4",
+  overlayModal: "rgba(28, 18, 67, 0.8)",
+
   colorWhite: '#fff',
   colorMidnightblue: '#1c1243',
-  neutral4: '#a29eb6',
   colorDarkorange: '#ff8a00',
   colorBlueviolet: '#643fdb',
   colorWhitesmoke: '#eff1f3',

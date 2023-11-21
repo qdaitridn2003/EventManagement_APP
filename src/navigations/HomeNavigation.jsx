@@ -3,6 +3,7 @@ import React from 'react';
 import { Image } from 'react-native';
 
 import { ProfileScreen, EventScreen, EmployeeScreen, ClientScreen } from '../screens';
+import TestScreen from '../screens/TestScreen';
 
 const Tab = createBottomTabNavigator();
 
