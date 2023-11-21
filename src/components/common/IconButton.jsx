@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
+
 import Icon from './Icon';
 
 const IconButton = ({ onPress, iconSource, iconColor, size, buttonColor, style }) => {
@@ -14,10 +15,9 @@ const IconButton = ({ onPress, iconSource, iconColor, size, buttonColor, style }
         style,
       ]}
       activeOpacity={0.2}
-      onPress={onPress}
-    >
+      onPress={onPress}>
       <View style={styles.iconContainer}>
-        <Icon source={iconSource} color={iconColor} size='big' />
+        <Icon source={iconSource} color={iconColor} size="big" />
       </View>
     </TouchableOpacity>
   );

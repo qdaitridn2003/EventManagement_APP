@@ -1,12 +1,11 @@
 import axios from 'axios';
 // import { LOCAL_HOST, PORT, END_POINT } from ';
 
-const LOCAL_HOST = "192.168.1.9"
-const END_POINT = "/api"
-
+const LOCAL_HOST = '192.168.1.9';
+const END_POINT = '/api';
 
 const axiosInstance = axios.create({
-    baseURL: `http://${LOCAL_HOST}:${8080}${END_POINT}`,
+  baseURL: `http://${LOCAL_HOST}:${8080}${END_POINT}`,
 });
 
 // export const axiosGet = async (path: string, data: any, config?: AxiosRequestConfig) => {

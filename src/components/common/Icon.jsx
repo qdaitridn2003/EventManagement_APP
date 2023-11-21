@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Image } from 'react-native';
-import PropTypes from 'prop-types';
 
 const Icon = ({ source, color, size }) => {
   // Map size values to corresponding pixel values
@@ -12,7 +12,13 @@ const Icon = ({ source, color, size }) => {
   // Determine the size or default to "small" if the provided size is not valid
   const iconSize = sizeMapping[size] || sizeMapping.small;
 
-  return <Image style={{ tintColor: color, width: iconSize, height: iconSize }} resizeMode="contain" source={source} />;
+  return (
+    <Image
+      style={{ tintColor: color, width: iconSize, height: iconSize }}
+      resizeMode="contain"
+      source={source}
+    />
+  );
 };
 
 Icon.propTypes = {

@@ -14,7 +14,7 @@ import {
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import MyCalendar from '../items/MyCalendar';
 
-const AddEmpolyee = () => {
+const AddEmployee = () => {
   const navigation = useNavigation();
   const [isCalendarVisible, setCalendarVisible] = useState(false);
 
@@ -186,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddEmpolyee;
+export default AddEmployee;

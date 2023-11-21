@@ -3,8 +3,8 @@ import React from 'react';
 
 import HomeNavigation from './HomeNavigation';
 import { ChangePasswordScreen, LoginScreen, RegisterScreen } from '../screens';
-import AddEmpolyee from '../screens/employees/AddEmployee';
 import AddClient from '../screens/clients/AddClient';
+import AddEmployee from '../screens/employees/AddEmployee';
 import AddEvent from '../screens/events/AddEvent';
 
 const Stack = createNativeStackNavigator();
@@ -13,7 +13,7 @@ const AuthNavigation = () => {
     <Stack.Navigator>
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="AddEmpolyee" component={AddEmpolyee} options={{ headerShown: false }} />
+      <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
       <Stack.Screen name="AddClient" component={AddClient} options={{ headerShown: false }} />
       <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
       <Stack.Screen

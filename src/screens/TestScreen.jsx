@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+
 import IconButton from '../components/common/IconButton';
 import { Color, Padding, FontSize } from '../components/styles/GlobalStyles';
 
