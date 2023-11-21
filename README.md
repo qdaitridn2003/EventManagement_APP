@@ -62,3 +62,17 @@
 ```bash
   Must be separate
 ```
+
+### Prettier and ESLint commands
+
+- Use Prettier to format whole project
+
+```bash
+  yarn format
+```
+
+- Detect lint problems
+
+```bash
+  yarn lint
+```
