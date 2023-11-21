@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import IconButton from '../components/common/IconButton';
+import IconTextButton from '../components/common/IconTextButton';
 import { Color, Padding, FontSize } from '../components/styles/GlobalStyles';
 
 const TestScreen = () => {
@@ -20,11 +21,35 @@ const TestScreen = () => {
         buttonColor={Color.secondary}
         style={styles.buttonStyle}
       />
-      <IconButton
+
+      <IconTextButton
         onPress={handleButtonPress}
-        iconSource={require('../assets/icons/BadgeOutline.png')}
-        iconColor="blue"
-        buttonColor="#ff9900"
+        label="Button 1"
+        iconLeft={require('../assets/icons/Plus.png')}
+        iconRight={require('../assets/icons/BadgeOutline.png')}
+        textColor={Color.neutral1}
+        buttonColor={Color.primary}
+        showShadow
+        isSmall={false}
+        isFillLayout={false}
+      />
+
+      <IconTextButton
+        onPress={handleButtonPress}
+        label="Button 2"
+        iconLeft={require('../assets/icons/Edit.png')}
+        textColor={Color.primary}
+        buttonColor={Color.secondary}
+        showShadow
+        isFillLayout={false}
+      />
+
+      <IconTextButton
+        onPress={handleButtonPress}
+        label="Button 3"
+        iconRight={require('../assets/icons/Check.png')}
+        isFillLayout
+        showShadow
         style={styles.buttonStyle}
       />
     </View>
