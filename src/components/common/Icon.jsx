@@ -4,9 +4,6 @@ import { Image } from 'react-native';
 import { Color } from '../styles/GlobalStyles';
 
 const Icon = ({ source, color, size }) => {
-  // Default color if not provided
-  const defaultColor = Color.primary;
-
   // Map size values to corresponding pixel values
   const sizeMapping = {
     small: 16,
@@ -23,6 +20,11 @@ Icon.propTypes = {
   source: PropTypes.number.isRequired, // Image source
   color: PropTypes.string, // Icon color (optional)
   size: PropTypes.oneOf(['small', 'big']),
+};
+
+Icon.defaultProps = {
+  color: Color.neutral1,
+  size: 'big',
 };
 
 export default Icon;

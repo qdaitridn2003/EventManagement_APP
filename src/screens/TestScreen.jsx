@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import IconButton from '../components/common/IconButton';
 import IconTextButton from '../components/common/IconTextButton';
 import { Color, Padding, FontSize } from '../components/styles/GlobalStyles';
+import Icon from '../components/common/Icon';
 
 const TestScreen = () => {
   const handleButtonPress = () => {
@@ -13,6 +14,18 @@ const TestScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Icon 
+        source={require('../assets/icons/BadgeOutline.png')}
+        color={Color.primary}
+        size={'small'}
+      />
+      <Icon 
+        source={require('../assets/icons/BadgeOutline.png')}
+        color={Color.secondary}
+      />
+      <Icon 
+        source={require('../assets/icons/BadgeOutline.png')}
+      />
       <IconButton
         onPress={handleButtonPress}
         iconSource={require('../assets/icons/BadgeOutline.png')}
