@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import Icon from './Icon';
-import { Color } from '../styles/GlobalStyles'; // Assuming GlobalStyles contains Color
+import { Color, Padding } from '../styles/GlobalStyles';
 
 const IconTextButton = ({
   onPress, label, iconLeft, iconRight, textColor, buttonColor,
@@ -11,10 +11,10 @@ const IconTextButton = ({
 }) => {
   const paddingVertical = isSmall ? 8 : 16;
   const paddingHorizontal = isSmall ? 16 : 24;
+  const padding = isSmall ? Padding.horizontal16Vetical8 : Padding.horizontal24Vetical16;
 
   const dynamicStyles = {
-    paddingVertical,
-    paddingHorizontal,
+    ...padding,
     backgroundColor: buttonColor,
     shadowOpacity: showShadow ? 0.3 : 0,
     elevation: showShadow ? 5 : 0,
@@ -58,6 +58,7 @@ IconTextButton.defaultProps = {
 
 const styles = StyleSheet.create({
   button: {
+    shadowColor: Color.primary,
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',

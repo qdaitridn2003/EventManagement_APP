@@ -3,50 +3,63 @@ import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 
 import Icon from './Icon';
+import { Color } from '../styles/GlobalStyles';
 
-const IconButton = ({ onPress, iconSource, iconColor, size, buttonColor, style }) => {
-  const paddingSize = size === 'small' ? 8 : 12;
+const IconButton = ({ 
+  onPress, iconSource, iconColor, buttonColor, 
+  isSizeSmall, showShadow, style 
+}) => {
+  const padding = isSizeSmall ? 8 : 12;
+  const borderRadius = isSizeSmall ? 12 : 16;
+
+  const dynamicStyles = {
+    padding,
+    borderRadius,
+    backgroundColor: buttonColor,
+    shadowOpacity: showShadow ? 0.3 : 0,
+    elevation: showShadow ? 5 : 0,
+  };
 
   return (
     <TouchableOpacity
-      style={[
-        styles.iconButton,
-        { width: 2 * paddingSize + 24, height: 2 * paddingSize + 24, backgroundColor: buttonColor },
-        style,
-      ]}
+      style={[styles.iconButton, dynamicStyles, style,]}
       activeOpacity={0.2}
       onPress={onPress}>
       <View style={styles.iconContainer}>
-        <Icon source={iconSource} color={iconColor} size="big" />
+        <Icon source={iconSource} color={iconColor} />
       </View>
     </TouchableOpacity>
   );
 };
 
 IconButton.propTypes = {
-  onPress: PropTypes.func.isRequired,
+  onPress: PropTypes.func,
   iconSource: PropTypes.number.isRequired,
-  iconColor: PropTypes.string.isRequired,
-  size: PropTypes.oneOf(['small', 'default']),
-  buttonColor: PropTypes.string.isRequired,
+  iconColor: PropTypes.string,
+  isSizeSmall: PropTypes.bool,
+  buttonColor: PropTypes.string,
+  showShadow: PropTypes.bool,
   style: PropTypes.object,
 };
 
+IconButton.defaultProps = {
+  showShadow: false,
+  isSizeSmall: false,
+  textColor: Color.neutral4,
+  buttonColor: Color.primary,
+}
+
 const styles = StyleSheet.create({
   iconButton: {
+    shadowColor: Color.primary,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
   iconContainer: {
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
-    borderRadius: 12,
-    backgroundColor: 'transparent',
   },
 });
 

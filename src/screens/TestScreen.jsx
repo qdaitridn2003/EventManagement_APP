@@ -16,9 +16,13 @@ const TestScreen = () => {
       <IconButton
         onPress={handleButtonPress}
         iconSource={require('../assets/icons/BadgeOutline.png')}
-        iconColor={Color.neutral4}
-        size="small"
-        buttonColor={Color.secondary}
+        style={styles.buttonStyle}
+        showShadow
+      />
+      <IconButton
+        onPress={handleButtonPress}
+        iconSource={require('../assets/icons/BadgeOutline.png')}
+        isSizeSmall
         style={styles.buttonStyle}
       />
 
@@ -32,6 +36,7 @@ const TestScreen = () => {
         showShadow
         isSmall={false}
         isFillLayout={false}
+        style={styles.buttonStyle}
       />
 
       <IconTextButton
@@ -42,6 +47,7 @@ const TestScreen = () => {
         buttonColor={Color.secondary}
         showShadow
         isFillLayout={false}
+        style={styles.buttonStyle}
       />
 
       <IconTextButton
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   buttonStyle: {
-    marginTop: 20,
+    marginBottom: 16,
   },
 });
 

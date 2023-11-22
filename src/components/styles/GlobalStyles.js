@@ -12,6 +12,14 @@ export const FontSize = {
 };
 /* Colors */
 export const Color = {
+  colorWhite: '#fff',
+  colorMidnightblue: '#1c1243',
+  colorDarkorange: '#ff8a00',
+  colorBlueviolet: '#643fdb',
+  colorWhitesmoke: '#eff1f3',
+  colorBlack: '#000',
+
+  // Final colors
   primary: '#643fdb',
   secondary: '#ff8a00',
   neutral1: '#1c1243',
@@ -27,13 +35,6 @@ export const Color = {
   overlayYellow2: '#ffe7cc',
   overlayRed2: '#ffd7d4',
   overlayModal: 'rgba(28, 18, 67, 0.8)',
-
-  colorWhite: '#fff',
-  colorMidnightblue: '#1c1243',
-  colorDarkorange: '#ff8a00',
-  colorBlueviolet: '#643fdb',
-  colorWhitesmoke: '#eff1f3',
-  colorBlack: '#000',
 };
 /* Paddings */
 export const Padding = {
@@ -45,6 +46,16 @@ export const Padding = {
   p_9xs: 4,
   p_xs: 12,
   p_3xs: 10,
+
+  // Final
+  horizontal24Vetical16: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
+  horizontal16Vetical8: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  }
 };
 /* border radiuses */
 export const Border = {
