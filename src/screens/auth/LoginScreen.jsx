@@ -3,8 +3,8 @@ import { Image } from 'expo-image';
 import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 
-import { Color, FontSize, Padding } from '../components/styles/GlobalStyles';
-
+import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
+  
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
@@ -19,21 +19,24 @@ const LoginScreen = () => {
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đăng Nhập</Text>
       </View>
+      <Text style={styles.textField}>Email</Text>
       <View style={styles.containerTextInput}>
         <Image
           style={styles.iconUsername}
           contentFit="cover"
-          source={require('../assets/icon--alternate-email3x.png')}
+          source={require('../../assets/icon--alternate-email3x.png')}
         />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Email" />
+        <TextInput underlineColor="transparent" style={styles.textInput} returnKeyType="next" placeholder="Email" />
       </View>
+      <Text style={styles.textField}>Mật Khẩu</Text>
       <View style={styles.containerTextInput}>
         <Image
           style={styles.iconUsername}
           contentFit="cover"
-          source={require('../assets/icon--lock-outline3x.png')}
+          source={require('../../assets/icon--lock-outline3x.png')}
         />
         <TextInput
+          underlineColor="transparent"
           style={styles.textInput}
           returnKeyType="next"
           placeholder="Mật khẩu"
@@ -43,15 +46,15 @@ const LoginScreen = () => {
           <Image
             source={
               isPasswordVisible
-                ? require('../assets/eye-icon.png')
-                : require('../assets/eye-off-icon.png')
+                ? require('../../assets/eye-icon.png')
+                : require('../../assets/eye-off-icon.png')
             }
             style={styles.iconEyePass}
           />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
         <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
       </TouchableOpacity>
 
@@ -70,7 +73,7 @@ const LoginScreen = () => {
           <Image
             style={styles.iconGoogle}
             contentFit="cover"
-            source={require('../assets/icon--google3x.png')}
+            source={require('../../assets/icon--google3x.png')}
           />
 
           <Text>Đăng nhập bằng Google</Text>
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
     paddingVertical: Padding.p_base,
   },
   containerTextInput: {
-    marginTop: 16,
+    marginTop: 10,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -126,6 +129,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     height: 40,
+    borderBottomWidth: 0,
+    
+    
   },
   containerGoogle: {
     marginTop: 16,
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     textAlign: 'right',
     marginTop: 16,
-    color: Color.colorMidnightblue,
+    color: Color.colorBlueviolet,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -236,6 +242,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  textField:{
+    fontWeight: '600',
+    fontSize: 16,
+    marginTop: 20,
+    marginLeft: 10,
+  }
 });
 
 export default LoginScreen;

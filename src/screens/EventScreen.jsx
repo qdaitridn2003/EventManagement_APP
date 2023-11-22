@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   btnTabAll: {
     fontWeight: '500',
     color: Color.neutral4,
-    lineHeight: 24,
+    lineHeight: 24, 
     fontSize: FontSize.headlines16Medium_size,
     textAlign: 'left',
   },
