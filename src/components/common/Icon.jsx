@@ -23,7 +23,6 @@ Icon.propTypes = {
 };
 
 Icon.defaultProps = {
-  color: Color.neutral1,
   size: 'big',
 };
 

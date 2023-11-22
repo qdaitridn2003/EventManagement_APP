@@ -45,7 +45,7 @@ IconButton.propTypes = {
 IconButton.defaultProps = {
   showShadow: false,
   isSizeSmall: false,
-  textColor: Color.neutral4,
+  iconColor: Color.neutral4,
   buttonColor: Color.primary,
 }
 

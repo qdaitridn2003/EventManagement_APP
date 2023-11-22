@@ -24,7 +24,7 @@ const TestScreen = () => {
         color={Color.secondary}
       />
       <Icon 
-        source={require('../assets/icons/BadgeOutline.png')}
+        source={require('../assets/icons/Check.png')}
       />
       <IconButton
         onPress={handleButtonPress}
@@ -44,7 +44,6 @@ const TestScreen = () => {
         label="Button 1"
         iconLeft={require('../assets/icons/Plus.png')}
         iconRight={require('../assets/icons/BadgeOutline.png')}
-        textColor={Color.neutral1}
         buttonColor={Color.primary}
         showShadow
         isSmall={false}
