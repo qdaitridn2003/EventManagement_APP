@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
+import { Color, Padding } from '../../components/styles/GlobalStyles';
 import MyCalendar from '../items/MyCalendar';
 
 const AddEmployee = () => {

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
-  
+
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
@@ -26,7 +26,12 @@ const LoginScreen = () => {
           contentFit="cover"
           source={require('../../assets/icon--alternate-email3x.png')}
         />
-        <TextInput underlineColor="transparent" style={styles.textInput} returnKeyType="next" placeholder="Email" />
+        <TextInput
+          underlineColor="transparent"
+          style={styles.textInput}
+          returnKeyType="next"
+          placeholder="Email"
+        />
       </View>
       <Text style={styles.textField}>Mật Khẩu</Text>
       <View style={styles.containerTextInput}>
@@ -130,8 +135,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 40,
     borderBottomWidth: 0,
-    
-    
   },
   containerGoogle: {
     marginTop: 16,
@@ -242,12 +245,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  textField:{
+  textField: {
     fontWeight: '600',
     fontSize: 16,
     marginTop: 20,
     marginLeft: 10,
-  }
+  },
 });
 
 export default LoginScreen;

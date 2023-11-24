@@ -1,12 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
   FlatList,
-  ScrollView,
   TouchableOpacity,
+  ToastAndroid,
+  BackHandler,
 } from 'react-native';
 
 import DumyDataEvent from './events/DummyDataEvent';
@@ -62,8 +64,43 @@ const TabBar = () => (
   </View>
 );
 
+const DoubleBackToExit = ({ navigation }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (isBackPressedOnce()) {
+          BackHandler.exitApp();
+          return true;
+        } else {
+          showToast('Nhấn lần nữa để thoát');
+          return true;
+        }
+      });
+
+      return () => backHandler.remove();
+    }, []),
+  );
+
+  let lastBackPressed = 0;
+
+  const isBackPressedOnce = () => {
+    const currentTime = new Date().getTime();
+    const timeDiff = currentTime - lastBackPressed;
+    lastBackPressed = currentTime;
+
+    return timeDiff < 2000;
+  };
+
+  const showToast = message => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  };
+
+  return null;
+};
+
 // EventScreen component
 const EventScreen = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <EventHeader />
@@ -77,6 +114,7 @@ const EventScreen = () => {
         style={{ height: '100%', width: '100%' }}
         showsVerticalScrollIndicator={false}
       />
+      <DoubleBackToExit navigation={navigation} />
     </View>
   );
 };
@@ -172,8 +210,8 @@ const styles = StyleSheet.create({
   },
   btnTabAll: {
     fontWeight: '500',
-    color: Color.neutral4,
-    lineHeight: 24, 
+    color: Color.neutral2,
+    lineHeight: 24,
     fontSize: FontSize.headlines16Medium_size,
     textAlign: 'left',
   },
@@ -202,7 +240,7 @@ const styles = StyleSheet.create({
   },
   btnUnCompleted: {
     fontWeight: '500',
-    color: Color.neutral4,
+    color: Color.neutral2,
     lineHeight: 24,
     fontSize: FontSize.headlines16Medium_size,
     textAlign: 'left',

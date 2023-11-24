@@ -15,7 +15,7 @@ const ToolbarEmployee = () => {
         <Text style={styles.dashboard}>Nhân viên</Text>
         <Image style={styles.logoEvent} source={require('../assets/icon--employee2.png')} />
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('AddEmpolyee')}>
+      <TouchableOpacity onPress={() => navigation.navigate('AddEmployee')}>
         <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
       </TouchableOpacity>
     </View>

@@ -18,6 +18,7 @@ export const Color = {
   colorBlueviolet: '#643fdb',
   colorWhitesmoke: '#eff1f3',
   colorBlack: '#000',
+  colorText: '#1c1243',
 
   // Final colors
   primary: '#643fdb',
@@ -55,7 +56,7 @@ export const Padding = {
   horizontal16Vetical8: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-  }
+  },
 };
 /* border radiuses */
 export const Border = {

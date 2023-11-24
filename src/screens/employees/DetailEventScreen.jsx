@@ -43,7 +43,7 @@ const ToolbarDetail = () => {
   );
 };
 
-const ContentEvent = ({ route }) => {
+const ContentDetail = ({ route }) => {
   const eventData = route.params.eventData;
 
   return (
@@ -99,7 +99,7 @@ const DetailEventScreen = ({ route }) => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <ToolbarDetail />
-        <ContentEvent route={route} />
+        <ContentDetail route={route} />
       </View>
     </ScrollView>
   );

@@ -1,53 +1,60 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 import { Color, FontSize, Border } from '../../components/styles/GlobalStyles';
 
-const ItemListEvent = props => {
-  const { data } = props;
+const ItemListEvent = ({ data }) => {
+  const navigation = useNavigation();
+
+  const handleItemClick = () => {
+    // Navigate to DetailEventScreen with the selected item's data
+    navigation.navigate('DetailEventScreen', { eventData: data });
+  };
   return (
-    <View style={styles.eventList}>
-      <View style={styles.cardEvent}>
-        <Image
-          style={[styles.avatarIcon, styles.avatarIconLayout]}
-          contentFit="cover"
-          source={require('../../assets/avatar-28x2813x.png')}
-        />
-        <Image
-          style={[styles.avatarIcon1, styles.avatarIconLayout]}
-          contentFit="cover"
-          source={require('../../assets/avatar-28x2823x.png')}
-        />
-        <Image
-          style={[styles.avatarIcon2, styles.avatarIconLayout]}
-          contentFit="cover"
-          source={require('../../assets/avatar-28x283x.png')}
-        />
-        <View style={[styles.avtarPlus, styles.avatarIconLayout]}>
-          <Text style={[styles.textPlus, styles.textTypo]}>+4</Text>
-        </View>
-        <Text style={styles.textNameEvent}>{data.name}</Text>
-        <Text style={[styles.text1, styles.textTypo1]}>{data.startDay}</Text>
-        <Text style={[styles.text2, styles.sKinClr]}>{data.endDay}</Text>
-        <View style={[styles.text4, styles.textFlexBox]}>
-          <Text style={[styles.text5, styles.textTypo]}>{data.progress}</Text>
-          <View style={styles.indicator}>
-            <View style={[styles.indicator1, styles.indicatorPosition]} />
-            <View style={[styles.indicator2, styles.indicatorPosition]} />
+    <TouchableOpacity onPress={handleItemClick}>
+      <View style={styles.eventList}>
+        <View style={styles.cardEvent}>
+          <Text style={styles.textNameEvent}>{data.name}</Text>
+
+          <View>
+            <Image
+              style={[styles.avatarIcon, styles.avatarIconLayout]}
+              contentFit="cover"
+              source={require('../../assets/avatar-28x2813x.png')}
+            />
+            <Image
+              style={[styles.avatarIcon1, styles.avatarIconLayout]}
+              contentFit="cover"
+              source={require('../../assets/avatar-28x2823x.png')}
+            />
+            <Image
+              style={[styles.avatarIcon2, styles.avatarIconLayout]}
+              contentFit="cover"
+              source={require('../../assets/avatar-28x283x.png')}
+            />
+            <View style={[styles.avtarPlus, styles.avatarIconLayout]}>
+              <Text style={[styles.textPlus, styles.textTypo]}>+4</Text>
+            </View>
           </View>
-          <Text style={[styles.tasks, styles.textTypo]} />
+
+          <View style={styles.date}>
+            <Text style={[styles.text1, styles.textTypo1]}>{data.startDay}</Text>
+            <Image style={styles.arrowIcon} source={require('../../assets/arrow-from-to.png')} />
+            <Text style={[styles.text2, styles.sKinClr]}>{data.endDay}</Text>
+          </View>
+
+          <View style={[styles.text4, styles.textFlexBox]}>
+            <Text style={[styles.text5, styles.textTypo]}>{data.progress}</Text>
+            <View style={styles.indicator}>
+              <View style={[styles.indicator1, styles.indicatorPosition]} />
+              <View style={[styles.indicator2, styles.indicatorPosition]} />
+            </View>
+            <Text style={[styles.tasks, styles.textTypo]} />
+          </View>
         </View>
-        <Image
-          style={[styles.iconCalendar, styles.iconLayout]}
-          source={require('../../assets/calendar2.png')}
-        />
-        <Image
-          style={[styles.iconCalendar1, styles.iconLayout]}
-          source={require('../../assets/calendar.png')}
-        />
-        <Image style={styles.arrowIcon} source={require('../../assets/arrow.png')} />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -62,14 +69,9 @@ const styles = StyleSheet.create({
   cardEvent: {
     borderRadius: Border.br_base,
     alignSelf: 'stretch',
-    backgroundColor: Color.colorWhite,
     height: 148,
     overflow: 'hidden',
-    elevation: 5,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+    elevation: 3,
   },
   avatarIconLayout: {
     height: 28,
@@ -92,6 +94,9 @@ const styles = StyleSheet.create({
     backgroundColor: Color.colorDarkorange,
     overflow: 'hidden',
   },
+  date: {
+    flexDirection: 'row',
+  },
   textPlus: {
     marginTop: -10,
     marginLeft: -8,
@@ -107,7 +112,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   textNameEvent: {
-    fontSize: FontSize.headlines18Bold_size,
+    fontSize: 16,
     lineHeight: 28,
     left: 24,
     top: 24,
@@ -119,7 +124,7 @@ const styles = StyleSheet.create({
   text1: {
     left: 48,
     color: Color.neutral2,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   text2: {
     left: 227,
@@ -156,7 +161,7 @@ const styles = StyleSheet.create({
   },
   sKinClr: {
     color: Color.colorBlueviolet,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   indicator: {
     height: 8,

@@ -1,60 +1,62 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Image, StyleSheet, TouchableOpacity, Alert, Text, TextInput } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  Dimensions,
+  StatusBar,
+} from 'react-native';
 
 import { Color, Padding } from '../components/styles/GlobalStyles';
 
-const ProfileScreen = () => {
-  const navigation = useNavigation();
+const { height, width } = Dimensions.get('window');
 
-  const handleImageClick = () => {
-    Alert.alert('Image Clicked!');
-  };
+const MyStatusBar = ({ backgroundColor, ...props }) => (
+  <View style={[styles.statusBar, { backgroundColor }]}>
+    <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+  </View>
+);
 
+const Toolbar = () => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={handleImageClick} style={styles.touchable}>
+    <View style={styles.infoImage}>
+      <TouchableOpacity>
         <Image
           style={styles.avatar}
           resizeMode="cover"
           source={require('../assets/avatar-28x283x.png')}
         />
       </TouchableOpacity>
+      <Text style={styles.textInfo}>Admin</Text>
+    </View>
+  );
+};
 
-      <Text style={styles.labelInput}>Họ và tên</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../assets/icons8-profile-50.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Team Cook" />
-      </View>
-      <Text style={styles.labelInput}>Email</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../assets/icon--alternate-email3x.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="abc@gmail.com" />
-      </View>
-      <Text style={styles.labelInput}>Số điện thoại</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../assets/phone-android.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="0912342667" />
-      </View>
+const ProfileScreen = () => {
+  const navigation = useNavigation();
 
-      <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
-        <Text style={styles.labelInput}>Đổi mật khẩu</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.labelInput}>Đăng xuất</Text>
-      </TouchableOpacity>
+  return (
+    <View style={styles.container}>
+      <MyStatusBar backgroundColor={Color.colorMidnightblue} />
+      <Toolbar />
+      <View style={styles.contentProfile}>
+        <TouchableOpacity onPress={() => navigation.navigate('DetailProfileScreen')}>
+          <Text style={styles.labelInput}>Thông tin</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
+          <Text style={styles.labelInput}>Đổi mật khẩu</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.labelInput}>Đăng xuất</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -64,12 +66,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.colorWhite,
     width: '100%',
-    height: 812,
-    paddingHorizontal: Padding.p_5xl,
-    paddingVertical: Padding.p_base,
   },
-  touchable: {
+  contentProfile: {
+    width: '100%',
+    height: 812,
+    paddingVertical: Padding.p_base,
+    paddingHorizontal: Padding.p_5xl,
+    flex: 1,
+    backgroundColor: Color.colorWhite,
+  },
+  infoImage: {
+    height: height * 0.3,
+    backgroundColor: Color.colorText,
+    borderBottomRightRadius: 15,
+    borderBottomLeftRadius: 15,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  textInfo: {
+    fontSize: 20,
+    color: 'white',
+    textAlign: 'center',
+    top: 15,
   },
   labelInput: {
     marginTop: 16,

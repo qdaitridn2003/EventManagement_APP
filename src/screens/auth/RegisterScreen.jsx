@@ -1,30 +1,30 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import React,{useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import PopupScreen from './PopupScreen';
-import { AppContext } from '../../contexts/AppContext';
 import { Color, FontSize, Padding } from '../../../src/components/styles/GlobalStyles';
+import { AppContext } from '../../contexts/AppContext';
 
 const itemsPosition = [
-  {label: 'Giám đốc', value: 'Giám đốc'},
-  {label: 'Nhân viên', value: 'Nhân viên'},
-  {label: 'Bảo vệ', value: 'Bảo vệ'},
-]
+  { label: 'Giám đốc', value: 'Giám đốc' },
+  { label: 'Nhân viên', value: 'Nhân viên' },
+  { label: 'Bảo vệ', value: 'Bảo vệ' },
+];
 const RegisterScreen = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
-  const [openDropdown, setopenDropdown] = useState(false)
-  const [currentvalue, setcurrentvalue] = useState([])
+  const [openDropdown, setopenDropdown] = useState(false);
+  const [currentvalue, setcurrentvalue] = useState([]);
 
-  const {popup} = useContext(AppContext)
-  const [isModalVisible, setisModalVisible] = popup
+  const { popup } = useContext(AppContext);
+  const [isModalVisible, setisModalVisible] = popup;
 
   const handleBtnRegister = () => {
-    setisModalVisible(true)
-  }
+    setisModalVisible(true);
+  };
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -36,30 +36,31 @@ const RegisterScreen = () => {
       </View>
       <Text style={styles.textField}>Email</Text>
       <View style={styles.containerTextInput}>
-        
-        <TextInput underlineColor="transparent" style={styles.textInput} returnKeyType="next" placeholder="Email" />
+        <TextInput
+          underlineColor="transparent"
+          style={styles.textInput}
+          returnKeyType="next"
+          placeholder="Email"
+        />
       </View>
       <Text style={styles.textField}>Chức vụ</Text>
 
-        
-          <DropDownPicker
-            underlineColor
-            style={[styles.containerTextInput, {borderWidth: 0,}]}
-            items={itemsPosition}
-            open={openDropdown}
-            setOpen={()=> setopenDropdown(!openDropdown)}
-            value={currentvalue}
-            setValue={val => setcurrentvalue(val)}
-            maxHeight={200}
-  
-            autoScroll
-            placeholder='Select your position'
-            showArrowIcon={true}
-            showTickIcon={true}
-            disableBorderRadius={false}
-          />
-       
-      
+      <DropDownPicker
+        underlineColor
+        style={[styles.containerTextInput, { borderWidth: 0 }]}
+        items={itemsPosition}
+        open={openDropdown}
+        setOpen={() => setopenDropdown(!openDropdown)}
+        value={currentvalue}
+        setValue={val => setcurrentvalue(val)}
+        maxHeight={200}
+        autoScroll
+        placeholder="Select your position"
+        showArrowIcon
+        showTickIcon
+        disableBorderRadius={false}
+      />
+
       <Text style={styles.textField}>Mật Khẩu</Text>
       <View style={styles.containerTextInput}>
         <TextInput
@@ -69,7 +70,7 @@ const RegisterScreen = () => {
           placeholder="Mật khẩu"
           secureTextEntry={isPasswordVisible}
         />
-        
+
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
           <Image
             source={
@@ -83,7 +84,6 @@ const RegisterScreen = () => {
       </View>
       <Text style={styles.textField}>Nhập Lại Mật Khẩu</Text>
       <View style={styles.containerTextInput}>
-        
         <TextInput
           underlineColor="transparent"
           style={styles.textInput}
@@ -91,7 +91,7 @@ const RegisterScreen = () => {
           placeholder="Nhập Lại Mật Khẩu"
           secureTextEntry={isPasswordVisible}
         />
-        
+
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
           <Image
             source={
@@ -133,7 +133,7 @@ const RegisterScreen = () => {
           Đăng nhập
         </Text>
       </View>
-      {isModalVisible === true ? <PopupScreen/> : null}
+      {isModalVisible === true ? <PopupScreen /> : null}
     </View>
   );
 };
@@ -178,8 +178,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 40,
     borderBottomWidth: 0,
-    
-    
   },
   containerGoogle: {
     marginTop: 16,
@@ -287,12 +285,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  textField:{
+  textField: {
     fontWeight: '600',
     fontSize: 16,
     marginTop: 20,
     marginLeft: 10,
-  }
+  },
 });
 
 export default RegisterScreen;
