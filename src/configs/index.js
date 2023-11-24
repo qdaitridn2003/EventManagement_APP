@@ -1,1 +1,1 @@
-export * as axiosInstance from './axiosInstance';
+export * from './axiosInstance';

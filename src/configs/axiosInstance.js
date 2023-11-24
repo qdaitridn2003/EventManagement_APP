@@ -4,7 +4,7 @@ const axiosInstance = axios.create({
   baseURL: 'https://event-management-api-q3f5.onrender.com/api',
 });
 
-export const get = async (path, query, config) => {
+export const axiosGet = async (path, query, config) => {
   try {
     const result = await axiosInstance.get(path, { ...config, params: query });
     return result.data.data;
@@ -18,7 +18,7 @@ export const get = async (path, query, config) => {
   }
 };
 
-export const post = async (path, data, config) => {
+export const axiosPost = async (path, data, config) => {
   try {
     const result = await axiosInstance.post(path, data, { ...config });
     return result.data.data;
@@ -32,7 +32,7 @@ export const post = async (path, data, config) => {
   }
 };
 
-export const put = async (path, data, config) => {
+export const axiosPut = async (path, data, config) => {
   try {
     const result = await axiosInstance.put(path, data, { ...config });
     return result.data.data;
@@ -46,7 +46,7 @@ export const put = async (path, data, config) => {
   }
 };
 
-export const del = async (path, query, config) => {
+export const axiosDel = async (path, query, config) => {
   try {
     const result = await axiosInstance.delete(path, { ...config, params: query });
     return result.data.data;
@@ -60,12 +60,12 @@ export const del = async (path, query, config) => {
   }
 };
 
-export const authGet = async (path, accessToken, query, config) => {
+export const axiosAuthGet = async (path, accessToken, query, config) => {
   try {
     const result = await axiosInstance.delete(path, {
       ...config,
       params: query,
-      headers: { Authorization: accessToken },
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return result.data.data;
   } catch (error) {
@@ -78,12 +78,12 @@ export const authGet = async (path, accessToken, query, config) => {
   }
 };
 
-export const authPost = async (path, accessToken, data, config) => {
+export const axiosAuthPost = async (path, accessToken, data, config) => {
   try {
     const result = await axiosInstance.post(path, {
       ...config,
       data,
-      headers: { Authorization: accessToken },
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return result.data.data;
   } catch (error) {
@@ -96,12 +96,12 @@ export const authPost = async (path, accessToken, data, config) => {
   }
 };
 
-export const authPut = async (path, accessToken, data, config) => {
+export const axiosAuthPut = async (path, accessToken, data, config) => {
   try {
     const result = await axiosInstance.put(path, {
       ...config,
       data,
-      headers: { Authorization: accessToken },
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return result.data.data;
   } catch (error) {
@@ -114,12 +114,12 @@ export const authPut = async (path, accessToken, data, config) => {
   }
 };
 
-export const authDel = async (path, accessToken, query, config) => {
+export const axiosAuthDel = async (path, accessToken, query, config) => {
   try {
     const result = await axiosInstance.delete(path, {
       ...config,
       params: query,
-      headers: { Authorization: accessToken },
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return result.data.data;
   } catch (error) {
