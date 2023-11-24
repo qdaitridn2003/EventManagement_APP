@@ -5,6 +5,7 @@ import IconButton from '../components/common/IconButton';
 import IconTextButton from '../components/common/IconTextButton';
 import { Color, Padding, FontSize } from '../components/styles/GlobalStyles';
 import Icon from '../components/common/Icon';
+import Avatar from '../components/common/Avatar';
 
 const TestScreen = () => {
   const handleButtonPress = () => {
@@ -14,6 +15,8 @@ const TestScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Avatar source="https://picsum.photos/200" size={120} showStroke />
+      <Avatar source={require('../assets/avatar-44x4423x.png')} size={44} />
       <Icon 
         source={require('../assets/icons/BadgeOutline.png')}
         color={Color.primary}
