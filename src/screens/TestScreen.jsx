@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import IconButton from '../components/common/IconButton';
 import IconTextButton from '../components/common/IconTextButton';
 import { Color, Padding, FontSize } from '../components/styles/GlobalStyles';
 import Icon from '../components/common/Icon';
-import Avatar from '../components/common/Avatar';
+import { Avatar, TextInput, Searchbar } from 'react-native-paper';
+import CustomInput from '../components/common/CustomInput';
+import CustomPassInput from '../components/common/CustomPassInput';
+import CustomSearchbar from '../components/common/CustomSearchbar';
+import CustomAppbar from '../components/appbar/CustomAppbar';
 
 const TestScreen = () => {
   const handleButtonPress = () => {
@@ -13,11 +17,23 @@ const TestScreen = () => {
     console.log('Button Pressed!');
   };
 
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const onChangeSearch = (query) => setSearchQuery(query);
+
   return (
     <View style={styles.container}>
-      <Avatar source="https://picsum.photos/200" size={120} showStroke />
-      <Avatar source={require('../assets/avatar-44x4423x.png')} size={44} />
-      <Icon 
+      <CustomAppbar/>
+
+      <CustomInput label='Test'/>
+
+      <CustomPassInput label='hi' />
+      <Avatar.Image
+        source={{ uri:'https://picsum.photos/200' }}
+        size={150}
+        style={styles.avatar}
+      />
+      {/* <Icon 
         source={require('../assets/icons/BadgeOutline.png')}
         color={Color.primary}
         size={'small'}
@@ -72,20 +88,30 @@ const TestScreen = () => {
         isFillLayout
         showShadow
         style={styles.buttonStyle}
-      />
+      /> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 16,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+    padding: 16,
   },
   buttonStyle: {
     marginBottom: 16,
+  },
+  avatar: {
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  inputStyle1: {
+    marginBottom: 20,
+    height:48,
   },
 });
 
