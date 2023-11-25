@@ -3,30 +3,12 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 
 import { Padding, Border, Color, FontSize } from '../components/styles/GlobalStyles';
+import CustomAppbar from '../components/appbar/CustomAppbar';
 
 const HomeScreen = () => {
   return (
     <View style={styles.events}>
-      <View style={styles.navigationWithAddButton}>
-        <View style={[styles.avatarAndDateItem, styles.textFlexBox]}>
-          <Image
-            style={styles.avatar44x44Icon}
-            contentFit="cover"
-            // source={require('../assets/avatar-44x44.png')}
-          />
-          <View style={styles.date}>
-            <Text style={styles.amThHai}>9:30 AM, thứ Hai</Text>
-            <Text style={styles.ngy25112023}>Ngày 25/11/2023</Text>
-          </View>
-        </View>
-        <View style={[styles.iconButton, styles.iconButtonSpaceBlock]}>
-          <Image
-            style={styles.plusIcon}
-            contentFit="cover"
-            // source={require('../assets/plus-icon.png')}
-          />
-        </View>
-      </View>
+      <CustomAppbar />
       <View style={[styles.searchBarParent, styles.eventListSpaceBlock]}>
         <View style={[styles.searchBar, styles.barShadowBox]}>
           <Image

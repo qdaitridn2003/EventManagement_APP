@@ -85,8 +85,6 @@ const CustomAppbar = () => {
 const styles = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     backgroundColor: Color.neutral4
   },
   mainContainer: {

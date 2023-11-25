@@ -4,6 +4,8 @@ import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
+import CustomPassInput from '../../components/common/CustomPassInput';
+import CustomInput from '../../components/common/CustomInput';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -19,44 +21,15 @@ const LoginScreen = () => {
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đăng Nhập</Text>
       </View>
-      <Text style={styles.textField}>Email</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--alternate-email3x.png')}
-        />
-        <TextInput
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Email"
-        />
+      <View style={styles.textInputContainer}>
+        <CustomInput 
+        label={'Email'} 
+        returnKeyType="next"/>
       </View>
-      <Text style={styles.textField}>Mật Khẩu</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--lock-outline3x.png')}
-        />
-        <TextInput
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Mật khẩu"
-          secureTextEntry={isPasswordVisible}
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
+      <View style={styles.textInputContainer}>
+        <CustomPassInput 
+        label={'Mật khẩu'} 
+        returnKeyType="next"/>
       </View>
 
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
@@ -104,6 +77,9 @@ const styles = StyleSheet.create({
     height: 812,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
+  },
+  textInputContainer: {
+    paddingVertical: 8,
   },
   containerTextInput: {
     marginTop: 10,

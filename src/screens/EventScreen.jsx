@@ -14,6 +14,10 @@ import {
 import DumyDataEvent from './events/DummyDataEvent';
 import ItemListEvent from './events/ItemListEvent';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
+import CustomAppbar from '../components/appbar/CustomAppbar';
+import CustomSearchbar from '../components/common/CustomSearchbar';
+import IconButton from '../components/common/IconButton';
+import FilterBar from '../components/common/FilterBar';
 
 // EventHeader component
 const EventHeader = () => {
@@ -98,14 +102,32 @@ const DoubleBackToExit = ({ navigation }) => {
   return null;
 };
 
+const listFilter = [
+  { status: 'Tất cả' },
+  { status: 'Sắp tới' },
+  { status: 'Hoàn thành' },
+  { status: 'Đang diễn ra' },
+  { status: 'Đã hủy' },
+];
+
 // EventScreen component
 const EventScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <EventHeader />
-      <SearchEvent />
-      <TabBar />
+      {/* <EventHeader /> */}
+      {/* <SearchEvent /> */}
+      <CustomAppbar />
+      <View style={styles.searchContainer}>
+        <CustomSearchbar />
+        <IconButton
+          buttonColor={Color.neutral4}
+          iconColor={Color.neutral1}
+          showShadow
+          iconSource={require('../assets/icons/Tune.png')} 
+          style={{marginLeft: 8}}/>
+      </View>
+      <FilterBar listTab={listFilter} style={styles.filterBar}/>
 
       <FlatList
         data={DumyDataEvent}
@@ -124,11 +146,10 @@ export default EventScreen;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingVertical: Padding.p_base,
-    paddingHorizontal: Padding.p_5xl,
+    paddingHorizontal: 20,
     alignItems: 'center',
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: Color.neutral4,
   },
   nameScreenAndBtnAdd: {
     justifyContent: 'space-between',
@@ -158,6 +179,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: Border.br_xs,
     backgroundColor: Color.colorBlueviolet,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 32,
+    paddingTop: 8,
+    paddingBottom: 8,
+    alignItems: 'flex-start',
+  },
+  filterBar: {
+    marginBottom: 8,
+    marginHorizontal: 1,
   },
   searchEvent: {
     height: 48,

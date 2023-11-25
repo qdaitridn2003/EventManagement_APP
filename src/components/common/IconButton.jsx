@@ -51,7 +51,6 @@ IconButton.defaultProps = {
 
 const styles = StyleSheet.create({
   iconButton: {
-    shadowColor: Color.primary,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',

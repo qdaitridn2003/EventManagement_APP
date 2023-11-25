@@ -12,7 +12,7 @@ const CustomInput = ({ label, ...props }) => {
         mode="outlined"
         outlineColor="transparent"
         activeOutlineColor={Color.primary}
-        outlineStyle={{ backgroundColor: Color.neutral4, elevation: 4, borderRadius: 16 }}
+        outlineStyle={{ backgroundColor: Color.neutral4, elevation: 3, borderRadius: 16 }}
         contentStyle={{ paddingHorizontal: 24 }}
         style={{ height: 48, fontSize: 16, width: '100%' }}
         {...props}

@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 const AuthNavigation = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Login" component={TestScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
       <Stack.Screen name="AddClient" component={AddClient} options={{ headerShown: false }} />
