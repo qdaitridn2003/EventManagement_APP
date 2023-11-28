@@ -1,12 +1,13 @@
-import { useNavigation } from '@react-navigation/native';
-import { useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-import PopupScreen from './PopupScreen.jsx';
+import { useContext } from 'react';
+
 import { Color, Padding } from '../../components/styles/GlobalStyles.js';
+import PopupScreen from './PopupScreen.jsx';
 import { AppContext } from '../../contexts/AppContext.jsx';
 
-const ForgotPasswordScreen = props => {
+const ForgotPasswordScreen = (props) => {
   const navigation = useNavigation();
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;

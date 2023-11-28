@@ -1,16 +1,26 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import * as React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
+import { axiosPost } from '../../configs/axiosInstance';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
+  const [inputEmail, setInputEmail] = useState('');
+  const [inputPassword, setInputPassword] = useState('');
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
+  };
+  const hanldeLogin = async () => {
+    const response = await axiosPost('/auth/sign-in', {
+      username: inputEmail,
+      password: inputPassword,
+    });
+    console.log(response);
   };
 
   const ref_input2 = React.useRef();
@@ -27,6 +37,7 @@ const LoginScreen = () => {
           source={require('../../assets/icon--alternate-email3x.png')}
         />
         <TextInput
+          onChangeText={(text) => setInputEmail(text)}
           underlineColor="transparent"
           style={styles.textInput}
           returnKeyType="next"
@@ -41,6 +52,7 @@ const LoginScreen = () => {
           source={require('../../assets/icon--lock-outline3x.png')}
         />
         <TextInput
+          onChangeText={(text) => setInputPassword(text)}
           underlineColor="transparent"
           style={styles.textInput}
           returnKeyType="next"
@@ -59,11 +71,11 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
         <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity style={styles.button} onPress={hanldeLogin}>
         <Text style={styles.text}>Đăng Nhập</Text>
       </TouchableOpacity>
 

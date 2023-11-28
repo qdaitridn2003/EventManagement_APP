@@ -78,14 +78,6 @@ const AddEmployee = () => {
             placeholder="127 Nguyễn Thị Thập"
           />
         </View>
-        <Text style={styles.labelInput}>Ghi chú</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.text}>Thêm nhân viên</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -95,6 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
+    height: 812,
     width: '100%',
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,

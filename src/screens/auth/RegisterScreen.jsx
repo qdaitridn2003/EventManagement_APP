@@ -1,110 +1,153 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import React, { useState, useContext } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Modal, Keyboard } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { axiosGet, axiosPost } from '../../configs/axiosInstance';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import PopupScreen from './PopupScreen';
 import { Color, FontSize, Padding } from '../../../src/components/styles/GlobalStyles';
 import { AppContext } from '../../contexts/AppContext';
+import { otpSecretKey } from '../../constant/constant';
+import { Input } from '../../components';
+import CustomInput from '../../components/common/CustomInput';
+import CustomPassInput from '../../components/common/CustomPassInput';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import Icon from '../../components/common/Icon';
 
-const itemsPosition = [
-  { label: 'Giám đốc', value: 'Giám đốc' },
-  { label: 'Nhân viên', value: 'Nhân viên' },
-  { label: 'Bảo vệ', value: 'Bảo vệ' },
-];
 const RegisterScreen = () => {
   const navigation = useNavigation();
-  const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
   const [openDropdown, setopenDropdown] = useState(false);
-  const [currentvalue, setcurrentvalue] = useState([]);
+  const [listRole, setListRole] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [roleId, setRoleId] = useState('');
+  const [inputs, setInputs] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const registerHandler = async () => {
+    Keyboard.dismiss();
+    const response = await axiosPost('/auth/sign-up', {
+      username: inputs.email,
+      password: inputs.password,
+      confirmPassword: inputs.confirmPassword,
+      roleId: roleId,
+    });
+
+    if (!inputs.email) {
+      handleErrors('Please input Email', 'email');
+    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
+      handleErrors('Please input valid Email', 'email');
+    }
+    if (!inputs.password) {
+      handleErrors('Please input Password', 'password');
+    } else if (inputs.password.length < 6) {
+      handleErrors('Password must be at least have 6 characters', 'password');
+    }
+
+    if (!inputs.confirmPassword) {
+      handleErrors('Please input Confirm Password', 'confirmPassword');
+    } else if (inputs.confirmPassword.length < 6) {
+      handleErrors('Confirm password must be at least have 6 characters', 'confirmPassword');
+    } else if (!inputs.confirmPassword === inputs.password) {
+      handleErrors('Confirm password must be matches to the current password', 'confirmPassword');
+    }
+
+    if (roleId === '') {
+      handleErrors('Please choose a role', 'roleId');
+    }
+
+    console.log(response);
+    if (response.otpSecret) {
+      await AsyncStorage.setItem(otpSecretKey, response.otpSecret);
+      setisModalVisible(true);
+    }
+  };
+
+  const handleErrors = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
 
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
 
-  const handleBtnRegister = () => {
-    setisModalVisible(true);
-  };
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-  const ref_input2 = React.useRef();
+  useEffect(() => {
+    (async () => {
+      const response = await axiosGet('/role/get-list-role');
+      const list = response.map((item) => {
+        return { label: item.name, value: item._id };
+      });
+      setListRole(list);
+    })();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đăng Ký Tài Khoản</Text>
       </View>
-      <Text style={styles.textField}>Email</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Email"
-        />
-      </View>
-      <Text style={styles.textField}>Chức vụ</Text>
 
+      <CustomInput
+        placeholder="Nhập email đăng ký"
+        label={'Email'}
+        onChangeText={(text) => handleOnChange(text, 'email')}
+        error={errors.email}
+        onFocus={() => handleErrors(null, 'email')}
+      />
+
+      <Text style={styles.textField}>Chức vụ</Text>
       <DropDownPicker
         underlineColor
-        style={[styles.containerTextInput, { borderWidth: 0 }]}
-        items={itemsPosition}
+        style={[styles.containerTextInput, errors.roleId ? styles.drowDownError : null]}
+        items={listRole}
         open={openDropdown}
-        setOpen={() => setopenDropdown(!openDropdown)}
-        value={currentvalue}
-        setValue={val => setcurrentvalue(val)}
+        setOpen={() => {
+          setopenDropdown(!openDropdown);
+          handleErrors(null, 'roleId');
+        }}
+        value={roleId}
+        setValue={(val) => setRoleId(val)}
         maxHeight={200}
         autoScroll
         placeholder="Select your position"
-        showArrowIcon
-        showTickIcon
+        showArrowIcon={true}
+        showTickIcon={true}
         disableBorderRadius={false}
       />
+      {errors.roleId ? (
+        <View style={styles.viewError}>
+          <View style={{ marginTop: 2.5 }}>
+            <Icon
+              source={require('../../assets/icons/ErrorOutline.png')}
+              color={Color.semanticRed}
+              size={'small'}
+            />
+          </View>
+          <Text style={styles.textError}>{errors.roleId}</Text>
+        </View>
+      ) : null}
 
-      <Text style={styles.textField}>Mật Khẩu</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Mật khẩu"
-          secureTextEntry={isPasswordVisible}
-        />
+      <CustomPassInput
+        label="Mật khẩu"
+        placeholder="Nhập mật khẩu đăng ký"
+        onChangeText={(text) => handleOnChange(text, 'password')}
+        error={errors.password}
+        onFocus={() => handleErrors(null, 'password')}
+      />
 
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.textField}>Nhập Lại Mật Khẩu</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Nhập Lại Mật Khẩu"
-          secureTextEntry={isPasswordVisible}
-        />
+      <CustomPassInput
+        label="Nhập lại mật khẩu"
+        placeholder="Nhập lại mật khẩu đăng ký"
+        onChangeText={(text) => handleOnChange(text, 'confirmPassword')}
+        error={errors.confirmPassword}
+        onFocus={() => handleErrors(null, 'confirmPassword')}
+      />
 
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleBtnRegister}>
+      <TouchableOpacity style={styles.button} onPress={registerHandler}>
         <Text style={styles.text}>Đăng Ký</Text>
       </TouchableOpacity>
 
@@ -122,7 +165,7 @@ const RegisterScreen = () => {
             source={require('../../assets/icon--google3x.png')}
           />
 
-          <Text>Đăng nhập bằng Google</Text>
+          <Text>Đăng ký bằng Google</Text>
         </View>
       </TouchableOpacity>
 
@@ -141,7 +184,7 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    backgroundColor: Colors.white,
     width: '100%',
     height: 812,
     paddingHorizontal: Padding.p_5xl,
@@ -150,6 +193,7 @@ const styles = StyleSheet.create({
   containerTextInput: {
     marginTop: 10,
     width: '100%',
+    borderWidth: 0,
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 16,
@@ -162,25 +206,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     overflow: 'hidden',
   },
-  iconUsername: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-    marginLeft: 24,
-  },
-  iconEyePass: {
-    width: 20,
-    height: 20,
-    marginRight: 12,
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: 'white',
-    height: 40,
-    borderBottomWidth: 0,
-  },
   containerGoogle: {
-    marginTop: 16,
+    marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -199,7 +226,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   titleSpaceBlock: {
-    marginTop: 16,
+    marginTop: 10,
     alignSelf: 'stretch',
   },
   hocClr: {
@@ -240,7 +267,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    marginTop: 16,
+    marginTop: 20,
     height: 48,
     backgroundColor: '#643FDB',
     borderRadius: 12,
@@ -286,10 +313,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textField: {
-    fontWeight: '600',
+    fontWeight: 'bold',
     fontSize: 16,
     marginTop: 20,
-    marginLeft: 10,
+  },
+  drowDownError: {
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+  textError: {
+    marginLeft: 5,
+    color: Color.semanticRed,
+  },
+  viewError: {
+    flexDirection: 'row',
+    marginTop: 5,
+    marginLeft: 16,
   },
 });
 

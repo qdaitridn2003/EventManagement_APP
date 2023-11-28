@@ -1,4 +1,3 @@
-import { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,22 +8,38 @@ import {
   TextInput,
   Modal,
 } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { axiosPost } from '../../configs/axiosInstance';
+import { useNavigation } from '@react-navigation/native';
 
 import { AppContext } from '../../contexts/AppContext';
+import { otpSecretKey } from '../../constant/constant';
 
 const PopupScreen = () => {
+  const navigation = useNavigation();
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
   const [countdown, setcountdown] = useState(5);
   const [showBtnResendOtp, setShowBtnResendOtp] = useState(false);
+  const [otp, setOtp] = useState('');
   const handleBtnResendOtp = () => {
     setShowBtnResendOtp(false);
     setcountdown(5);
   };
 
+  const verifiedAccount = async () => {
+    const otpSecret = await AsyncStorage.getItem(otpSecretKey);
+    const response = await axiosPost('/auth/verify-otp', { otp: otp, otpSecret: otpSecret });
+    console.log(response);
+    if (response.auth_id) {
+      navigation.navigate('AddEmployee');
+    }
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setcountdown(prev => prev - 1);
+      setcountdown((prev) => prev - 1);
     }, 1000);
 
     if (countdown === 0) {
@@ -35,7 +50,7 @@ const PopupScreen = () => {
   }, [countdown]);
   return (
     <View>
-      <Modal transparent visible={isModalVisible} animationType="slide">
+      <Modal transparent={true} visible={isModalVisible} animationType="slide">
         <View style={styles.backroundModal}>
           <View style={styles.popup}>
             <Pressable onPress={() => setisModalVisible(false)}>
@@ -57,8 +72,9 @@ const PopupScreen = () => {
             </View>
             <View style={styles.containerTextInput}>
               <TextInput
+                onChangeText={(text) => setOtp(text)}
                 keyboardType="numeric"
-                caretHidden
+                caretHidden={true}
                 underlineColor="transparent"
                 style={styles.textInputOTP}
                 placeholder="Enter OTP Code"
@@ -77,7 +93,7 @@ const PopupScreen = () => {
                 </View>
               )}
             </View>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={verifiedAccount}>
               <Text style={styles.text}>Tiếp tục</Text>
             </TouchableOpacity>
           </View>
