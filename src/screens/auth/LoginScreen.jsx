@@ -22,14 +22,10 @@ const LoginScreen = () => {
         <Text style={styles.ngNhp}>Đăng Nhập</Text>
       </View>
       <View style={styles.textInputContainer}>
-        <CustomInput 
-        label={'Email'} 
-        returnKeyType="next"/>
+        <CustomInput label={'Email'} returnKeyType="next" />
       </View>
       <View style={styles.textInputContainer}>
-        <CustomPassInput 
-        label={'Mật khẩu'} 
-        returnKeyType="next"/>
+        <CustomPassInput label={'Mật khẩu'} returnKeyType="next" />
       </View>
 
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>

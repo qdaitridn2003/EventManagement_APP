@@ -12,18 +12,14 @@ const FilterBar = ({ listTab, style }) => {
     }
   }, [listTab]);
 
-  const setStatusFilter = (selectedStatus) => {
+  const setStatusFilter = selectedStatus => {
     setStatus(selectedStatus);
     // You can perform additional actions based on the selected status here
   };
 
   return (
     <View style={[styles.container, style]}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filterBar}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterBar}>
         {listTab.map((tab, index) => (
           <IconTextButton
             isSmall
@@ -31,12 +27,8 @@ const FilterBar = ({ listTab, style }) => {
             key={index}
             onPress={() => setStatusFilter(tab.status)}
             label={tab.status}
-            textColor={
-              status === tab.status ? Color.neutral4 : Color.neutral1
-            }
-            buttonColor={
-              status === tab.status ? Color.primary : Color.neutral4
-            }
+            textColor={status === tab.status ? Color.neutral4 : Color.neutral1}
+            buttonColor={status === tab.status ? Color.primary : Color.neutral4}
             style={styles.button}
           />
         ))}

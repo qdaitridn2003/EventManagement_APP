@@ -16,7 +16,7 @@ const CustomPassInput = ({ label, ...props }) => {
         contentStyle={{ paddingHorizontal: 24 }}
         style={{ height: 48, fontSize: 16, width: '100%' }}
         secureTextEntry
-        right={<TextInput.Icon icon="eye-outline" color={ Color.neutral1 } /> }
+        right={<TextInput.Icon icon="eye-outline" color={Color.neutral1} />}
         {...props}
       />
     </View>

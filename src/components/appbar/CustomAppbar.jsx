@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import IconButton from '../common/IconButton';
@@ -16,10 +16,13 @@ const CustomAppbar = () => {
     }, 60000);
 
     // Update the current date every day
-    const dateIntervalId = setInterval(() => {
-      setCurrentDate(getCurrentDate());
-      setCurrentDay(getCurrentDay());
-    }, 24 * 60 * 60 * 1000);
+    const dateIntervalId = setInterval(
+      () => {
+        setCurrentDate(getCurrentDate());
+        setCurrentDay(getCurrentDay());
+      },
+      24 * 60 * 60 * 1000,
+    );
 
     // Clear the intervals when the component is unmounted
     return () => {
@@ -58,17 +61,17 @@ const CustomAppbar = () => {
   function getCurrentDay() {
     const now = new Date();
     const options = { weekday: 'long' };
-  
+
     // Get the day name in Vietnamese
     const dayName = now.toLocaleDateString('vi-VN', options);
-  
+
     return dayName;
   }
 
   return (
     <Appbar.Header style={styles.appBar}>
       <View style={styles.mainContainer}>
-        <Avatar.Image size={48} source={{ uri:'https://picsum.photos/200' }} />
+        <Avatar.Image size={48} source={{ uri: 'https://picsum.photos/200' }} />
         <View style={styles.textContainer}>
           <Text style={styles.textTime}>{currentTime}</Text>
           <Text style={styles.textDay}>{currentDay}</Text>
@@ -85,7 +88,7 @@ const CustomAppbar = () => {
 const styles = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
-    backgroundColor: Color.neutral4
+    backgroundColor: Color.neutral4,
   },
   mainContainer: {
     flexDirection: 'row',

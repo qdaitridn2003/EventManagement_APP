@@ -20,7 +20,7 @@ const TestScreen = () => {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const onChangeSearch = (query) => setSearchQuery(query);
+  const onChangeSearch = query => setSearchQuery(query);
 
   const filters = [
     { label: 'Filter 1' },
@@ -33,7 +33,7 @@ const TestScreen = () => {
     // Add more filters as needed
   ];
 
-  const handleFilterPress = (filter) => {
+  const handleFilterPress = filter => {
     // Handle filter press
     console.log('Filter pressed:', filter.label);
   };
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   inputStyle1: {
     marginBottom: 20,
-    height:48,
+    height: 48,
   },
 });
 

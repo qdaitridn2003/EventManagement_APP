@@ -124,10 +124,11 @@ const EventScreen = () => {
           buttonColor={Color.neutral4}
           iconColor={Color.neutral1}
           showShadow
-          iconSource={require('../assets/icons/Tune.png')} 
-          style={{marginLeft: 8}}/>
+          iconSource={require('../assets/icons/Tune.png')}
+          style={{ marginLeft: 8 }}
+        />
       </View>
-      <FilterBar listTab={listFilter} style={styles.filterBar}/>
+      <FilterBar listTab={listFilter} style={styles.filterBar} />
 
       <FlatList
         data={DumyDataEvent}

@@ -24,13 +24,7 @@ const HomeNavigation = () => {
             iconSource = require('../assets/icons/Manager.png');
           }
 
-          return (
-            <Icon
-              source={iconSource}
-              color={color}
-              style={{ marginTop: 8 }}
-             />
-          );
+          return <Icon source={iconSource} color={color} style={{ marginTop: 8 }} />;
         },
         tabBarStyle: {
           // marginHorizontal: 20,

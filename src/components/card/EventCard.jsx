@@ -12,7 +12,7 @@ const EventCard = ({ imageUrl, title, subtitle, overflowIconPress }) => {
             source={{ uri: imageUrl }}
             style={styles.image}
             resizeMode="cover"
-            onError={(error) => console.error('Image loading error:', error)}
+            onError={error => console.error('Image loading error:', error)}
           />
         </View>
         <View style={styles.bottom}>
