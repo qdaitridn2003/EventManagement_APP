@@ -5,9 +5,14 @@ import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import Icon from './Icon';
 import { Color } from '../styles/GlobalStyles';
 
-const IconButton = ({ 
-  onPress, iconSource, iconColor, buttonColor, 
-  isSizeSmall, showShadow, style 
+const IconButton = ({
+  onPress,
+  iconSource,
+  iconColor,
+  buttonColor,
+  isSizeSmall,
+  showShadow,
+  style,
 }) => {
   const padding = isSizeSmall ? 8 : 12;
   const borderRadius = isSizeSmall ? 12 : 16;
@@ -22,7 +27,7 @@ const IconButton = ({
 
   return (
     <TouchableOpacity
-      style={[styles.iconButton, dynamicStyles, style,]}
+      style={[styles.iconButton, dynamicStyles, style]}
       activeOpacity={0.2}
       onPress={onPress}>
       <View style={styles.iconContainer}>
@@ -47,11 +52,10 @@ IconButton.defaultProps = {
   isSizeSmall: false,
   iconColor: Color.neutral4,
   buttonColor: Color.primary,
-}
+};
 
 const styles = StyleSheet.create({
   iconButton: {
-    shadowColor: Color.primary,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',

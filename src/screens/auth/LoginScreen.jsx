@@ -5,6 +5,8 @@ import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-nativ
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
+import CustomPassInput from '../../components/common/CustomPassInput';
+import CustomInput from '../../components/common/CustomInput';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -61,11 +63,7 @@ const LoginScreen = () => {
         />
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
           <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
+            source={isPasswordVisible ? require('../../assets/eye-icon.png') : require('../../assets/eye-off-icon.png')}
             style={styles.iconEyePass}
           />
         </TouchableOpacity>
@@ -87,11 +85,7 @@ const LoginScreen = () => {
 
       <TouchableOpacity>
         <View style={styles.containerGoogle}>
-          <Image
-            style={styles.iconGoogle}
-            contentFit="cover"
-            source={require('../../assets/icon--google3x.png')}
-          />
+          <Image style={styles.iconGoogle} contentFit="cover" source={require('../../assets/icon--google3x.png')} />
 
           <Text>Đăng nhập bằng Google</Text>
         </View>
@@ -116,6 +110,9 @@ const styles = StyleSheet.create({
     height: 812,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
+  },
+  textInputContainer: {
+    paddingVertical: 8,
   },
   containerTextInput: {
     marginTop: 10,

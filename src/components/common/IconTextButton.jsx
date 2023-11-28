@@ -6,8 +6,16 @@ import Icon from './Icon';
 import { Color, Padding } from '../styles/GlobalStyles';
 
 const IconTextButton = ({
-  onPress, label, iconLeft, iconRight, textColor, buttonColor,
-  showShadow, isSmall, isFillLayout, style,
+  onPress,
+  label,
+  iconLeft,
+  iconRight,
+  textColor,
+  buttonColor,
+  showShadow,
+  isSmall,
+  isFillLayout,
+  style,
 }) => {
   const paddingVertical = isSmall ? 8 : 16;
   const paddingHorizontal = isSmall ? 16 : 24;
