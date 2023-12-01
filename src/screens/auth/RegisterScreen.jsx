@@ -9,24 +9,35 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PopupScreen from './PopupScreen';
 import { Color, FontSize, Padding } from '../../../src/components/styles/GlobalStyles';
 import { AppContext } from '../../contexts/AppContext';
-import { otpSecretKey } from '../../constant/constant';
+import { otpSecretKey, emailRegisterKey } from '../../constant/constant';
 import { Input } from '../../components';
 import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Icon from '../../components/common/Icon';
+import CustomButton from '../../components/common/CustomButton';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
+  const { popup } = useContext(AppContext);
+  const [isModalVisible, setisModalVisible] = popup;
   const [openDropdown, setopenDropdown] = useState(false);
   const [listRole, setListRole] = useState([]);
-  const [errors, setErrors] = useState({});
   const [roleId, setRoleId] = useState('');
+  const [errors, setErrors] = useState({});
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
     confirmPassword: '',
   });
+
+  const handleErrors = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+
   const registerHandler = async () => {
     Keyboard.dismiss();
     const response = await axiosPost('/auth/sign-up', {
@@ -38,6 +49,8 @@ const RegisterScreen = () => {
 
     if (!inputs.email) {
       handleErrors('Please input Email', 'email');
+    } else if (response.message === 'Email is already exist') {
+      handleErrors('Email is already exist', 'email');
     } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
       handleErrors('Please input valid Email', 'email');
     }
@@ -62,19 +75,10 @@ const RegisterScreen = () => {
     console.log(response);
     if (response.otpSecret) {
       await AsyncStorage.setItem(otpSecretKey, response.otpSecret);
+      await AsyncStorage.setItem(emailRegisterKey, inputs.email);
       setisModalVisible(true);
     }
   };
-
-  const handleErrors = (errorMessage, input) => {
-    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
-  };
-  const handleOnChange = (text, input) => {
-    setInputs((prevState) => ({ ...prevState, [input]: text }));
-  };
-
-  const { popup } = useContext(AppContext);
-  const [isModalVisible, setisModalVisible] = popup;
 
   useEffect(() => {
     (async () => {
@@ -108,6 +112,7 @@ const RegisterScreen = () => {
         setOpen={() => {
           setopenDropdown(!openDropdown);
           handleErrors(null, 'roleId');
+          Keyboard.dismiss();
         }}
         value={roleId}
         setValue={(val) => setRoleId(val)}
@@ -147,9 +152,7 @@ const RegisterScreen = () => {
         onFocus={() => handleErrors(null, 'confirmPassword')}
       />
 
-      <TouchableOpacity style={styles.button} onPress={registerHandler}>
-        <Text style={styles.text}>Đăng Ký</Text>
-      </TouchableOpacity>
+      <CustomButton title="Đăng ký" onPress={registerHandler} />
 
       <View style={[styles.divider, styles.titleSpaceBlock]}>
         <View style={styles.dividerLayout} />

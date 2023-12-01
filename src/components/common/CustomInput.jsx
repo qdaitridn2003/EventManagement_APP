@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import { Color, FontSize } from '../styles/GlobalStyles';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import Icon from './Icon';
@@ -9,29 +9,33 @@ import Icon from './Icon';
 const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) => {
   const [isFocused, setIsForcused] = useState(false);
   return (
-    <View style={{ width: '100%' }}>
+    <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <TextInput
-        placeholder=""
-        mode="outlined"
-        outlineColor="transparent"
-        activeOutlineColor={error ? 'transparent' : Color.primary}
-        outlineStyle={{
-          backgroundColor: Color.neutral4,
-          elevation: 4,
-          borderRadius: 16,
-        }}
-        contentStyle={{ paddingHorizontal: 24 }}
-        style={[styles.textInput, error ? styles.textInputError : null]}
-        onFocus={() => {
-          onFocus();
-          setIsForcused(true);
-        }}
-        onBlur={() => {
-          setIsForcused(false);
-        }}
-        {...props}
-      />
+      <View style={{ flexDirection: 'row' }}>
+        <TextInput
+          autoCorrect={false}
+          placeholder=""
+          mode="outlined"
+          outlineColor="transparent"
+          activeOutlineColor={error ? 'transparent' : Color.primary}
+          outlineStyle={{
+            backgroundColor: Color.neutral4,
+            elevation: 4,
+            borderRadius: 16,
+          }}
+          contentStyle={{ paddingHorizontal: 24 }}
+          style={[styles.textInput, error ? styles.textInputError : null]}
+          onFocus={() => {
+            onFocus();
+            setIsForcused(true);
+          }}
+          onBlur={() => {
+            setIsForcused(false);
+          }}
+          left={iconName ? <TextInput.Icon icon={iconName} /> : null}
+          {...props}
+        />
+      </View>
       {error ? (
         <View style={styles.viewError}>
           <View style={{ marginTop: 2.5 }}>
@@ -49,6 +53,10 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    marginTop: 10,
+  },
   label: {
     marginBottom: 8,
     fontWeight: 'bold',
@@ -72,6 +80,12 @@ const styles = StyleSheet.create({
   textError: {
     marginLeft: 5,
     color: Color.semanticRed,
+  },
+  iconUsername: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+    marginLeft: 24,
   },
 });
 

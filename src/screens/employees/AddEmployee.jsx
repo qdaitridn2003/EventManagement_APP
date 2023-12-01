@@ -1,34 +1,69 @@
+import { View, Image, StyleSheet, TouchableOpacity, Alert, Text, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Text,
-  TextInput,
-  ScrollView,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { RadioButton } from 'react-native-paper';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles';
 import MyCalendar from '../items/MyCalendar';
+import CustomInput from '../../components/common/CustomInput';
+import CustomButton from '../../components/common/CustomButton';
+import { axiosPost } from '../../configs/axiosInstance';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authIdKey, emailRegisterKey } from '../../constant/constant';
 
 const AddEmployee = () => {
   const navigation = useNavigation();
-  const [isCalendarVisible, setCalendarVisible] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [inputs, setInputs] = useState({
+    fullName: '',
+    dateOfBirth: new Date(),
+    gender: 'male',
+    phone: '',
+    address: '',
+  });
+  console.log(inputs);
 
-  const toggleCalendar = () => {
-    setCalendarVisible(!isCalendarVisible);
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleErrors = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
 
   const handleImageClick = () => {
     Alert.alert('Image Clicked!');
   };
 
+  const handleAddEmployee = async () => {
+    const auth_id = await AsyncStorage.getItem(authIdKey);
+    const emailRegister = await AsyncStorage.getItem(emailRegisterKey);
+    console.log(auth_id, emailRegister);
+    const respone = await axiosPost('/employee/register-employee-profile', {
+      authId: auth_id,
+      email: emailRegister,
+      gender: inputs.gender,
+      fullName: inputs.fullName,
+      dateOfBirth: inputs.dateOfBirth,
+      phoneNumber: inputs.phone,
+    });
+    console.log(respone);
+    if (!inputs.fullName) {
+      handleErrors('Vui lòng nhập Họ và tên', 'fullName');
+    }
+    if (!inputs.phone) {
+      handleErrors('Vui lòng nhập Họ và tên', 'phone');
+    }
+    if (!inputs.address) {
+      handleErrors('Vui lòng nhập Họ và tên', 'address');
+    }
+    if (respone.employee) {
+      navigation.navigate('Login');
+    }
+  };
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View>
         <Text style={styles.title}>Tạo nhân viên</Text>
         <TouchableOpacity onPress={handleImageClick} style={styles.touchable}>
           <Image
@@ -38,46 +73,55 @@ const AddEmployee = () => {
           />
         </TouchableOpacity>
 
-        <Text style={styles.labelInput}>Họ và tên</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="Team Cook" />
-        </View>
-        <Text style={styles.labelInput}>Ngày sinh</Text>
-        <View style={styles.textFlexBox}>
-          <TouchableOpacity>
-            <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-          </TouchableOpacity>
-          <Text style={styles.dashboard}>20/09/2023</Text>
+        <CustomInput
+          placeholder="Nhập họ và tên"
+          label="Họ và tên"
+          onChangeText={(text) => handleOnChange(text, 'fullName')}
+          error={errors.fullName}
+        />
+
+        <MyCalendar
+          label="Ngày sinh"
+          selectedDate={inputs.dateOfBirth}
+          onDayPress={(day) => handleOnChange(day.dateString, 'dateOfBirth')}
+        />
+
+        <Text style={styles.label}>Giới tính</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 14 }}>
+            <Text style={styles.textRadioButton}>Nam</Text>
+            <RadioButton
+              value="Nam"
+              status={inputs.gender === 'male' ? 'checked' : 'unchecked'}
+              onPress={() => handleOnChange('male', 'gender')}
+            />
+          </View>
+
+          <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 20 }}>
+            <Text style={styles.textRadioButton}>Nữ</Text>
+            <RadioButton
+              value="Nữ"
+              status={inputs.gender === 'female' ? 'checked' : 'unchecked'}
+              onPress={() => handleOnChange('female', 'gender')}
+            />
+          </View>
         </View>
 
-        {isCalendarVisible && <MyCalendar />}
+        <CustomInput
+          placeholder="Nhập số điện thoại của bạn"
+          label="Số điện thoại"
+          onChangeText={(text) => handleOnChange(text, 'phone')}
+          error={errors.phone}
+        />
 
-        <Text style={styles.labelInput}>Giới tính</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="Giới tính" />
-          <Image source={require('../../assets/drop-down.png')} style={styles.dropDown} />
-        </View>
+        <CustomInput
+          placeholder="Nhập Địa chỉ"
+          label="Địa chỉ"
+          onChangeText={(text) => handleOnChange(text, 'address')}
+          error={errors.address}
+        />
 
-        <Text style={styles.labelInput}>Số điện thoại</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="0123456789" />
-        </View>
-        <Text style={styles.labelInput}>Email</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput
-            style={styles.textInput}
-            returnKeyType="next"
-            placeholder="teamcook@gmail.com"
-          />
-        </View>
-        <Text style={styles.labelInput}>Địa chỉ</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput
-            style={styles.textInput}
-            returnKeyType="next"
-            placeholder="127 Nguyễn Thị Thập"
-          />
-        </View>
+        <CustomButton title="Tạo nhân viên" onPress={handleAddEmployee} />
       </View>
     </ScrollView>
   );
@@ -87,7 +131,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.colorWhite,
-    height: 812,
     width: '100%',
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
@@ -176,6 +219,16 @@ const styles = StyleSheet.create({
     height: 24,
     width: 24,
     margin: 7,
+  },
+  label: {
+    marginTop: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  textRadioButton: {
+    fontWeight: '500',
+    fontSize: 16,
+    marginTop: 7,
   },
 });
 

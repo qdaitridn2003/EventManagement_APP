@@ -5,7 +5,7 @@ import { StyleSheet, View, Text } from 'react-native';
 
 import Icon from './Icon';
 
-const CustomPassInput = ({ label, error, password, onFocus = () => {}, ...props }) => {
+const CustomPassInput = ({ label, error, iconName, password, onFocus = () => {}, ...props }) => {
   const [isFocused, setIsForcused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
@@ -32,6 +32,7 @@ const CustomPassInput = ({ label, error, password, onFocus = () => {}, ...props 
           setIsForcused(false);
         }}
         secureTextEntry={isPasswordVisible}
+        left={iconName ? <TextInput.Icon icon={iconName} /> : null}
         right={
           <TextInput.Icon
             icon={isPasswordVisible ? 'eye-outline' : 'eye-off-outline'}

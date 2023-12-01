@@ -1,73 +1,79 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
 import CustomPassInput from '../../components/common/CustomPassInput';
 import CustomInput from '../../components/common/CustomInput';
+import { accessTokenKey } from '../../constant/constant';
+import { AppContext } from '../../contexts/AppContext';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const { setIsLogin } = useContext(AppContext);
   const [isPasswordVisible, setIsPasswordVisible] = useState(true);
-  const [inputEmail, setInputEmail] = useState('');
-  const [inputPassword, setInputPassword] = useState('');
-
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
+  const [errors, setErrors] = useState({});
+  const [inputs, setInputs] = useState({
+    email: '',
+    password: '',
+  });
+  const handleErrors = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+
   const hanldeLogin = async () => {
+    Keyboard.dismiss();
     const response = await axiosPost('/auth/sign-in', {
-      username: inputEmail,
-      password: inputPassword,
+      username: inputs.email,
+      password: inputs.password,
     });
-    console.log(response);
-  };
 
-  const ref_input2 = React.useRef();
+    if (!inputs.email) {
+      handleErrors('Vui lòng nhập email', 'email');
+    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
+      handleErrors('Vui lòng nhập email đúng định dạng', 'email');
+    } else if (response.message === 'Account is not exist') {
+      handleErrors('Vui lòng nhập đúng email đã đăng ký', 'email');
+    }
+
+    if (!inputs.password) {
+      handleErrors('Vui lòng nhập mật khẩu', 'password');
+    } else if (response.message === 'Password is not correct') {
+      handleErrors('Sai mật khẩu', 'password');
+    }
+    if (response.accessToken) {
+      await AsyncStorage.setItem(accessTokenKey, response.accessToken);
+      setIsLogin(true);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đăng Nhập</Text>
       </View>
-      <Text style={styles.textField}>Email</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--alternate-email3x.png')}
-        />
-        <TextInput
-          onChangeText={(text) => setInputEmail(text)}
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Email"
-        />
-      </View>
-      <Text style={styles.textField}>Mật Khẩu</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--lock-outline3x.png')}
-        />
-        <TextInput
-          onChangeText={(text) => setInputPassword(text)}
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Mật khẩu"
-          secureTextEntry={isPasswordVisible}
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={isPasswordVisible ? require('../../assets/eye-icon.png') : require('../../assets/eye-off-icon.png')}
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
-      </View>
+      <CustomInput
+        label="Email"
+        placeholder="Email"
+        iconName="email-outline"
+        onChangeText={(text) => handleOnChange(text, 'email')}
+        error={errors.email}
+        onFocus={() => handleErrors(null, 'email')}
+      />
+
+      <CustomPassInput
+        label="Mật khẩu"
+        placeholder="Mật khẩu"
+        iconName="lock-outline"
+        onChangeText={(text) => handleOnChange(text, 'password')}
+        error={errors.password}
+        onFocus={() => handleErrors(null, 'password')}
+      />
 
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
         <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
@@ -85,7 +91,11 @@ const LoginScreen = () => {
 
       <TouchableOpacity>
         <View style={styles.containerGoogle}>
-          <Image style={styles.iconGoogle} contentFit="cover" source={require('../../assets/icon--google3x.png')} />
+          <Image
+            style={styles.iconGoogle}
+            contentFit="cover"
+            source={require('../../assets/icon--google3x.png')}
+          />
 
           <Text>Đăng nhập bằng Google</Text>
         </View>

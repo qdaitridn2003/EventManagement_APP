@@ -12,8 +12,8 @@ import {
   DetailEventScreen,
   DetailProfileScreen,
   ForgotPasswordScreen,
+  ResetPasswordScreen,
 } from '../screens';
-import TestScreen from '../screens/TestScreen';
 
 const Stack = createNativeStackNavigator();
 const AuthNavigation = () => {
@@ -24,6 +24,11 @@ const AuthNavigation = () => {
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPasswordScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />

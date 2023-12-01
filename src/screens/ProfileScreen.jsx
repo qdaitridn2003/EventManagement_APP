@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Image,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { Color, Padding } from '../components/styles/GlobalStyles';
+import { AppContext } from '../contexts/AppContext';
 
 const { height, width } = Dimensions.get('window');
 
@@ -39,7 +40,7 @@ const Toolbar = () => {
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-
+  const { setIsLogin } = useContext(AppContext);
   return (
     <View style={styles.container}>
       <MyStatusBar backgroundColor={Color.colorMidnightblue} />
@@ -53,7 +54,7 @@ const ProfileScreen = () => {
           <Text style={styles.labelInput}>Đổi mật khẩu</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => setIsLogin(false)}>
           <Text style={styles.labelInput}>Đăng xuất</Text>
         </TouchableOpacity>
       </View>

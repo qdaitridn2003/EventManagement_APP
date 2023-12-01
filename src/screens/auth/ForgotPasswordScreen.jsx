@@ -1,19 +1,41 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles.js';
 import PopupScreen from './PopupScreen.jsx';
 import { AppContext } from '../../contexts/AppContext.jsx';
+import CustomInput from '../../components/common/CustomInput.jsx';
+import { axiosPost } from '../../configs/axiosInstance.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { emailRegisterKey, otpSecretKey } from '../../constant/constant.js';
 
 const ForgotPasswordScreen = (props) => {
   const navigation = useNavigation();
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
+  const [inputEmail, setInputEmail] = useState('');
+  const [errors, setErrors] = useState({});
+  console.log(inputEmail);
+  const handleErrors = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
 
-  const handleBtnSendEmail = () => {
-    setisModalVisible(true);
+  const handleBtnSendEmail = async () => {
+    Keyboard.dismiss();
+    const response = await axiosPost('/auth/forgot-password', { username: inputEmail });
+
+    if (!inputEmail) {
+      handleErrors('Vui lòng nhập email khôi phục', 'email');
+    } else if (response.message === 'Account is not exist') {
+      handleErrors('Vui lòng nhập email đã đăng ký', 'email');
+    }
+    if (response.otpSecret) {
+      await AsyncStorage.setItem(otpSecretKey, response.otpSecret);
+      await AsyncStorage.setItem(emailRegisterKey, inputEmail);
+      setisModalVisible(true);
+    }
   };
 
   return (
@@ -32,24 +54,18 @@ const ForgotPasswordScreen = (props) => {
           Vui lòng nhập địa chỉ email của bạn để nhận được email khôi phục mật khẩu.
         </Text>
       </View>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--alternate-email3x.png')}
-        />
-        <TextInput
-          underlineColor="transparent"
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Email"
-        />
-      </View>
+      <CustomInput
+        iconName="email-outline"
+        placeholder="Nhập email đăng ký"
+        onChangeText={(text) => setInputEmail(text)}
+        error={errors.email}
+        onFocus={() => handleErrors(null, 'email')}
+      />
       <TouchableOpacity style={styles.button} onPress={handleBtnSendEmail}>
         <Text style={styles.text}>Gửi email khôi phục</Text>
       </TouchableOpacity>
 
-      {isModalVisible === true ? <PopupScreen /> : null}
+      {isModalVisible === true ? <PopupScreen forgotPass={true} /> : null}
     </View>
   );
 };

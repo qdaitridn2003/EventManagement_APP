@@ -14,27 +14,42 @@ import { axiosPost } from '../../configs/axiosInstance';
 import { useNavigation } from '@react-navigation/native';
 
 import { AppContext } from '../../contexts/AppContext';
-import { otpSecretKey } from '../../constant/constant';
+import { authIdKey, emailRegisterKey, otpSecretKey } from '../../constant/constant';
+import CustomButton from '../../components/common/CustomButton';
 
-const PopupScreen = () => {
+const PopupScreen = ({ forgotPass }) => {
   const navigation = useNavigation();
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
   const [countdown, setcountdown] = useState(5);
   const [showBtnResendOtp, setShowBtnResendOtp] = useState(false);
   const [otp, setOtp] = useState('');
-  const handleBtnResendOtp = () => {
-    setShowBtnResendOtp(false);
-    setcountdown(5);
-  };
 
   const verifiedAccount = async () => {
     const otpSecret = await AsyncStorage.getItem(otpSecretKey);
     const response = await axiosPost('/auth/verify-otp', { otp: otp, otpSecret: otpSecret });
-    console.log(response);
-    if (response.auth_id) {
-      navigation.navigate('AddEmployee');
+    if (response.auth_id || response.username) {
+      if (response.username) {
+        navigation.navigate('ResetPassword');
+        setisModalVisible(false);
+      } else {
+        await AsyncStorage.setItem(authIdKey, response.auth_id);
+        navigation.navigate('AddEmployee');
+        setisModalVisible(false);
+      }
     }
+  };
+  const handleResendOtp = async () => {
+    setShowBtnResendOtp(false);
+    setcountdown(5);
+    const email = await AsyncStorage.getItem(emailRegisterKey);
+    const responseResendOtp = await axiosPost(
+      forgotPass ? '/auth/resend-otp/reset-password' : '/auth/resend-otp/confirm-email',
+      {
+        username: email,
+      },
+    );
+    await AsyncStorage.setItem(otpSecretKey, responseResendOtp.otpSecret);
   };
 
   useEffect(() => {
@@ -83,7 +98,7 @@ const PopupScreen = () => {
 
             <View style={styles.viewCenter}>
               {showBtnResendOtp === true ? (
-                <TouchableOpacity onPress={handleBtnResendOtp}>
+                <TouchableOpacity onPress={handleResendOtp}>
                   <Text style={styles.textResend1}>Gửi lại mã OTP</Text>
                 </TouchableOpacity>
               ) : (
@@ -93,9 +108,7 @@ const PopupScreen = () => {
                 </View>
               )}
             </View>
-            <TouchableOpacity style={styles.button} onPress={verifiedAccount}>
-              <Text style={styles.text}>Tiếp tục</Text>
-            </TouchableOpacity>
+            <CustomButton title="Tiếp tục" onPress={verifiedAccount} />
           </View>
         </View>
       </Modal>
