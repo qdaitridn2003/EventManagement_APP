@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles.js';
 import PopupScreen from './PopupScreen.jsx';

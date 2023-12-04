@@ -81,8 +81,8 @@ const PopupScreen = ({ forgotPass }) => {
   }, [countdown]);
   return (
     <View>
-      <Modal transparent={true} visible={isModalVisible} animationType="slide">
-        <View style={styles.backgroundModal}>
+      <Modal transparent visible={isModalVisible} animationType="slide">
+        <View style={styles.backroundModal}>
           <View style={styles.popup}>
             <Pressable onPress={() => setisModalVisible(false)}>
               <Image style={styles.popupIconClose} source={require('../../assets/closeIcon.png')} />
