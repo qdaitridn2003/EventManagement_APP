@@ -10,9 +10,12 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
+<<<<<<< Updated upstream
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosPost } from '../../configs/axiosInstance';
 import { useNavigation } from '@react-navigation/native';
+=======
+>>>>>>> Stashed changes
 
 import { AppContext } from '../../contexts/AppContext';
 import { authIdKey, emailRegisterKey, otpSecretKey } from '../../constant/constant';
@@ -81,7 +84,7 @@ const PopupScreen = ({ forgotPass }) => {
   }, [countdown]);
   return (
     <View>
-      <Modal transparent visible={isModalVisible} animationType="slide">
+      <Modal transparent={true} visible={isModalVisible} animationType="slide">
         <View style={styles.backroundModal}>
           <View style={styles.popup}>
             <Pressable onPress={() => setisModalVisible(false)}>

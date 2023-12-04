@@ -87,6 +87,7 @@ const LoginScreen = () => {
       />
 
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
         <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
       </TouchableOpacity>
 
@@ -132,6 +133,9 @@ const styles = StyleSheet.create({
     height: 812,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
+  },
+  textInputContainer: {
+    paddingVertical: 8,
   },
   textInputContainer: {
     paddingVertical: 8,
