@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import { Color, FontSize } from '../styles/GlobalStyles';
 import { StyleSheet, View, Text, Image } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 import Icon from './Icon';
 
 const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) => {
-  const [isFocused, setIsForcused] = useState(false);
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', padding: 2 }}>
         <TextInput
           autoCorrect={false}
           placeholder=""
@@ -23,14 +21,10 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
             elevation: 4,
             borderRadius: 16,
           }}
-          contentStyle={{ paddingHorizontal: 24 }}
+          contentStyle={{ paddingHorizontal: 25 }}
           style={[styles.textInput, error ? styles.textInputError : null]}
           onFocus={() => {
             onFocus();
-            setIsForcused(true);
-          }}
-          onBlur={() => {
-            setIsForcused(false);
           }}
           left={iconName ? <TextInput.Icon icon={iconName} /> : null}
           {...props}
@@ -69,8 +63,8 @@ const styles = StyleSheet.create({
   },
   textInputError: {
     borderWidth: 1,
-    borderColor: 'red',
     borderRadius: 16,
+    borderColor: 'red',
   },
   viewError: {
     flexDirection: 'row',
