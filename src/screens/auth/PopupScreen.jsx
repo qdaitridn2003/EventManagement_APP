@@ -9,13 +9,11 @@ import {
   Modal,
   ToastAndroid,
 } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 import { useState, useEffect, useContext } from 'react';
-<<<<<<< Updated upstream
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosPost } from '../../configs/axiosInstance';
-import { useNavigation } from '@react-navigation/native';
-=======
->>>>>>> Stashed changes
 
 import { AppContext } from '../../contexts/AppContext';
 import { authIdKey, emailRegisterKey, otpSecretKey } from '../../constant/constant';
@@ -60,7 +58,7 @@ const PopupScreen = ({ forgotPass }) => {
   };
   const handleResendOtp = async () => {
     setShowBtnResendOtp(false);
-    setcountdown(5);
+    setcountdown(60);
     const email = await AsyncStorage.getItem(emailRegisterKey);
     const responseResendOtp = await axiosPost(
       forgotPass ? '/auth/resend-otp/reset-password' : '/auth/resend-otp/confirm-email',
@@ -84,8 +82,8 @@ const PopupScreen = ({ forgotPass }) => {
   }, [countdown]);
   return (
     <View>
-      <Modal transparent={true} visible={isModalVisible} animationType="slide">
-        <View style={styles.backroundModal}>
+      <Modal transparent visible={isModalVisible} animationType="slide">
+        <View style={styles.backgroundModal}>
           <View style={styles.popup}>
             <Pressable onPress={() => setisModalVisible(false)}>
               <Image style={styles.popupIconClose} source={require('../../assets/closeIcon.png')} />
@@ -139,6 +137,7 @@ const PopupScreen = ({ forgotPass }) => {
                 </View>
               )}
             </View>
+
             <CustomButton title="Tiếp tục" onPress={verifiedAccount} />
           </View>
         </View>

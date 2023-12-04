@@ -23,13 +23,6 @@ import PopupScreen from './PopupScreen';
 import { Color, FontSize, Padding } from '../../../src/components/styles/GlobalStyles';
 import { AppContext } from '../../contexts/AppContext';
 import { otpSecretKey, emailRegisterKey } from '../../constant/constant';
-import { Input } from '../../components';
-import CustomInput from '../../components/common/CustomInput';
-import CustomPassInput from '../../components/common/CustomPassInput';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import Icon from '../../components/common/Icon';
-import CustomButton from '../../components/common/CustomButton';
-import { otpSecretKey, emailRegisterKey } from '../../constant/constant';
 import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
 import Icon from '../../components/common/Icon';
@@ -74,47 +67,6 @@ const RegisterScreen = () => {
       setRoleId('65605bd6760a95942302caeb');
     }
   };
-
-  const registerHandler = async () => {
-    Keyboard.dismiss();
-    const response = await axiosPost('/auth/sign-up', {
-      username: inputs.email,
-      password: inputs.password,
-      confirmPassword: inputs.confirmPassword,
-      roleId: roleId,
-    });
-
-    if (!inputs.email) {
-      handleErrors('Please input Email', 'email');
-    } else if (response.message === 'Email is already exist') {
-      handleErrors('Email is already exist', 'email');
-    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
-      handleErrors('Please input valid Email', 'email');
-    }
-    if (!inputs.password) {
-      handleErrors('Please input Password', 'password');
-    } else if (inputs.password.length < 6) {
-      handleErrors('Password must be at least have 6 characters', 'password');
-    }
-
-    if (!inputs.confirmPassword) {
-      handleErrors('Please input Confirm Password', 'confirmPassword');
-    } else if (inputs.confirmPassword.length < 6) {
-      handleErrors('Confirm password must be at least have 6 characters', 'confirmPassword');
-    } else if (!inputs.confirmPassword === inputs.password) {
-      handleErrors('Confirm password must be matches to the current password', 'confirmPassword');
-    }
-
-    if (roleId === '') {
-      handleErrors('Please choose a role', 'roleId');
-    }
-
-    console.log(response);
-    if (response.otpSecret) {
-      await AsyncStorage.setItem(otpSecretKey, response.otpSecret);
-      await AsyncStorage.setItem(emailRegisterKey, inputs.email);
-      setisModalVisible(true);
-    }
 
   const registerHandler = async () => {
     Keyboard.dismiss();
@@ -249,7 +201,6 @@ const RegisterScreen = () => {
           />
 
           <Text>Đăng ký bằng Google</Text>
-          <Text>Đăng ký bằng Google</Text>
         </View>
       </TouchableOpacity>
 
@@ -268,14 +219,13 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Color.colorWhite,
     width: '100%',
     height: 812,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
   },
   containerGoogle: {
-    marginTop: 10,
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -295,7 +245,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   titleSpaceBlock: {
-    marginTop: 10,
     marginTop: 10,
     alignSelf: 'stretch',
   },
@@ -337,7 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    marginTop: 20,
+    marginTop: 16,
     height: 48,
     backgroundColor: '#643FDB',
     borderRadius: 12,
@@ -382,7 +331,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textField: {
-    fontWeight: 'bold',
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 20,
