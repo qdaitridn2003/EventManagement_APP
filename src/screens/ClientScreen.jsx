@@ -61,7 +61,7 @@ const ClientScreen = () => {
       <FlatList
         data={DummyDataClients}
         renderItem={({ item }) => <ClientListItem data={item} />}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         style={{ height: '100%', width: '100%' }}
         showsVerticalScrollIndicator={false}
       />

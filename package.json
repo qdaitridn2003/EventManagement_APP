@@ -29,7 +29,10 @@
     "react-native-paper": "^5.11.2",
     "react-native-reanimated": "~3.3.0",
     "react-native-safe-area-context": "4.6.3",
-    "react-native-screens": "3.22.0"
+    "react-native-screens": "3.22.0",
+    "react-native-svg": "^14.0.0",
+    "victory-native": "^36.7.0",
+    "victory-tooltip": "^36.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
