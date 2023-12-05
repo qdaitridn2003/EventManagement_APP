@@ -1,15 +1,14 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Keyboard } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
-import { useContext, useState } from 'react';
-
-import { Color, Padding } from '../../components/styles/GlobalStyles.js';
-import PopupScreen from './PopupScreen.jsx';
-import { AppContext } from '../../contexts/AppContext.jsx';
-import CustomInput from '../../components/common/CustomInput.jsx';
-import { axiosPost } from '../../configs/axiosInstance.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { useContext, useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+
+import PopupScreen from './PopupScreen.jsx';
+import CustomInput from '../../components/common/CustomInput.jsx';
+import { Color, Padding } from '../../components/styles/GlobalStyles.js';
+import { axiosPost } from '../../configs/axiosInstance.js';
 import { emailRegisterKey, otpSecretKey } from '../../constant/constant.js';
+import { AppContext } from '../../contexts/AppContext.jsx';
 
 const ForgotPasswordScreen = (props) => {
   const navigation = useNavigation();
@@ -65,7 +64,7 @@ const ForgotPasswordScreen = (props) => {
         <Text style={styles.text}>Gửi email khôi phục</Text>
       </TouchableOpacity>
 
-      {isModalVisible === true ? <PopupScreen forgotPass={true} /> : null}
+      {isModalVisible === true ? <PopupScreen forgotPass /> : null}
     </View>
   );
 };

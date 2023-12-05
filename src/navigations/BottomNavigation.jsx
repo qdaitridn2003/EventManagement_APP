@@ -1,9 +1,58 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
-import { ProfileScreen, EventScreen, EmployeeScreen, ClientScreen } from '../screens';
-import { Color } from '../components/styles/GlobalStyles';
 import Icon from '../components/common/Icon';
+import { Color } from '../components/styles/GlobalStyles';
+import {
+  ProfileScreen,
+  EventScreen,
+  EmployeeScreen,
+  ClientScreen,
+  ChangePasswordScreen,
+  AddClient,
+  AddEmployee,
+  AddEvent,
+  DetailEventScreen,
+  DetailProfileScreen,
+  StatisticsScreen,
+} from '../screens';
+
+const BottomNavigation = () => {
+  const Stack = createNativeStackNavigator();
+  return (
+    <Stack.Navigator initialRouteName="HomeNavigation">
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
+      <Stack.Screen name="AddClient" component={AddClient} options={{ headerShown: false }} />
+      <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="DetailProfileScreen"
+        component={DetailProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailEventScreen"
+        component={DetailEventScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StatisticsScreen"
+        component={StatisticsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HomeNavigation"
+        component={HomeNavigation}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -27,8 +76,6 @@ const HomeNavigation = () => {
           return <Icon source={iconSource} color={color} style={{ marginTop: 8 }} />;
         },
         tabBarStyle: {
-          // marginHorizontal: 20,
-          // marginVertical: 16,
           height: 64,
           borderTopRightRadius: 16,
           borderTopLeftRadius: 16,
@@ -45,7 +92,8 @@ const HomeNavigation = () => {
         tabBarHideOnKeyboard: true,
         backgroundColor: 'red',
         borderTopWidth: 0,
-      })}>
+      })}
+    >
       <Tab.Screen name="Event" component={EventScreen} options={{ title: 'Sự kiện' }} />
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
       <Tab.Screen name="Employee" component={EmployeeScreen} options={{ title: 'Nhân viên' }} />
@@ -54,4 +102,4 @@ const HomeNavigation = () => {
   );
 };
 
-export default HomeNavigation;
+export default BottomNavigation;

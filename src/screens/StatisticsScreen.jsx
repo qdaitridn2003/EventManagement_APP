@@ -46,9 +46,9 @@ const SelectedCalendar = () => {
       <TouchableOpacity>
         <Image source={require('../assets/icon--event2.png')} style={styles.imageCalendar} />
       </TouchableOpacity>
-      <Text>test</Text>
+      <Text>11/09/2023</Text>
       <Text>---</Text>
-      <Text>test</Text>
+      <Text>19/09/2023</Text>
     </View>
   );
 };
@@ -65,14 +65,14 @@ const ChartView = () => {
           tickValues={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
           tickFormat={[
             '11/09/2023',
-            'Quarter 2',
-            'Quarter 3',
-            'Quarter 4',
-            'Quarter 5',
-            'Quarter 6',
-            'Quarter 7',
-            'Quarter 8',
-            'Quarter 9',
+            '12/09/2023',
+            '13/09/2023',
+            '14/09/2023',
+            '15/09/2023',
+            '16/09/2023',
+            '17/09/2023',
+            '18/09/2023',
+            '19/09/2023',
           ]}
           tickLabelComponent={<VictoryLabel angle={-45} style={{ fontSize: 8 }} />}
         />
@@ -121,9 +121,9 @@ const SummaryStatistics = ({ average, maxEarnings, minEarnings }) => {
     <View style={styles.detailContainer}>
       <Text style={styles.summary}>Tổng kết</Text>
       <View>
-        <Text>Trung bình: {average}</Text>
-        <Text>Cao nhất: {maxEarnings}</Text>
-        <Text>Thấp nhất: {minEarnings}</Text>
+        <Text style={styles.detailSummary}>Trung bình: {average}</Text>
+        <Text style={styles.detailSummary}>Cao nhất: {maxEarnings}</Text>
+        <Text style={styles.detailSummary}>Thấp nhất: {minEarnings}</Text>
       </View>
     </View>
   );
@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
   detailTitle: {
     textAlign: 'center',
   },
-  detailContent: {},
   nameScreenAndBtnAdd: {
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -195,6 +194,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: Color.colorText,
+  },
+  detailSummary: {
+    fontSize: 14,
+    padding: 5,
+    marginLeft: 10,
   },
   textFlexBox: {
     flexDirection: 'row',

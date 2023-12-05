@@ -13,11 +13,11 @@ import {
 
 import DumyDataEvent from './events/DummyDataEvent';
 import ItemListEvent from './events/ItemListEvent';
-import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 import CustomAppbar from '../components/appbar/CustomAppbar';
 import CustomSearchbar from '../components/common/CustomSearchbar';
-import IconButton from '../components/common/IconButton';
 import FilterBar from '../components/common/FilterBar';
+import IconButton from '../components/common/IconButton';
+import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 
 // EventHeader component
 const EventHeader = () => {
@@ -95,7 +95,7 @@ const DoubleBackToExit = ({ navigation }) => {
     return timeDiff < 2000;
   };
 
-  const showToast = message => {
+  const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   };
 
@@ -133,7 +133,7 @@ const EventScreen = () => {
       <FlatList
         data={DumyDataEvent}
         renderItem={({ item }) => <ItemListEvent data={item} />}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         style={{ height: '100%', width: '100%' }}
         showsVerticalScrollIndicator={false}
       />

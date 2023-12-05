@@ -1,15 +1,15 @@
-import { View, Image, StyleSheet, TouchableOpacity, Alert, Text, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { View, Image, StyleSheet, TouchableOpacity, Alert, Text, ScrollView } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 
-import { Color, Padding } from '../../components/styles/GlobalStyles';
-import MyCalendar from '../items/MyCalendar';
-import CustomInput from '../../components/common/CustomInput';
 import CustomButton from '../../components/common/CustomButton';
+import CustomInput from '../../components/common/CustomInput';
+import { Color, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authIdKey, emailRegisterKey } from '../../constant/constant';
+import MyCalendar from '../items/MyCalendar';
 
 const AddEmployee = () => {
   const navigation = useNavigation();

@@ -1,13 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Keyboard } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
 
+import CustomInput from '../../components/common/CustomInput';
+import CustomPassInput from '../../components/common/CustomPassInput';
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
-import CustomPassInput from '../../components/common/CustomPassInput';
-import CustomInput from '../../components/common/CustomInput';
 import { accessTokenKey } from '../../constant/constant';
 import { AppContext } from '../../contexts/AppContext';
 
@@ -60,6 +60,7 @@ const LoginScreen = () => {
       <CustomInput
         label="Email"
         placeholder="Email"
+        text="admins@gmail.com"
         iconName="email-outline"
         onChangeText={(text) => handleOnChange(text, 'email')}
         error={errors.email}
@@ -69,6 +70,7 @@ const LoginScreen = () => {
       <CustomPassInput
         label="Mật khẩu"
         placeholder="Mật khẩu"
+        text="admin@123"
         iconName="lock-outline"
         onChangeText={(text) => handleOnChange(text, 'password')}
         error={errors.password}

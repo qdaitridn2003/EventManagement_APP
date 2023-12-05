@@ -50,6 +50,10 @@ const ProfileScreen = () => {
           <Text style={styles.labelInput}>Thông tin</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => navigation.navigate('StatisticsScreen')}>
+          <Text style={styles.labelInput}>Thống kê</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
           <Text style={styles.labelInput}>Đổi mật khẩu</Text>
         </TouchableOpacity>
