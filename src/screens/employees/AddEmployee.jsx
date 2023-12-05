@@ -37,26 +37,24 @@ const AddEmployee = () => {
   const handleAddEmployee = async () => {
     const auth_id = await AsyncStorage.getItem(authIdKey);
     const emailRegister = await AsyncStorage.getItem(emailRegisterKey);
-    console.log(auth_id, emailRegister);
-    const respone = await axiosPost('/employee/register-employee-profile', {
-      authId: auth_id,
-      email: emailRegister,
-      gender: inputs.gender,
-      fullName: inputs.fullName,
-      dateOfBirth: inputs.dateOfBirth,
-      phoneNumber: inputs.phone,
-    });
-    console.log(respone);
+
     if (!inputs.fullName) {
       handleErrors('Vui lòng nhập Họ và tên', 'fullName');
     }
     if (!inputs.phone) {
-      handleErrors('Vui lòng nhập Họ và tên', 'phone');
-    }
-    if (!inputs.address) {
-      handleErrors('Vui lòng nhập Họ và tên', 'address');
-    }
-    if (respone.employee) {
+      handleErrors('Vui lòng nhập Số điện thoại', 'phone');
+    } else if (inputs.phone.length < 10 || inputs.phone.length > 11) {
+      handleErrors('Số điện thoại không hợp lệ', 'phone');
+    } else {
+      const respone = await axiosPost('/employee/register-employee-profile', {
+        authId: auth_id,
+        email: emailRegister,
+        gender: inputs.gender,
+        fullName: inputs.fullName,
+        dateOfBirth: inputs.dateOfBirth,
+        phoneNumber: inputs.phone,
+      });
+      console.log(respone);
       navigation.navigate('Login');
     }
   };
@@ -78,6 +76,7 @@ const AddEmployee = () => {
           label="Họ và tên"
           onChangeText={(text) => handleOnChange(text, 'fullName')}
           error={errors.fullName}
+          onFocus={() => handleErrors(null, 'fullName')}
         />
 
         <MyCalendar
@@ -112,6 +111,7 @@ const AddEmployee = () => {
           label="Số điện thoại"
           onChangeText={(text) => handleOnChange(text, 'phone')}
           error={errors.phone}
+          onFocus={() => handleErrors(null, 'phone')}
         />
 
         <CustomInput

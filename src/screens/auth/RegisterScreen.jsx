@@ -1,19 +1,30 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Modal, Keyboard } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { axiosGet, axiosPost } from '../../configs/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ModalDropdown from 'react-native-modal-dropdown';
 
 import PopupScreen from './PopupScreen';
 import { Color, FontSize, Padding } from '../../../src/components/styles/GlobalStyles';
 import { AppContext } from '../../contexts/AppContext';
 import { otpSecretKey, emailRegisterKey } from '../../constant/constant';
-import { Input } from '../../components';
 import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Icon from '../../components/common/Icon';
 import CustomButton from '../../components/common/CustomButton';
 
@@ -21,8 +32,8 @@ const RegisterScreen = () => {
   const navigation = useNavigation();
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
-  const [openDropdown, setopenDropdown] = useState(false);
   const [listRole, setListRole] = useState([]);
+  const [selectedOption, setSelectedOption] = useState('select an option');
   const [roleId, setRoleId] = useState('');
   const [errors, setErrors] = useState({});
   const [inputs, setInputs] = useState({
@@ -30,12 +41,31 @@ const RegisterScreen = () => {
     password: '',
     confirmPassword: '',
   });
-
   const handleErrors = (errorMessage, input) => {
     setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
   const handleOnChange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+
+  const handleItemSelect = (index) => {
+    if (index === 0) {
+      setRoleId('65605b22760a95942302cadd');
+    } else if (index === 1) {
+      setRoleId('65605b56760a95942302cadf');
+    } else if (index === 2) {
+      setRoleId('65605b77760a95942302cae1');
+    } else if (index === 3) {
+      setRoleId('65605b7d760a95942302cae3');
+    } else if (index === 4) {
+      setRoleId('65605b9c760a95942302cae5');
+    } else if (index === 5) {
+      setRoleId('65605baf760a95942302cae7');
+    } else if (index === 6) {
+      setRoleId('65605bbc760a95942302cae9');
+    } else if (index === 7) {
+      setRoleId('65605bd6760a95942302caeb');
+    }
   };
 
   const registerHandler = async () => {
@@ -83,46 +113,49 @@ const RegisterScreen = () => {
   useEffect(() => {
     (async () => {
       const response = await axiosGet('/role/get-list-role');
-      const list = response.map((item) => {
-        return { label: item.name, value: item._id };
+      const list = response.map((item, index) => {
+        return item.name;
       });
+      console.log(response);
       setListRole(list);
     })();
   }, []);
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đăng Ký Tài Khoản</Text>
       </View>
-
       <CustomInput
         placeholder="Nhập email đăng ký"
         label={'Email'}
+        keyboardType="email-address"
         onChangeText={(text) => handleOnChange(text, 'email')}
         error={errors.email}
         onFocus={() => handleErrors(null, 'email')}
       />
 
       <Text style={styles.textField}>Chức vụ</Text>
-      <DropDownPicker
-        underlineColor
-        style={[styles.containerTextInput, errors.roleId ? styles.drowDownError : null]}
-        items={listRole}
-        open={openDropdown}
-        setOpen={() => {
-          setopenDropdown(!openDropdown);
-          handleErrors(null, 'roleId');
-          Keyboard.dismiss();
-        }}
-        value={roleId}
-        setValue={(val) => setRoleId(val)}
-        maxHeight={200}
-        autoScroll
-        placeholder="Select your position"
-        showArrowIcon={true}
-        showTickIcon={true}
-        disableBorderRadius={false}
-      />
+
+      <View style={{ padding: 2, flexDirection: 'row' }}>
+        <ModalDropdown
+          defaultIndex={0}
+          options={listRole}
+          defaultValue={selectedOption}
+          onSelect={handleItemSelect}
+          style={styles.dropdown}
+          textStyle={styles.dropdownText}
+          dropdownStyle={styles.dropdownDropdown}
+          dropdownTextStyle={styles.dropdownDropdownText}
+          dropdownTextContainerStyle={{ width: '100%' }}
+          animated
+        />
+        <Icon
+          style={{ position: 'absolute', left: 306, top: 24 }}
+          source={require('../../assets/icons/ArrowDropDown.png')}
+          color={Color.colorBlack}
+        />
+      </View>
+
       {errors.roleId ? (
         <View style={styles.viewError}>
           <View style={{ marginTop: 2.5 }}>
@@ -151,7 +184,6 @@ const RegisterScreen = () => {
         error={errors.confirmPassword}
         onFocus={() => handleErrors(null, 'confirmPassword')}
       />
-
       <CustomButton title="Đăng ký" onPress={registerHandler} />
 
       <View style={[styles.divider, styles.titleSpaceBlock]}>
@@ -180,34 +212,18 @@ const RegisterScreen = () => {
         </Text>
       </View>
       {isModalVisible === true ? <PopupScreen /> : null}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Color.colorWhite,
     width: '100%',
     height: 812,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
-  },
-  containerTextInput: {
-    marginTop: 10,
-    width: '100%',
-    borderWidth: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 3,
-    paddingHorizontal: 12,
-    overflow: 'hidden',
   },
   containerGoogle: {
     marginTop: 10,
@@ -270,7 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    marginTop: 20,
+    marginTop: 16,
     height: 48,
     backgroundColor: '#643FDB',
     borderRadius: 12,
@@ -298,7 +314,6 @@ const styles = StyleSheet.create({
   },
   spacer: {
     overflow: 'hidden',
-    flex: 1,
     backgroundColor: Color.colorWhite,
   },
   chaCTi: {
@@ -332,6 +347,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 5,
     marginLeft: 16,
+  },
+  dropdown: {
+    marginTop: 10,
+    width: '100%',
+    borderWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    backgroundColor: 'white',
+    paddingHorizontal: 12,
+    elevation: 3,
+  },
+
+  dropdownText: {
+    fontSize: 16,
+    paddingHorizontal: 12,
+    width: '100%',
+    paddingVertical: 12,
+  },
+  dropdownDropdown: {
+    width: '82%',
+    height: 200,
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  dropdownDropdownText: {
+    fontSize: 16,
+    backgroundColor: '#fff',
+    width: '100%',
   },
 });
 

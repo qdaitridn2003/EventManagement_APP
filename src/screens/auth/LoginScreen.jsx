@@ -1,8 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
+<<<<<<< HEAD
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
+=======
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Keyboard,
+  ActivityIndicator,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+>>>>>>> c27aab234e73b7ddff5ce270a4e622daf77aab76
 
 import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
@@ -10,11 +24,12 @@ import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
 import { accessTokenKey } from '../../constant/constant';
 import { AppContext } from '../../contexts/AppContext';
+import CustomIndicator from '../../components/common/CustomIndicator';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const { setIsLogin } = useContext(AppContext);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
+  const [isModalIndicatorVisible, setIsModalIndicatorVisible] = useState(false);
   const [errors, setErrors] = useState({});
   const [inputs, setInputs] = useState({
     email: '',
@@ -48,17 +63,19 @@ const LoginScreen = () => {
       handleErrors('Sai mật khẩu', 'password');
     }
     if (response.accessToken) {
+      setIsModalIndicatorVisible(true);
       await AsyncStorage.setItem(accessTokenKey, response.accessToken);
       setIsLogin(true);
     }
   };
   return (
     <View style={styles.container}>
-      <View style={[styles.title, styles.titleSpaceBlock]}>
+      <View style={styles.title}>
         <Text style={styles.ngNhp}>Đăng Nhập</Text>
       </View>
       <CustomInput
         label="Email"
+        keyboardType="email-address"
         placeholder="Email"
         text="admins@gmail.com"
         iconName="email-outline"
@@ -82,7 +99,7 @@ const LoginScreen = () => {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={hanldeLogin}>
-        <Text style={styles.text}>Đăng Nhập</Text>
+        <Text style={styles.text}>Đăng nhập</Text>
       </TouchableOpacity>
 
       <View style={[styles.divider, styles.titleSpaceBlock]}>
@@ -110,6 +127,7 @@ const LoginScreen = () => {
           Đăng ký
         </Text>
       </View>
+      {isModalIndicatorVisible ? <CustomIndicator size={70} /> : null}
     </View>
   );
 };
@@ -122,6 +140,9 @@ const styles = StyleSheet.create({
     height: 812,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
+  },
+  textInputContainer: {
+    paddingVertical: 8,
   },
   textInputContainer: {
     paddingVertical: 8,
@@ -181,7 +202,6 @@ const styles = StyleSheet.create({
   },
   titleSpaceBlock: {
     marginTop: 16,
-    alignSelf: 'stretch',
   },
   hocClr: {
     color: Color.neutral2,
@@ -201,6 +221,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.title24Bold_size,
     lineHeight: 29,
     textAlign: 'center',
+    justifyContent: 'center',
     color: Color.colorMidnightblue,
     fontWeight: '700',
     flex: 1,
@@ -211,6 +232,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 16,
   },
   forgotPassword: {
     justifyContent: 'flex-end',

@@ -7,27 +7,44 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  ToastAndroid,
 } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 import { useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosPost } from '../../configs/axiosInstance';
-import { useNavigation } from '@react-navigation/native';
 
 import { AppContext } from '../../contexts/AppContext';
 import { authIdKey, emailRegisterKey, otpSecretKey } from '../../constant/constant';
 import CustomButton from '../../components/common/CustomButton';
+import Icon from '../../components/common/Icon';
+import { Color } from '../../components/styles/GlobalStyles';
 
 const PopupScreen = ({ forgotPass }) => {
   const navigation = useNavigation();
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
-  const [countdown, setcountdown] = useState(5);
+  const [countdown, setcountdown] = useState(60);
   const [showBtnResendOtp, setShowBtnResendOtp] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [InputOtp, setInputOtp] = useState('');
+  const [errors, setErrors] = useState('');
+
+  const handleErrors = (errorMessage) => {
+    setErrors(errorMessage);
+  };
 
   const verifiedAccount = async () => {
     const otpSecret = await AsyncStorage.getItem(otpSecretKey);
-    const response = await axiosPost('/auth/verify-otp', { otp: otp, otpSecret: otpSecret });
+    const response = await axiosPost('/auth/verify-otp', { otp: InputOtp, otpSecret: otpSecret });
+    if (!InputOtp) {
+      handleErrors('Vui lòng nhập mã OTP');
+    } else if (InputOtp.length > 6 || InputOtp.length < 6) {
+      handleErrors('Mã OTP Phải có 6 số');
+    } else if (response.message === 'Otp was expired or invalid') {
+      handleErrors('Otp đã hết hạn hoặc không hợp lệ');
+    }
+    console.log(response);
     if (response.auth_id || response.username) {
       if (response.username) {
         navigation.navigate('ResetPassword');
@@ -41,7 +58,7 @@ const PopupScreen = ({ forgotPass }) => {
   };
   const handleResendOtp = async () => {
     setShowBtnResendOtp(false);
-    setcountdown(5);
+    setcountdown(60);
     const email = await AsyncStorage.getItem(emailRegisterKey);
     const responseResendOtp = await axiosPost(
       forgotPass ? '/auth/resend-otp/reset-password' : '/auth/resend-otp/confirm-email',
@@ -65,8 +82,8 @@ const PopupScreen = ({ forgotPass }) => {
   }, [countdown]);
   return (
     <View>
-      <Modal transparent={true} visible={isModalVisible} animationType="slide">
-        <View style={styles.backroundModal}>
+      <Modal transparent visible={isModalVisible} animationType="slide">
+        <View style={styles.backgroundModal}>
           <View style={styles.popup}>
             <Pressable onPress={() => setisModalVisible(false)}>
               <Image style={styles.popupIconClose} source={require('../../assets/closeIcon.png')} />
@@ -85,17 +102,29 @@ const PopupScreen = ({ forgotPass }) => {
                 Nhập mã OTP mà chúng tôi vừa gửi đến email của bạn để xác minh tài khoản.
               </Text>
             </View>
-            <View style={styles.containerTextInput}>
+            <View style={[styles.containerTextInput, errors ? styles.textInputError : null]}>
               <TextInput
-                onChangeText={(text) => setOtp(text)}
+                onChangeText={(text) => setInputOtp(text)}
                 keyboardType="numeric"
                 caretHidden={true}
                 underlineColor="transparent"
                 style={styles.textInputOTP}
                 placeholder="Enter OTP Code"
+                onFocus={() => setErrors(null)}
               />
             </View>
-
+            {errors ? (
+              <View style={styles.viewError}>
+                <View style={{ marginTop: 2.5 }}>
+                  <Icon
+                    source={require('../../assets/icons/ErrorOutline.png')}
+                    color={Color.semanticRed}
+                    size={'small'}
+                  />
+                </View>
+                <Text style={styles.textError}>{errors}</Text>
+              </View>
+            ) : null}
             <View style={styles.viewCenter}>
               {showBtnResendOtp === true ? (
                 <TouchableOpacity onPress={handleResendOtp}>
@@ -108,6 +137,7 @@ const PopupScreen = ({ forgotPass }) => {
                 </View>
               )}
             </View>
+
             <CustomButton title="Tiếp tục" onPress={verifiedAccount} />
           </View>
         </View>
@@ -121,13 +151,13 @@ export default PopupScreen;
 const styles = StyleSheet.create({
   popup: {
     backgroundColor: '#fff',
-    marginVertical: 150,
+    marginVertical: 130,
     marginHorizontal: 20,
     padding: 24,
     borderRadius: 20,
-    height: 438,
+    minHeight: 430,
   },
-  backroundModal: {
+  backgroundModal: {
     backgroundColor: '#000000aa',
     flex: 1,
   },
@@ -200,5 +230,18 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 3,
     overflow: 'hidden',
+  },
+  textInputError: {
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+  viewError: {
+    flexDirection: 'row',
+    marginTop: 5,
+    marginLeft: 16,
+  },
+  textError: {
+    marginLeft: 5,
+    color: Color.semanticRed,
   },
 });

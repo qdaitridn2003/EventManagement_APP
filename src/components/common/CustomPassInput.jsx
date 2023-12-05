@@ -14,7 +14,7 @@ const CustomPassInput = ({ label, error, iconName, password, onFocus = () => {},
   };
 
   return (
-    <View style={{ width: '100%', marginTop: 20 }}>
+    <View style={{ width: '100%', marginTop: 20, padding: 2 }}>
       {label && <Text style={{ marginBottom: 8, fontWeight: 'bold', fontSize: 16 }}>{label}</Text>}
       <TextInput
         placeholder=""
