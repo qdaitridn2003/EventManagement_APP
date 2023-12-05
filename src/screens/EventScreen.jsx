@@ -1,5 +1,5 @@
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,11 +13,13 @@ import {
 
 import DumyDataEvent from './events/DummyDataEvent';
 import ItemListEvent from './events/ItemListEvent';
+import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 import CustomAppbar from '../components/appbar/CustomAppbar';
 import CustomSearchbar from '../components/common/CustomSearchbar';
-import FilterBar from '../components/common/FilterBar';
 import IconButton from '../components/common/IconButton';
-import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
+import FilterBar from '../components/common/FilterBar';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import EventCard from '../components/card/EventCard';
 
 // EventHeader component
 const EventHeader = () => {
@@ -110,14 +112,93 @@ const listFilter = [
   { status: 'Đã hủy' },
 ];
 
+const renderItem = ({ item }) => {
+  return (
+    <EventCard
+      imageUrl={{ uri: 'https://picsum.photos/300/200' }}
+      title={item.name}
+      subtitle={'Khai trương'}
+    />
+  );
+
+  // <View key={item._id}>
+  //   <Text>{item.name}</Text>
+  //   {item.images.length > 0 && (
+  //     <Image style={{ width: 100, height: 100 }} source={{ uri: item.images[0] }} />
+  //   )}
+  // </View>
+};
+
 // EventScreen component
 const EventScreen = () => {
+  const [data, setData] = useState({
+    listEvent: [
+      {
+        _id: '656ebb2fa5eb9f2856f611cc',
+        name: 'Khai trương cửa hàng',
+        contract: {
+          _id: '656eba94a5eb9f2856f611b9',
+          name: 'Công ty Việt Hoàng',
+          startDate: '2023-01-05T00:00:00.000Z',
+          endDate: '2023-03-09T00:00:00.000Z',
+          payment: '656eba94a5eb9f2856f611b7',
+          status: 'active',
+          note: 'note',
+          attachments: ['https://example.com'],
+        },
+        services: [],
+        employees: [],
+        timelines: [],
+        equipments: [],
+        dateTime: '2023-11-11T06:48:25.462Z',
+        attachments: [],
+        images: ['https://picsum.photos/300/200'],
+      },
+      {
+        _id: '656ebc96a5eb9f2856f611dc',
+        name: 'Dọn dẹp',
+        contract: {
+          _id: '656eba94a5eb9f2856f611b9',
+          name: 'Công ty Việt Hoàng',
+          startDate: '2023-01-05T00:00:00.000Z',
+          endDate: '2023-03-09T00:00:00.000Z',
+          payment: '656eba94a5eb9f2856f611b7',
+          status: 'active',
+          note: 'note',
+          attachments: ['https://example.com'],
+        },
+        services: [],
+        employees: [],
+        timelines: [],
+        equipments: [],
+        dateTime: '2023-11-12T06:48:25.462Z',
+        attachments: [],
+        images: ['https://picsum.photos/300/200'],
+      },
+    ],
+    totalEvent: 2,
+  });
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const accessToken = await getAccessToken();
+      if (accessToken) {
+        console.log('Access Token:', accessToken);
+      } else {
+        console.log('Access Token not found.');
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* <EventHeader /> */}
       {/* <SearchEvent /> */}
-      <CustomAppbar />
+      <CustomAppbar onPress={() => navigation.navigate('AddEvent')} />
       <View style={styles.searchContainer}>
         <CustomSearchbar />
         <IconButton
@@ -131,12 +212,19 @@ const EventScreen = () => {
       <FilterBar listTab={listFilter} style={styles.filterBar} />
 
       <FlatList
+        data={data.listEvent}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        style={styles.flatlist}
+      />
+
+      {/* <FlatList
         data={DumyDataEvent}
         renderItem={({ item }) => <ItemListEvent data={item} />}
         keyExtractor={(item) => item.id}
         style={{ height: '100%', width: '100%' }}
         showsVerticalScrollIndicator={false}
-      />
+      /> */}
       <DoubleBackToExit navigation={navigation} />
     </View>
   );
@@ -151,6 +239,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     backgroundColor: Color.neutral4,
+  },
+  flatlist: {
+    flex: 1,
   },
   nameScreenAndBtnAdd: {
     justifyContent: 'space-between',

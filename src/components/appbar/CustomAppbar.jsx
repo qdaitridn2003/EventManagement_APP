@@ -4,7 +4,7 @@ import { Appbar, Avatar } from 'react-native-paper';
 import IconButton from '../common/IconButton';
 import { Color } from '../styles/GlobalStyles';
 
-const CustomAppbar = () => {
+const CustomAppbar = ({ onPress }) => {
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const [currentDay, setCurrentDay] = useState(getCurrentDay());
@@ -76,10 +76,7 @@ const CustomAppbar = () => {
           <Text style={styles.textTime}>{currentTime}</Text>
           <Text style={styles.textDay}>{currentDay}</Text>
         </View>
-        <IconButton
-          iconSource={require('../../assets/icons/Plus.png')}
-          onPress={() => console.log('IconButton pressed')}
-        />
+        <IconButton iconSource={require('../../assets/icons/Plus.png')} onPress={onPress} />
       </View>
     </Appbar.Header>
   );
