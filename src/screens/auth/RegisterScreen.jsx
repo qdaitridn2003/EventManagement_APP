@@ -1,32 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useState, useContext, useEffect } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Modal,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { axiosGet, axiosPost } from '../../configs/axiosInstance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { StyleSheet, View, Text, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import PopupScreen from './PopupScreen';
 import { Color, FontSize, Padding } from '../../../src/components/styles/GlobalStyles';
-import { AppContext } from '../../contexts/AppContext';
-import { otpSecretKey, emailRegisterKey } from '../../constant/constant';
+import CustomButton from '../../components/common/CustomButton';
 import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
 import Icon from '../../components/common/Icon';
-import CustomButton from '../../components/common/CustomButton';
+import { axiosGet, axiosPost } from '../../configs/axiosInstance';
+import { otpSecretKey, emailRegisterKey } from '../../constant/constant';
+import { AppContext } from '../../contexts/AppContext';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -74,7 +61,7 @@ const RegisterScreen = () => {
       username: inputs.email,
       password: inputs.password,
       confirmPassword: inputs.confirmPassword,
-      roleId: roleId,
+      roleId,
     });
 
     if (!inputs.email) {
@@ -127,7 +114,7 @@ const RegisterScreen = () => {
       </View>
       <CustomInput
         placeholder="Nhập email đăng ký"
-        label={'Email'}
+        label="Email"
         keyboardType="email-address"
         onChangeText={(text) => handleOnChange(text, 'email')}
         error={errors.email}
@@ -162,7 +149,7 @@ const RegisterScreen = () => {
             <Icon
               source={require('../../assets/icons/ErrorOutline.png')}
               color={Color.semanticRed}
-              size={'small'}
+              size="small"
             />
           </View>
           <Text style={styles.textError}>{errors.roleId}</Text>

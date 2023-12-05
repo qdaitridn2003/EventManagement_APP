@@ -54,6 +54,10 @@ const ProfileScreen = () => {
           <Text style={styles.labelInput}>Thống kê</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => navigation.navigate('ContractsScreen')}>
+          <Text style={styles.labelInput}>Hợp đồng</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
           <Text style={styles.labelInput}>Đổi mật khẩu</Text>
         </TouchableOpacity>

@@ -16,6 +16,9 @@ import {
   DetailEventScreen,
   DetailProfileScreen,
   StatisticsScreen,
+  ContractsScreen,
+  AddContracts,
+  DetailContractsScreen,
 } from '../screens';
 
 const BottomNavigation = () => {
@@ -30,6 +33,7 @@ const BottomNavigation = () => {
       <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
       <Stack.Screen name="AddClient" component={AddClient} options={{ headerShown: false }} />
       <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
+      <Stack.Screen name="AddContracts" component={AddContracts} options={{ headerShown: false }} />
       <Stack.Screen
         name="DetailProfileScreen"
         component={DetailProfileScreen}
@@ -41,8 +45,18 @@ const BottomNavigation = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="DetailContractsScreen"
+        component={DetailContractsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="StatisticsScreen"
         component={StatisticsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ContractsScreen"
+        component={ContractsScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

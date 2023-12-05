@@ -1,6 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import {
   VictoryBar,
   VictoryChart,
@@ -26,7 +25,6 @@ const data = [
 ];
 
 const ToolbarStatistics = () => {
-  // const navigation = useNavigation();
   return (
     <View style={styles.nameScreenAndBtnAdd}>
       <View style={styles.textFlexBox}>
@@ -81,7 +79,6 @@ const ChartView = () => {
           data={data}
           x="quarter"
           y="earnings"
-          containerComponent={<VictoryContainer />}
           labels={({ datum }) => `$${datum.earnings / 1000}k`}
           labelComponent={<VictoryTooltip />}
         />
@@ -116,6 +113,7 @@ const calculateStatistics = (data) => {
 
   return { average, maxEarnings, minEarnings };
 };
+
 const SummaryStatistics = ({ average, maxEarnings, minEarnings }) => {
   return (
     <View style={styles.detailContainer}>
@@ -132,6 +130,13 @@ const SummaryStatistics = ({ average, maxEarnings, minEarnings }) => {
 const StatisticsScreen = () => {
   const [selectedQuarter, setSelectedQuarter] = useState(null);
   const { average, maxEarnings, minEarnings } = calculateStatistics(data);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 0);
+  }, []);
 
   const handleBarClick = (data) => {
     setSelectedQuarter(data.datum.quarter);
@@ -139,11 +144,21 @@ const StatisticsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ToolbarStatistics />
-      <SelectedCalendar />
-      <ChartView onBarClick={handleBarClick} />
-      <ShowDetailChart selectedQuarter={selectedQuarter} />
-      <SummaryStatistics average={average} maxEarnings={maxEarnings} minEarnings={minEarnings} />
+      {isLoading ? (
+        <ActivityIndicator size="large" color={Color.colorText} style={styles.loadingContainer} />
+      ) : (
+        <>
+          <ToolbarStatistics />
+          <SelectedCalendar />
+          <ChartView onBarClick={handleBarClick} />
+          <ShowDetailChart selectedQuarter={selectedQuarter} />
+          <SummaryStatistics
+            average={average}
+            maxEarnings={maxEarnings}
+            minEarnings={minEarnings}
+          />
+        </>
+      )}
     </View>
   );
 };
@@ -221,6 +236,11 @@ const styles = StyleSheet.create({
     height: 30,
     overflow: 'hidden',
     borderRadius: Border.br_xs,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

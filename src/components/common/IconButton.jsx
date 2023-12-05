@@ -29,7 +29,8 @@ const IconButton = ({
     <TouchableOpacity
       style={[styles.iconButton, dynamicStyles, style]}
       activeOpacity={0.2}
-      onPress={onPress}>
+      onPress={onPress}
+    >
       <View style={styles.iconContainer}>
         <Icon source={iconSource} color={iconColor} />
       </View>
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    marginTop: 16,
   },
   iconContainer: {
     justifyContent: 'center',

@@ -1,30 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-<<<<<<< HEAD
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
-=======
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
->>>>>>> c27aab234e73b7ddff5ce270a4e622daf77aab76
 
+import CustomIndicator from '../../components/common/CustomIndicator';
 import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
 import { accessTokenKey } from '../../constant/constant';
 import { AppContext } from '../../contexts/AppContext';
-import CustomIndicator from '../../components/common/CustomIndicator';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
