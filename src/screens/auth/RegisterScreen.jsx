@@ -63,7 +63,7 @@ const RegisterScreen = () => {
       confirmPassword: inputs.confirmPassword,
       roleId,
     });
-
+    console.log(response);
     if (!inputs.email) {
       handleErrors('Please input Email', 'email');
     } else if (response.message === 'Email is already exist') {
@@ -89,7 +89,6 @@ const RegisterScreen = () => {
       handleErrors('Please choose a role', 'roleId');
     }
 
-    console.log(response);
     if (response.otpSecret) {
       await AsyncStorage.setItem(otpSecretKey, response.otpSecret);
       await AsyncStorage.setItem(emailRegisterKey, inputs.email);
@@ -103,14 +102,13 @@ const RegisterScreen = () => {
       const list = response.map((item, index) => {
         return item.name;
       });
-      console.log(response);
       setListRole(list);
     })();
   }, []);
   return (
     <ScrollView style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
-        <Text style={styles.ngNhp}>Đăng Ký Tài Khoản</Text>
+        <Text style={styles.ngNhp}>Đăng Ký Tài gitKhoản</Text>
       </View>
       <CustomInput
         placeholder="Nhập email đăng ký"
