@@ -11,7 +11,6 @@ import {
   ClientScreen,
   ChangePasswordScreen,
   AddClient,
-  AddEmployee,
   AddEvent,
   DetailEventScreen,
   DetailProfileScreen,
@@ -30,7 +29,7 @@ const BottomNavigation = () => {
         component={ChangePasswordScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
+
       <Stack.Screen name="AddClient" component={AddClient} options={{ headerShown: false }} />
       <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
       <Stack.Screen name="AddContracts" component={AddContracts} options={{ headerShown: false }} />

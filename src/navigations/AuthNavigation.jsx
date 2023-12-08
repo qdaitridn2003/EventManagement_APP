@@ -2,7 +2,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import HomeNavigation from './HomeNaviga';
-import { LoginScreen, RegisterScreen, ForgotPasswordScreen, ResetPasswordScreen } from '../screens';
+import {
+  LoginScreen,
+  RegisterScreen,
+  ForgotPasswordScreen,
+  ResetPasswordScreen,
+  AddEmployee,
+} from '../screens';
 
 const Stack = createNativeStackNavigator();
 const AuthNavigation = () => {
@@ -20,7 +26,7 @@ const AuthNavigation = () => {
         component={ResetPasswordScreen}
         options={{ headerShown: false }}
       />
-
+      <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
       <Stack.Screen name="Home" component={HomeNavigation} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
