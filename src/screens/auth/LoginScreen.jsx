@@ -1,22 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-<<<<<<< HEAD
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
-=======
 
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
->>>>>>> a00e55bc781a1e9294a43df1dae79089de391cde
 
 import CustomIndicator from '../../components/common/CustomIndicator';
 import CustomInput from '../../components/common/CustomInput';

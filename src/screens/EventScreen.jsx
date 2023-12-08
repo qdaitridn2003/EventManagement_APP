@@ -17,6 +17,8 @@ import FilterBar from '../components/common/FilterBar';
 import { getAccessToken } from '../configs/utils/getAccessToken';
 import EventCard from '../components/card/EventCard';
 
+import { useAccessToken } from '../services/auth';
+
 const DoubleBackToExit = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
@@ -70,10 +72,11 @@ const renderItem = ({ item }) => {
   );
 };
 
-// EventScreen component
 const EventScreen = () => {
 
   const navigation = useNavigation();
+
+  const accessToken = useAccessToken();
 
   const [data, setData] = useState({
     listEvent: [
