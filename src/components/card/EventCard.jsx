@@ -1,20 +1,27 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from '../common/Icon';
 import { Color } from '../styles/GlobalStyles';
+import { ImageBackground } from 'expo-image';
 
-const EventCard = ({ imageUrl, title, subtitle, overflowIconPress }) => {
+const EventCard = ({ imageUrl, title, subtitle, overflowIconPress, style }) => {
+  const source = typeof imageUrl === 'string'
+    ? { uri: imageUrl } : imageUrl
+
   return (
-    <View style={styles.outerContainer}>
-      <View style={styles.container}>
-        <View style={styles.top}>
-          <Image
-            source={{ imageUrl }}
-            style={styles.image}
-            resizeMode="cover"
-            onError={(error) => console.error('Image loading error:', error)}
-          />
-        </View>
+    <View style={style}>
+
+      <TouchableOpacity style={styles.container}>
+
+        <ImageBackground
+          style={styles.top}
+          source={source}
+          onError={(error) => console.error('Image loading error:', error)}
+        >
+          {/* Status on bottom left */}
+          {/* Avatar row on bottom right */}
+        </ImageBackground>
+
         <View style={styles.bottom}>
           <View style={styles.textContainer}>
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.subtitle}>
@@ -24,26 +31,27 @@ const EventCard = ({ imageUrl, title, subtitle, overflowIconPress }) => {
               {title}
             </Text>
           </View>
+
           <TouchableOpacity onPress={overflowIconPress} style={styles.overflowIconContainer}>
             <Icon source={require('../../assets/icons/MoreVert.png')} color={Color.neutral1} />
           </TouchableOpacity>
         </View>
-      </View>
+
+      </TouchableOpacity>
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   outerContainer: {
-    marginHorizontal: 20,
   },
   container: {
     width: '100%',
     aspectRatio: 1.5,
-    borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 16,
     elevation: 3,
+    borderRadius: 16,
   },
   top: {
     flex: 3,
@@ -74,15 +82,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Color.neutral2,
     marginBottom: 4,
+    // backgroundColor: 'green',
   },
   title: {
-    flex: 1,
     fontSize: 18,
     fontWeight: 'bold',
     color: Color.neutral1,
+    // backgroundColor: 'violet',
   },
   overflowIconContainer: {
-    padding: 8,
+    // backgroundColor: 'cyan',
   },
 });
 

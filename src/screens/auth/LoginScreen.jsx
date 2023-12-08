@@ -1,10 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-<<<<<<< HEAD
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
-=======
 import React, { useContext, useEffect, useState } from 'react';
 import {
   StyleSheet,
@@ -15,7 +11,6 @@ import {
   Keyboard,
   ActivityIndicator,
 } from 'react-native';
->>>>>>> d1759a39d6656ad05c1f52cc8c703fda1b412288
 
 import CustomIndicator from '../../components/common/CustomIndicator';
 import CustomInput from '../../components/common/CustomInput';
@@ -76,11 +71,12 @@ const LoginScreen = () => {
         label="Email"
         keyboardType="email-address"
         placeholder="Email"
-        text="admins@gmail.com"
+        text="admin@gmail.com"
         iconName="email-outline"
         onChangeText={(text) => handleOnChange(text, 'email')}
         error={errors.email}
         onFocus={() => handleErrors(null, 'email')}
+        autoCapitalize="none"
       />
 
       <CustomPassInput
@@ -91,6 +87,7 @@ const LoginScreen = () => {
         onChangeText={(text) => handleOnChange(text, 'password')}
         error={errors.password}
         onFocus={() => handleErrors(null, 'password')}
+        autoCapitalize="none"
       />
 
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
