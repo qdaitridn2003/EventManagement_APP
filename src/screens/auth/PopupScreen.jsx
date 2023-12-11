@@ -85,9 +85,6 @@ const PopupScreen = ({ forgotPass }) => {
       <Modal transparent visible={isModalVisible} animationType="slide">
         <View style={styles.backgroundModal}>
           <View style={styles.popup}>
-            <Pressable onPress={() => setisModalVisible(false)}>
-              <Image style={styles.popupIconClose} source={require('../../assets/closeIcon.png')} />
-            </Pressable>
             <View style={styles.viewCenter}>
               <Image
                 style={{ width: 80, height: 84 }}
@@ -170,6 +167,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'center',
+    marginLeft: 10,
     alignItems: 'center',
   },
   textLargePopup: {

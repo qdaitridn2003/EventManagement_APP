@@ -1,37 +1,44 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity, Alert, Text, ScrollView } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { RadioButton } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import CustomButton from '../../components/common/CustomButton';
 import CustomInput from '../../components/common/CustomInput';
 import { Color, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
 import { authIdKey, emailRegisterKey } from '../../constant/constant';
-import MyCalendar from '../items/MyCalendar';
+import CustomIndicator from '../../components/common/CustomIndicator';
 
 const AddEmployee = () => {
   const navigation = useNavigation();
   const [errors, setErrors] = useState({});
+  const [date, setDate] = useState(new Date());
+  const [showDate, setShowDate] = useState(false);
   const [inputs, setInputs] = useState({
     fullName: '',
-    dateOfBirth: new Date(),
+    dateOfBirth: '1-1-2023',
     gender: 'male',
     phone: '',
     address: '',
   });
-  console.log(inputs);
-
+  console.log(inputs.dateOfBirth);
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDate(Platform.OS === 'ios');
+    setDate(currentDate);
+    const tempDate = new Date(currentDate);
+    const fDate =
+      tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
+    handleOnChange(fDate, 'dateOfBirth');
+  };
   const handleOnChange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleErrors = (errorMessage, input) => {
     setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
-  };
-
-  const handleImageClick = () => {
-    Alert.alert('Image Clicked!');
   };
 
   const handleAddEmployee = async () => {
@@ -53,6 +60,7 @@ const AddEmployee = () => {
         fullName: inputs.fullName,
         dateOfBirth: inputs.dateOfBirth,
         phoneNumber: inputs.phone,
+        address: inputs.address,
       });
       console.log(respone);
       navigation.navigate('Login');
@@ -63,13 +71,6 @@ const AddEmployee = () => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View>
         <Text style={styles.title}>Tạo nhân viên</Text>
-        <TouchableOpacity onPress={handleImageClick} style={styles.touchable}>
-          <Image
-            style={styles.avatar}
-            resizeMode="cover"
-            source={require('../../assets/avatar-28x283x.png')}
-          />
-        </TouchableOpacity>
 
         <CustomInput
           placeholder="Nhập họ và tên"
@@ -79,11 +80,22 @@ const AddEmployee = () => {
           onFocus={() => handleErrors(null, 'fullName')}
         />
 
-        <MyCalendar
-          label="Ngày sinh"
-          selectedDate={inputs.dateOfBirth}
-          onDayPress={(day) => handleOnChange(day.dateString, 'dateOfBirth')}
-        />
+        <Text style={styles.labelInput}>Ngày sinh</Text>
+
+        <TouchableOpacity style={styles.textFlexBox} onPress={() => setShowDate(true)}>
+          <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
+          <Text style={styles.dashboard}>{inputs.dateOfBirth}</Text>
+        </TouchableOpacity>
+
+        {showDate ? (
+          <DateTimePicker
+            testID="datePicker"
+            value={date}
+            mode={'date'}
+            display="default"
+            onChange={onChangeDate}
+          />
+        ) : null}
 
         <Text style={styles.label}>Giới tính</Text>
         <View style={{ flexDirection: 'row' }}>
@@ -121,7 +133,9 @@ const AddEmployee = () => {
           error={errors.address}
         />
 
-        <CustomButton title="Tạo nhân viên" onPress={handleAddEmployee} />
+        <View style={{ marginTop: 30 }}>
+          <CustomButton title="Tạo nhân viên" onPress={handleAddEmployee} />
+        </View>
       </View>
     </ScrollView>
   );
@@ -140,7 +154,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#643FDB',
+    color: Color.colorBlack,
+    marginBottom: 50,
     backgroundColor: '#FFFFFF',
     paddingTop: 15,
 
@@ -158,6 +173,8 @@ const styles = StyleSheet.create({
   avatar: {
     width: 100,
     height: 100,
+    borderRadius: 50,
+    marginLeft: 8,
   },
   containerTextInput: {
     marginTop: 6,
@@ -229,6 +246,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 16,
     marginTop: 7,
+  },
+  textAddAvatar: {
+    fontSize: 14,
+    marginTop: 3,
+    marginLeft: 3,
   },
 });
 

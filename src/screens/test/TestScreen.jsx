@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import IconTextButton from '../components/common/IconTextButton';
-import { Color, Padding, FontSize } from '../components/styles/GlobalStyles';
+import IconTextButton from '../../components/common/IconTextButton';
+import { Color, Padding, FontSize } from '../../components/styles/GlobalStyles';
 import { Icon } from 'react-native-paper';
 import { Avatar, TextInput, Searchbar } from 'react-native-paper';
-import CustomInput from '../components/common/CustomInput';
-import CustomPassInput from '../components/common/CustomPassInput';
-import CustomSearchbar from '../components/common/CustomSearchbar';
-import CustomAppbar from '../components/appbar/CustomAppbar';
-import FilterBar from '../components/common/FilterBar';
-import AvatarRow from '../components/common/AvatarRow';
-import EventCard from '../components/card/EventCard';
+import CustomInput from '../../components/common/CustomInput';
+import CustomPassInput from '../../components/common/CustomPassInput';
+import CustomSearchbar from '../../components/common/CustomSearchbar';
+import CustomAppbar from '../../components/appbar/CustomAppbar';
+import FilterBar from '../../components/common/FilterBar';
+import AvatarRow from '../../components/common/AvatarRow';
+import EventCard from '../../components/card/EventCard';
 
 const TestScreen = () => {
   const handleButtonPress = () => {

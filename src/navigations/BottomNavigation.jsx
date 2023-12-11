@@ -12,7 +12,6 @@ import {
   ClientScreen,
   ChangePasswordScreen,
   AddClient,
-  AddEmployee,
   AddEvent,
   DetailEventScreen,
   DetailProfileScreen,
@@ -21,6 +20,7 @@ import {
   AddContracts,
   DetailContractsScreen,
 } from '../screens';
+import APITestScreen from '../screens/test/APITestScreen';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -31,7 +31,7 @@ const BottomNavigation = () => {
         component={ChangePasswordScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="AddEmployee" component={AddEmployee} options={{ headerShown: false }} />
+
       <Stack.Screen name="AddClient" component={AddClient} options={{ headerShown: false }} />
       <Stack.Screen name="AddEvent" component={AddEvent} options={{ headerShown: false }} />
       <Stack.Screen name="AddContracts" component={AddContracts} options={{ headerShown: false }} />
@@ -109,7 +109,7 @@ const HomeNavigation = () => {
         borderTopWidth: 0,
       })}
     >
-      <Tab.Screen name="Event" component={EventScreen} options={{ title: 'Sự kiện' }} />
+      <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
       <Tab.Screen name="Employee" component={EmployeeScreen} options={{ title: 'Nhân viên' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Cá nhân' }} />

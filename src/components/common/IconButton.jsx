@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    marginTop: 16,
   },
   iconContainer: {
     justifyContent: 'center',
