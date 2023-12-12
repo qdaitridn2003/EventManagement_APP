@@ -1,5 +1,5 @@
 import { Feather, Entypo } from '@expo/vector-icons';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -10,19 +10,18 @@ import {
 } from 'react-native';
 import { Color } from '../../components/styles/GlobalStyles';
 
-const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
+const SearchBar = ({ searchPhrase, setSearchPhrase }) => {
+  const [clicked, setClicked] = useState(false);
   return (
     <View style={styles.container}>
-      <View style={clicked ? styles.searchBar__clicked : styles.searchBar__unclicked}>
-        <Feather name="search" size={20} color="black" style={{ marginLeft: 1 }} />
+      <View style={styles.searchBar}>
+        <Feather name="search" size={20} color="black" style={{ marginLeft: 10 }} />
         <TextInput
+          onFocus={() => setClicked(true)}
           style={styles.input}
-          placeholder="Tìm kiếm nhân viên"
+          placeholder="Tìm kiếm..."
           value={searchPhrase}
           onChangeText={setSearchPhrase}
-          onFocus={() => {
-            setClicked(true);
-          }}
         />
         {clicked && (
           <Entypo
@@ -36,34 +35,22 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
           />
         )}
       </View>
-      {/* {clicked && (
-        <View>
-          <Button
-            style={styles.buttonText}
-            title="Cancel"
-            onPress={() => {
-              Keyboard.dismiss();
-              setClicked(false);
-            }}
-          />
-        </View>
-      )} */}
     </View>
   );
 };
+
 export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    flexDirection: 'row',
     marginTop: 10,
     width: '100%',
     margin: 5,
     marginBottom: 10,
   },
-  searchBar__unclicked: {
+  searchBar: {
     padding: 10,
     flexDirection: 'row',
     width: '100%',
@@ -85,14 +72,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 16,
-    marginLeft: 20,
-    width: '90%',
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    textTransform: 'uppercase',
+    marginHorizontal: 20,
+    width: '70%',
   },
 });

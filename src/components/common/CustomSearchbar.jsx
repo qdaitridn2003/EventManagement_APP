@@ -9,9 +9,9 @@ const CustomSearchbar = ({ value, onChangeText, ...props }) => {
       onChangeText={onChangeText}
       value={value}
       style={{
-        marginTop: 16,
-        width: '100%',
+        flex: 1,
         borderRadius: 16,
+        height: 48,
         backgroundColor: Color.neutral4,
         ...props.style, // Allow additional styling
       }}

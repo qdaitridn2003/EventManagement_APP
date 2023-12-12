@@ -11,14 +11,12 @@ import {
 } from 'react-native';
 
 import ItemListContracts from './Contracts/ItemListContracts';
-import DumyDataEvent from './events/DummyDataEvent';
-import CustomSearchbar from '../components/common/CustomSearchbar';
+import SearchBar from './employees/SearchBar';
 import FilterBar from '../components/common/FilterBar';
-import IconButton from '../components/common/IconButton';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
-import DumyDataContracts from './Contracts/DummyDataContracts';
+import axiosGet from '../configs/axiosInstance';
 
-const EventHeader = () => {
+const ContractsHeader = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.nameScreenAndBtnAdd}>
@@ -38,11 +36,22 @@ const listFilter = [{ status: 'Tất cả' }, { status: 'Đang hoạt động' }
 const ContractsScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchPhrase, setSearchPhrase] = useState('');
+  const [contracts, setContracts] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 0);
+    const fetchData = async () => {
+      try {
+        const result = await axiosGet('/api/contract/get-list-contract'); // Replace with your API endpoint
+        setContracts(result);
+      } catch (error) {
+        console.log('Error fetching contracts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -51,21 +60,12 @@ const ContractsScreen = () => {
         <ActivityIndicator size="large" color={Color.colorText} style={styles.loadingContainer} />
       ) : (
         <>
-          <EventHeader />
-          <View style={styles.searchContainer}>
-            <CustomSearchbar />
-            <IconButton
-              buttonColor={Color.neutral4}
-              iconColor={Color.neutral1}
-              showShadow
-              iconSource={require('../assets/icons/Tune.png')}
-              style={{ marginLeft: 8 }}
-            />
-          </View>
+          <ContractsHeader />
+          <SearchBar searchPhrase={searchPhrase} setSearchPhrase={setSearchPhrase} />
           <FilterBar listTab={listFilter} style={styles.filterBar} />
 
           <FlatList
-            data={DumyDataContracts}
+            data={contracts}
             renderItem={({ item }) => <ItemListContracts data={item} />}
             keyExtractor={(item) => item.id}
             style={{ height: '100%', width: '100%' }}

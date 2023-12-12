@@ -50,10 +50,6 @@ const ContentEvent = () => {
     setCalendarVisible(!isCalendarVisible);
   };
 
-  const handleImageClick = () => {
-    Alert.alert('Image Clicked!');
-  };
-
   return (
     <View>
       <Text style={styles.labelInput}>Tên hợp đồng</Text>

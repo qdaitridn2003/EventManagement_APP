@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import React from 'react';
 
 import Icon from '../components/common/Icon';
@@ -20,6 +21,7 @@ import {
   DetailContractsScreen,
   DetailEmployeeScreen,
 } from '../screens';
+import APITestScreen from '../screens/test/APITestScreen';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -113,7 +115,7 @@ const HomeNavigation = () => {
         borderTopWidth: 0,
       })}
     >
-      <Tab.Screen name="Event" component={EventScreen} options={{ title: 'Sự kiện' }} />
+      <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
       <Tab.Screen name="Employee" component={EmployeeScreen} options={{ title: 'Nhân viên' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Cá nhân' }} />

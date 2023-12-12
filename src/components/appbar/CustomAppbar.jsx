@@ -4,7 +4,7 @@ import { Appbar, Avatar } from 'react-native-paper';
 import IconButton from '../common/IconButton';
 import { Color } from '../styles/GlobalStyles';
 
-const CustomAppbar = ({ onPress }) => {
+const CustomAppbar = ({ onPress, style }) => {
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const [currentDay, setCurrentDay] = useState(getCurrentDay());
@@ -69,7 +69,7 @@ const CustomAppbar = ({ onPress }) => {
   }
 
   return (
-    <Appbar.Header style={styles.appBar}>
+    <Appbar.Header style={[styles.appBar, style]}>
       <View style={styles.mainContainer}>
         <Avatar.Image size={48} source={{ uri: 'https://picsum.photos/200' }} />
         <View style={styles.textContainer}>
