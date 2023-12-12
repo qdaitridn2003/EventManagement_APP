@@ -62,7 +62,7 @@ export const axiosDel = async (path, query, config) => {
 
 export const axiosAuthGet = async (path, accessToken, query, config) => {
   try {
-    const result = await axiosInstance.delete(path, {
+    const result = await axiosInstance.get(path, {
       ...config,
       params: query,
       headers: { Authorization: `Bearer ${accessToken}` },

@@ -12,6 +12,7 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
       <View style={{ flexDirection: 'row', padding: 2 }}>
         <TextInput
           autoCorrect={false}
+          autoCapitalize="none"
           placeholder=""
           mode="outlined"
           outlineColor="transparent"

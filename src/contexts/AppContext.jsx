@@ -9,8 +9,11 @@ export const AppContextProvider = (props) => {
   const [isModalVisible, setisModalVisible] = useState(false);
   const popup = [isModalVisible, setisModalVisible];
 
+  const [idEmployee, setIdEmployee] = useState('avc');
+  const dataIdEmployee = [idEmployee, setIdEmployee];
+
   return (
-    <AppContext.Provider value={{ isLogin, setIsLogin, data, setIsData, popup }}>
+    <AppContext.Provider value={{ isLogin, setIsLogin, data, setIsData, popup, dataIdEmployee }}>
       {children}
     </AppContext.Provider>
   );

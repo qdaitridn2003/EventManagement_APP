@@ -8,6 +8,7 @@ const Icon = ({ source, color, size, style }) => {
   const sizeMapping = {
     small: 16,
     big: 24,
+    superBig: 30,
   };
 
   // Determine the size or default to "big" if the provided size is not valid
@@ -29,7 +30,7 @@ const Icon = ({ source, color, size, style }) => {
 Icon.propTypes = {
   source: PropTypes.number.isRequired, // Image source
   color: PropTypes.string, // Icon color (optional)
-  size: PropTypes.oneOf(['small', 'big']),
+  size: PropTypes.oneOf(['small', 'big', 'superBig']),
   style: PropTypes.object, // Additional style prop
 };
 

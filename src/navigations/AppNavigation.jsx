@@ -8,8 +8,8 @@ import { AppContext } from '../contexts';
 const AppNavigation = () => {
   const { isLogin } = useContext(AppContext);
   return (
-    <NavigationContainer>{isLogin ? <BottomNavigation /> : <AuthNavigation />}</NavigationContainer>
-    // <NavigationContainer>{isLogin ? <AuthNavigation /> : <BottomNavigation />}</NavigationContainer>
+    // <NavigationContainer>{isLogin ? <BottomNavigation /> : <AuthNavigation />}</NavigationContainer>
+    <NavigationContainer>{isLogin ? <AuthNavigation /> : <BottomNavigation />}</NavigationContainer>
   );
 };
 

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ActivityIndicator, Modal } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
-const CustomIndicator = ({ size, color, ...props }) => {
+const CustomIndicator = ({ size, color, backgroundModalColor, ...props }) => {
   const [isModalIndicatorVisible, setIsModalIndicatorVisible] = useState(true);
   useEffect(() => {
     setTimeout(() => {
@@ -11,7 +11,14 @@ const CustomIndicator = ({ size, color, ...props }) => {
   return (
     <View style={styles.container}>
       <Modal transparent={true} visible={isModalIndicatorVisible} animationType="fade">
-        <View style={styles.backgroundModal}>
+        <View
+          style={[
+            styles.backgroundModal,
+            backgroundModalColor
+              ? { backgroundColor: backgroundModalColor }
+              : { backgroundColor: '000000aa' },
+          ]}
+        >
           <View style={styles.backgroundIndicator}>
             <ActivityIndicator size={size} color={color} />
           </View>
@@ -25,7 +32,6 @@ export default CustomIndicator;
 
 const styles = StyleSheet.create({
   backgroundModal: {
-    backgroundColor: '#000000aa',
     flex: 1,
   },
   backgroundIndicator: {

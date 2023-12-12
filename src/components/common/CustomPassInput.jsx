@@ -19,6 +19,7 @@ const CustomPassInput = ({ label, error, iconName, password, onFocus = () => {},
       <TextInput
         placeholder=""
         mode="outlined"
+        autoCapitalize="none"
         outlineColor="transparent"
         activeOutlineColor={error ? 'transparent' : Color.primary}
         outlineStyle={{ backgroundColor: Color.neutral4, elevation: 4, borderRadius: 16 }}

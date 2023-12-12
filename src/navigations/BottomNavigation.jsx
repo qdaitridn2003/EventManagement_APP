@@ -18,6 +18,7 @@ import {
   ContractsScreen,
   AddContracts,
   DetailContractsScreen,
+  DetailEmployeeScreen,
 } from '../screens';
 
 const BottomNavigation = () => {
@@ -41,6 +42,11 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="DetailEventScreen"
         component={DetailEventScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailEmployeeScreen"
+        component={DetailEmployeeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

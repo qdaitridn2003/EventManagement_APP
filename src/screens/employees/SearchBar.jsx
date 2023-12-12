@@ -1,6 +1,14 @@
 import { Feather, Entypo } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TextInput, View, Keyboard, Button } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Keyboard,
+  Button,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import { Color } from '../../components/styles/GlobalStyles';
 
 const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
   return (
@@ -21,14 +29,14 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
             name="cross"
             size={20}
             color="black"
-            style={{ padding: 1 }}
+            style={{ padding: 1, backgroundColor: '#d9dbda', borderRadius: 40 }}
             onPress={() => {
               setSearchPhrase('');
             }}
           />
         )}
       </View>
-      {clicked && (
+      {/* {clicked && (
         <View>
           <Button
             style={styles.buttonText}
@@ -39,7 +47,7 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
             }}
           />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -53,27 +61,31 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: '100%',
     margin: 5,
+    marginBottom: 10,
   },
   searchBar__unclicked: {
     padding: 10,
     flexDirection: 'row',
-    width: '95%',
-    backgroundColor: '#d9dbda',
+    width: '100%',
+    backgroundColor: '#fff',
+    elevation: 4,
     borderRadius: 15,
     alignItems: 'center',
   },
   searchBar__clicked: {
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     flexDirection: 'row',
-    width: '80%',
-    backgroundColor: '#d9dbda',
+    elevation: 4,
+    width: '100%',
+    backgroundColor: '#fff',
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
   input: {
     fontSize: 16,
-    marginLeft: 10,
+    marginLeft: 20,
     width: '90%',
   },
   buttonText: {

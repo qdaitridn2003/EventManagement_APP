@@ -1,11 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import DummyDataEmployee from './employees/DummyDataEmployee';
 import List from './employees/ListEmployee';
 import SearchBar from './employees/SearchBar';
 import { Border, Color, FontSize, Padding } from '../components/styles/GlobalStyles';
+import { axiosAuthGet } from '../configs/axiosInstance';
+import { accessTokenKey } from '../constant/constant';
 
 const ToolbarEmployee = () => {
   const navigation = useNavigation();
@@ -25,10 +28,23 @@ const ToolbarEmployee = () => {
 const EmployeeScreen = () => {
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
-  const [fakeData, setFakeData] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    setFakeData(DummyDataEmployee);
+    (async () => {
+      const token = await AsyncStorage.getItem(accessTokenKey);
+      const respone = await axiosAuthGet('/employee/get-employee-list', token, {});
+      const listEmployee = respone.listEmployee;
+
+      const data = listEmployee.map((employee) => ({
+        id: employee._id,
+        name: employee.fullName,
+        role: employee.auth.role.name,
+        image: employee.avatar,
+      }));
+      console.log(data);
+      setData(data);
+    })();
   }, []);
 
   return (
@@ -40,7 +56,7 @@ const EmployeeScreen = () => {
         clicked={clicked}
         setClicked={setClicked}
       />
-      <List searchPhrase={searchPhrase} data={fakeData} setClicked={setClicked} />
+      <List searchPhrase={searchPhrase} data={data} setClicked={setClicked} />
     </View>
   );
 };
