@@ -1,20 +1,30 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { RadioButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
-import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Pressable,
+} from 'react-native';
+import { RadioButton } from 'react-native-paper';
+// import * as FileSystem from 'expo-file-system';
 
-import { getAccessToken } from '../../configs/utils/getAccessToken';
-import { Color, Padding } from '../../components/styles/GlobalStyles';
-import Icon from '../../components/common/Icon';
-import CustomInput from '../../components/common/CustomInput';
 import CustomButton from '../../components/common/CustomButton';
-import { accessTokenKey } from '../../constant/constant';
+import CustomInput from '../../components/common/CustomInput';
+import Icon from '../../components/common/Icon';
+import { Color, Padding } from '../../components/styles/GlobalStyles';
 import { axiosAuthGet, axiosAuthPost, axiosPost } from '../../configs/axiosInstance';
+import { getAccessToken } from '../../configs/utils/getAccessToken';
+import { accessTokenKey } from '../../constant/constant';
+import { uploadImage } from '../../utils/uploadImageHandler';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
@@ -29,10 +39,10 @@ const EditProfileScreen = () => {
     address: '',
     avatar: '',
   });
-  console.log(inputs.avatar);
+  // console.log(inputs.avatar);
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowDate(Platform.OS === 'ios');
+    // setShowDate(Platform.OS === 'ios');
     setDate(currentDate);
     const tempDate = new Date(currentDate);
     const fDate =
@@ -45,42 +55,38 @@ const EditProfileScreen = () => {
   };
 
   const imagePicker = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log('Image: ', result.assets[0]);
-
-    if (!result.canceled) {
-      const imageUri = result.assets[0].uri;
-      const formData = new FormData();
-      const fileName = imageUri.substring(imageUri.lastIndexOf('/') + 1);
-      const tailFile = fileName.split('.')[1];
-      formData.append('avatar', {
-        uri: imageUri,
-        originalname: result.assets[0].fileName,
-        type: `${result.assets[0].type}/${tailFile}`,
+    try {
+      const { canceled, assets } = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
       });
-      const base64Image = result.canceled;
-      handleOnChange(imageUri, 'avatar');
-      const accessToken = await AsyncStorage.getItem(accessTokenKey);
 
-      const responeImage = await axiosPost(
-        '/employee/upload-avatar-employee',
-        { avatar: formData },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
-      console.log(responeImage);
+      console.log('Image: ', assets[0]);
+
+      if (!canceled) {
+        const imageUri = assets[0].uri;
+        handleOnChange(imageUri, 'avatar');
+        const accessToken = await AsyncStorage.getItem(accessTokenKey);
+
+        const result = await uploadImage(
+          '/employee/upload-avatar-employee',
+          imageUri,
+          'avatar',
+          accessToken,
+        );
+        console.log(result);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   useEffect(() => {
     (async () => {
       const accessToken = await AsyncStorage.getItem(accessTokenKey);
-      console.log(accessToken);
+      // console.log(accessToken);
       const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
       const employee = respone.employee;
       const dateString = employee.dateOfBirth;
@@ -109,8 +115,9 @@ const EditProfileScreen = () => {
         <View style={styles.containerAvatar}>
           <TouchableOpacity onPress={imagePicker}>
             {inputs.avatar === null ? (
-              <Image source={require('../../assets/icons/AddAvatar.jpeg')} style={styles.avatar} />
+              <Text>Add Image</Text>
             ) : (
+              // <Image source={require('../../assets/icons/AddAvatar.jpeg')} style={styles.avatar} />
               <Image source={{ uri: inputs.avatar }} style={styles.avatar} />
             )}
           </TouchableOpacity>
@@ -137,7 +144,7 @@ const EditProfileScreen = () => {
           <DateTimePicker
             testID="datePicker"
             value={date}
-            mode={'date'}
+            mode="date"
             display="default"
             onChange={onChangeDate}
           />
