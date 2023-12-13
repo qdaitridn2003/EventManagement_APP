@@ -7,237 +7,293 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  TextInput,
-  Dimensions,
-  StatusBar,
-  Alert,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { format } from 'date-fns';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles';
-
-const { height, width } = Dimensions.get('window');
-
-const MyStatusBar = ({ backgroundColor, ...props }) => (
-  <View style={[styles.statusBar, { backgroundColor }]}>
-    <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-  </View>
-);
-
-const Toolbar = () => {
-  const navigation = useNavigation();
-
-  const goBack = () => {
-    navigation.goBack();
-  };
-
-  const handleImageClick = () => {
-    Alert.alert('Image Clicked!');
-  };
-  return (
-    <View style={{ flexDirection: 'column' }}>
-      <TouchableOpacity onPress={goBack}>
-        <Image style={styles.backward} source={require('../../assets/icon--backward3x.png')} />
-      </TouchableOpacity>
-      <TouchableOpacity style={{ alignItems: 'center' }}>
-        <Image
-          style={styles.avatar}
-          resizeMode="cover"
-          source={require('../../assets/avatar-28x283x.png')}
-        />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const ContentProfile = () => {
-  // const navigation = useNavigation();
-  return (
-    <View>
-      <Text style={styles.labelInput}>Họ và tên</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icons8-profile-50.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Team Cook" />
-      </View>
-      <Text style={styles.labelInput}>Email</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--alternate-email3x.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="abc@gmail.com" />
-      </View>
-      <Text style={styles.labelInput}>Chức vụ</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icons8-profile-50.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Chụp ảnh" />
-      </View>
-      <Text style={styles.labelInput}>Số điện thoại</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/phone-android.png')}
-        />
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="0912342667" />
-      </View>
-      <Text style={styles.labelInput}>Địa chỉ</Text>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/address.png')}
-        />
-        <TextInput
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="137 Nguyễn Thị Thập"
-        />
-      </View>
-      <Text style={styles.labelInput}>Ghi chú</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" />
-      </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.text}>Thay đổi</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+import { axiosAuthGet } from '../../configs/axiosInstance';
+import { accessTokenKey } from '../../constant/constant';
+import Icon from '../../components/common/Icon';
 
 const DetailProfileScreen = () => {
   const navigation = useNavigation();
   const [permissions, setPermissions] = useState();
   const [image, setImage] = useState(null);
+  const [data, setData] = useState({});
+  const [isModalIndicator, setIsModalIndicator] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      setPermissions(galleryStatus.status === 'granted');
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      console.log(accessToken);
+      const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
+      if (respone) {
+        setIsModalIndicator(false);
+      }
+      const employee = respone.employee;
+      const dateString = employee.dateOfBirth;
+      const formattedDate = format(new Date(dateString), 'dd/MM/yyyy');
+      const gender = employee.gender === 'male' ? 'Nam' : 'Nữ';
+      setData({
+        name: employee.fullName,
+        role: employee.auth.role.name,
+        contract: employee.contract,
+        birthDay: formattedDate,
+        gender: gender,
+        phone: employee.phoneNumber,
+        adress: employee.address,
+        email: employee.email,
+      });
     })();
   }, []);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log('Image Picker Result:', result);
-
-    if (!result.cancelled) {
-      if (result.uri) {
-        console.log('Image URI:', result.uri);
-        setImage(result.uri);
-      } else {
-        console.error('Image URI is undefined in the result object.');
-      }
-    } else {
-      console.log('Image picking cancelled.');
-    }
-  };
-
-  if (permissions === false) {
-    return <Text>Không được cấp quyền</Text>;
-  }
-
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <MyStatusBar backgroundColor={Color.colorMidnightblue} />
-        <Toolbar />
-        <ContentProfile />
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.btn}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <Image source={require('../../assets/icon--backward3x.png')} style={styles.btnBack} />
+          </TouchableOpacity>
+          <View style={styles.btnHandle}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('EditProfileScreen')}
+              style={[styles.btnDelEdit, styles.btnEdit]}
+            >
+              <Image
+                source={require('../../assets/icons/Edit.png')}
+                style={{ tintColor: 'white' }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {isModalIndicator ? (
+          <ActivityIndicator
+            size={'large'}
+            color={Color.primary}
+            style={styles.activityIndicator}
+          />
+        ) : (
+          <View>
+            <View style={styles.containerAvatar}>
+              <Image source={require('../../assets/avatar-28x2823x.png')} style={styles.avatar} />
+            </View>
+            <View style={styles.cotainerInformation}>
+              <View style={styles.containerLabel}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/PersonOutline.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Họ và tên</Text>
+                </View>
+                <View style={styles.dash}></View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/BadgeOutline.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Chức vụ</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/Tag.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Loại hợp dồng</Text>
+                </View>
+                <View style={styles.dash}></View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/Cake.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Ngày sinh</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/Gender.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Giới tính</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/Phone.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Số điện thoại</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/Location.png')}
+                    color={'#A29EB6'}
+                    size={'superBig'}
+                  />
+                  <Text style={[styles.textLabel, { marginLeft: 3 }]}>Địa chỉ</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Icon
+                    source={require('../../assets/icons/Email.png')}
+                    color={'#A29EB6'}
+                    size={'big'}
+                  />
+                  <Text style={styles.textLabel}>Email</Text>
+                </View>
+              </View>
+
+              {/* -------------------data----------------  */}
+
+              <View style={styles.containerData}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
+                  <Text style={styles.textData}>{data.name}</Text>
+                </View>
+                <View style={styles.dash}></View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
+                  <Text style={styles.textData}>{data.role}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Text style={styles.textData}>{data.contract}</Text>
+                </View>
+                <View style={styles.dash}></View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
+                  <Text style={styles.textData}>{data.birthDay}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Text style={styles.textData}>{data.gender}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Text style={styles.textData}>{data.phone}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Text style={styles.textData}>{data.adress}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <Text style={[styles.textData]}>{data.email}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.dash}></View>
+            <View style={styles.option}>
+              <TouchableOpacity style={styles.setting}>
+                <Icon
+                  source={require('../../assets/icons/SettingsOutline.png')}
+                  color={Color.primary}
+                  size={'big'}
+                />
+                <Text style={styles.textSetting}>Cài đặt</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.setting}>
+                <Icon
+                  source={require('../../assets/icons/Lock.png')}
+                  color={Color.primary}
+                  size={'big'}
+                />
+                <Text style={styles.textSetting}>Đổi mật khẩu</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
+    padding: 24,
+    backgroundColor: '#fff',
+  },
+  btn: {
+    flexDirection: 'row',
     width: '100%',
-    paddingVertical: Padding.p_base,
-    paddingHorizontal: Padding.p_5xl,
   },
-  contentProfile: {
-    width: '100%',
-    height: 812,
-    paddingVertical: Padding.p_base,
-    paddingHorizontal: Padding.p_5xl,
-    flex: 1,
-    backgroundColor: Color.colorWhite,
+  btnBack: {
+    width: 40,
+    height: 40,
+    padding: 10,
   },
-  backward: {
-    width: 30,
-    height: 30,
+  btnHandle: {
+    flexDirection: 'row',
+    marginLeft: '70%',
   },
-  textInfo: {
-    fontSize: 20,
-    color: 'white',
-    textAlign: 'center',
-    top: 15,
+  btnDelEdit: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    padding: 8,
   },
-  labelInput: {
-    marginTop: 16,
-    color: '#1C1243',
-    fontWeight: 'bold',
-    fontSize: 16,
+  btnDel: {
+    backgroundColor: Color.semanticRed,
+    marginRight: 8,
+  },
+  btnEdit: {
+    backgroundColor: Color.primary,
+  },
+  containerAvatar: {
+    height: 'auto',
+    alignItems: 'center',
+    padding: 8,
+    justifyContent: 'center',
   },
   avatar: {
-    width: 100,
-    height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 120,
+    height: 120,
   },
-  containerTextInput: {
-    marginTop: 6,
-    width: '100%',
+  cotainerInformation: {
     flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 3,
-    overflow: 'hidden',
   },
-  iconUsername: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-    marginLeft: 24,
+  textLabel: {
+    color: '#A29EB6',
+    fontSize: 18,
+    fontWeight: '500',
+    marginLeft: 8,
+    lineHeight: 24,
   },
-  textInput: {
-    flex: 1,
-    backgroundColor: 'white',
-    height: 40,
+  containerLabel: {
+    height: 'auto',
+    width: 152,
   },
-  button: {
-    marginTop: 22,
-    height: 48,
-    backgroundColor: '#643FDB',
-    borderRadius: 12,
+  dash: {
+    height: 1,
+    backgroundColor: '#A29EB6',
+  },
+  containerData: {
+    width: 172,
+    height: 'auto',
+    marginLeft: 16,
+  },
+  textData: {
+    color: '#1C1243',
+    fontSize: 18,
+    fontWeight: '600',
+    marginLeft: 8,
+    lineHeight: 24,
+  },
+  activityIndicator: {
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
+    marginTop: '80%',
+    flex: 1,
   },
-  text: {
-    color: '#FFFFFF',
-    fontSize: 16,
+  setting: {
+    marginTop: 16,
+    flexDirection: 'row',
+  },
+  textSetting: {
+    fontSize: 18,
+    marginLeft: 8,
+    fontWeight: '700',
+    color: Color.primary,
   },
 });
 
