@@ -1,22 +1,14 @@
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  FlatList,
-  ToastAndroid,
-  BackHandler,
-} from 'react-native';
-import { Color } from '../components/styles/GlobalStyles';
-import CustomAppbar from '../components/appbar/CustomAppbar';
-import CustomSearchbar from '../components/common/CustomSearchbar';
-import IconButton from '../components/common/IconButton';
-import FilterBar from '../components/common/FilterBar';
-import { getAccessToken } from '../configs/utils/getAccessToken';
-import EventCard from '../components/card/EventCard';
+import { StyleSheet, Text, View, Image, FlatList, ToastAndroid, BackHandler } from 'react-native';
 
+import CustomAppbar from '../components/appbar/CustomAppbar';
+import EventCard from '../components/card/EventCard';
+import CustomSearchbar from '../components/common/CustomSearchbar';
+import FilterBar from '../components/common/FilterBar';
+import IconButton from '../components/common/IconButton';
+import { Color } from '../components/styles/GlobalStyles';
+import { getAccessToken } from '../configs/utils/getAccessToken';
 import { useAccessToken } from '../services/auth';
 
 const DoubleBackToExit = ({ navigation }) => {
@@ -62,18 +54,18 @@ const listFilter = [
 ];
 
 const renderItem = ({ item }) => {
+  const navigation = useNavigation();
   return (
     <EventCard
       style={styles.eventCard}
       imageUrl={item.images[0]}
       title={item.name}
-      subtitle={'Khai trương'}
+      subtitle="Khai trương"
     />
   );
 };
 
 const EventScreen = () => {
-
   const navigation = useNavigation();
 
   const accessToken = useAccessToken();
@@ -141,11 +133,7 @@ const EventScreen = () => {
 
   return (
     <View style={styles.container}>
-
-      <CustomAppbar 
-        style={styles.appBar} 
-        onPress={() => navigation.navigate('AddEvent')} 
-        />
+      <CustomAppbar style={styles.appBar} onPress={() => navigation.navigate('AddEvent')} />
 
       <View style={styles.searchContainer}>
         <CustomSearchbar />
@@ -169,7 +157,6 @@ const EventScreen = () => {
       />
 
       <DoubleBackToExit navigation={navigation} />
-
     </View>
   );
 };
@@ -204,5 +191,5 @@ const styles = StyleSheet.create({
   eventCard: {
     marginBottom: 16,
     marginHorizontal: 20,
-  }
+  },
 });
