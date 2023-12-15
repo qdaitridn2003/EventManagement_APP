@@ -33,6 +33,7 @@
     "react-native-image-picker": "^7.1.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal": "^13.0.1",
+    "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-modal-dropdown": "^1.0.2",
     "react-native-paper": "^5.11.2",
     "react-native-popup-menu": "^0.16.1",

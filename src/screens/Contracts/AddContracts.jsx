@@ -5,15 +5,15 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   Text,
   TextInput,
   ScrollView,
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import ModalDropdown from 'react-native-modal-dropdown';
+import Icon from '../../components/common/Icon';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles';
-import MyCalendar from '../items/MyCalendar';
+import Calendar from '../items/Calendar';
 
 const ToolbarAdd = () => {
   const navigation = useNavigation();
@@ -35,19 +35,24 @@ const ToolbarAdd = () => {
   );
 };
 
-const itemsPosition = [
-  { label: 'Sinh nhật', value: 'Sinh nhật' },
-  { label: 'Đám cưới', value: 'Đám cưới' },
-  { label: 'Hộp mặt', value: 'Bảo vệ' },
-];
 const ContentEvent = () => {
   const navigation = useNavigation();
   const [isCalendarVisible, setCalendarVisible] = useState(false);
-  const [openDropdown, setopenDropdown] = useState(false);
-  const [currentvalue, setcurrentvalue] = useState([]);
+  const [selectedOption, setSelectedOption] = useState('select an option');
+
+  const initialListRole = [
+    { label: 'Trần Nam', value: 'Trần Nam' },
+    { label: 'Nguyễn C', value: 'Nguyễn C' },
+    { label: 'Phạm Tấn', value: 'Phạm Tấn' },
+  ];
+  const [listRole, setListRole] = useState([...initialListRole]);
 
   const toggleCalendar = () => {
     setCalendarVisible(!isCalendarVisible);
+  };
+
+  const handleItemSelect = (index, value) => {
+    setSelectedOption(value);
   };
 
   return (
@@ -58,37 +63,31 @@ const ContentEvent = () => {
       </View>
 
       <Text style={styles.labelInput}>Tên khách hàng</Text>
-      <DropDownPicker
-        underlineColor
-        style={[styles.containerTextInput, { borderWidth: 0 }]}
-        items={itemsPosition}
-        open={openDropdown}
-        setOpen={() => setopenDropdown(!openDropdown)}
-        value={currentvalue}
-        setValue={(val) => setcurrentvalue(val)}
-        maxHeight={200}
-        autoScroll
-        placeholder="Vui lòng chọn"
-        showArrowIcon
-        showTickIcon
-        disableBorderRadius={false}
-      />
+      <View style={{ padding: 2, flexDirection: 'row' }}>
+        <ModalDropdown
+          defaultIndex={0}
+          options={listRole.map((item) => item.label)}
+          defaultValue={selectedOption}
+          onSelect={(index, value) => handleItemSelect(index, listRole[index].value)}
+          style={styles.dropdown}
+          textStyle={styles.dropdownText}
+          dropdownStyle={styles.dropdownDropdown}
+          dropdownTextStyle={styles.dropdownDropdownText}
+          dropdownTextContainerStyle={{ width: '100%' }}
+          animated
+        />
+        <Icon
+          style={{ position: 'absolute', right: 20, top: 24 }}
+          source={require('../../assets/icons/ArrowDropDown.png')}
+          color={Color.colorBlack}
+        />
+      </View>
 
       <Text style={styles.labelInput}>Bắt đầu</Text>
-      <View style={styles.textFlexBox}>
-        <TouchableOpacity>
-          <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-        </TouchableOpacity>
-        <Text style={styles.dashboard}>Thứ ba, 20/09/2023</Text>
-      </View>
+      <Calendar />
 
       <Text style={styles.labelInput}>Kết thúc</Text>
-      <View style={styles.textFlexBox}>
-        <TouchableOpacity>
-          <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-        </TouchableOpacity>
-        <Text style={styles.dashboard}>Thứ ba, 20/09/2023</Text>
-      </View>
+      <Calendar />
 
       <Text style={styles.labelInput}>Ghi chú</Text>
       <View style={styles.containerTextInput}>
@@ -97,7 +96,7 @@ const ContentEvent = () => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('ContractsScreen')}
+        // onPress={() => navigation.navigate('ContractsScreen')}
       >
         <Text style={styles.text}>Tạo hợp đồng</Text>
       </TouchableOpacity>
@@ -233,6 +232,37 @@ const styles = StyleSheet.create({
   logoAdd: {
     width: 45,
     height: 45,
+  },
+  dropdown: {
+    marginTop: 10,
+    width: '100%',
+    borderWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    backgroundColor: 'white',
+    paddingHorizontal: 12,
+    elevation: 3,
+  },
+
+  dropdownText: {
+    fontSize: 16,
+    paddingHorizontal: 12,
+    width: '100%',
+    paddingVertical: 12,
+  },
+  dropdownDropdown: {
+    width: '82%',
+    height: 200,
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  dropdownDropdownText: {
+    fontSize: 16,
+    backgroundColor: '#fff',
+    width: '100%',
   },
 });
 

@@ -11,47 +11,52 @@ import {
 } from 'victory-native';
 
 import { Border, Color, FontSize } from '../components/styles/GlobalStyles';
+import Calendar from './items/Calendar';
 
+// Thay đổi cấu trúc của data để thêm thông tin về ngày
 const data = [
-  { quarter: 1, earnings: 13000 },
-  { quarter: 2, earnings: 16500 },
-  { quarter: 3, earnings: 14250 },
-  { quarter: 4, earnings: 14250 },
-  { quarter: 5, earnings: 19000 },
-  { quarter: 6, earnings: 67000 },
-  { quarter: 7, earnings: 39000 },
-  { quarter: 8, earnings: 9000 },
-  { quarter: 9, earnings: 9000 },
+  { date: '2023-12-01', earnings: 13000 },
+  { date: '2023-12-11', earnings: 16500 },
+  { date: '2023-12-19', earnings: 14250 },
+  { date: '2023-12-18', earnings: 14250 },
+  { date: '2023-12-02', earnings: 14250 },
+  { date: '2023-12-16', earnings: 14250 },
+  { date: '2023-12-19', earnings: 14250 },
+  { date: '2023-12-17', earnings: 14250 },
 ];
 
-const ToolbarStatistics = () => {
+const ToolbarStatistics = ({ onPressFilter, selectedDatesCount }) => {
   return (
     <View style={styles.nameScreenAndBtnAdd}>
       <View style={styles.textFlexBox}>
         <Text style={styles.dashboard}>Thống kê</Text>
         <Image style={styles.logoEvent} source={require('../assets/icon--employee2.png')} />
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onPressFilter}>
         <Image style={styles.buttonFab} source={require('../assets/icons8-filter-80.png')} />
+        <Text style={styles.selectedDatesCountText}>{selectedDatesCount}</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-const SelectedCalendar = () => {
+const SelectedCalendar = ({ onSelectDate }) => {
   return (
     <View style={styles.calendarContainer}>
-      <TouchableOpacity>
-        <Image source={require('../assets/icon--event2.png')} style={styles.imageCalendar} />
-      </TouchableOpacity>
-      <Text>11/09/2023</Text>
-      <Text>---</Text>
-      <Text>19/09/2023</Text>
+      <Calendar onSelectDate={onSelectDate} />
+      <Text> --- </Text>
+      <Calendar onSelectDate={onSelectDate} />
     </View>
   );
 };
 
-const ChartView = () => {
+const ChartView = ({ onBarClick, selectedDate, data }) => {
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
   return (
     <View style={styles.chartContainer}>
       <VictoryChart
@@ -60,41 +65,46 @@ const ChartView = () => {
         containerComponent={<VictoryContainer />}
       >
         <VictoryAxis
-          tickValues={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-          tickFormat={[
-            '11/09/2023',
-            '12/09/2023',
-            '13/09/2023',
-            '14/09/2023',
-            '15/09/2023',
-            '16/09/2023',
-            '17/09/2023',
-            '18/09/2023',
-            '19/09/2023',
-          ]}
+          tickValues={data.map((item, index) => index + 1)} // Sử dụng chỉ số của mảng làm giá trị của tick
+          tickFormat={(tick) => (selectedDate ? formatDate(data[tick - 1].date) : tick)}
           tickLabelComponent={<VictoryLabel angle={-45} style={{ fontSize: 8 }} />}
         />
         <VictoryAxis dependentAxis tickFormat={(x) => `$${x / 1000}k`} />
         <VictoryBar
           data={data}
-          x="quarter"
+          x="date"
           y="earnings"
           labels={({ datum }) => `$${datum.earnings / 1000}k`}
-          labelComponent={<VictoryTooltip />}
+          labelComponent={<VictoryTooltip renderInPortal={false} />}
+          events={[
+            {
+              target: 'data',
+              eventHandlers: {
+                onClick: () => [
+                  {
+                    target: 'data',
+                    mutation: (props) => {
+                      onBarClick(props);
+                    },
+                  },
+                ],
+              },
+            },
+          ]}
         />
       </VictoryChart>
     </View>
   );
 };
 
-const ShowDetailChart = ({ selectedQuarter }) => {
-  const selectedData = data.find((item) => item.quarter === selectedQuarter);
+const ShowDetailChart = ({ selectedDate, data }) => {
+  const selectedData = data.find((item) => item.date === selectedDate);
 
   return (
     <View>
       {selectedData && (
         <>
-          <Text>Quarter: {selectedData.quarter}</Text>
+          <Text>Date: {selectedData.date}</Text>
           <Text>Earnings: {selectedData.earnings}</Text>
         </>
       )}
@@ -128,8 +138,10 @@ const SummaryStatistics = ({ average, maxEarnings, minEarnings }) => {
 };
 
 const StatisticsScreen = () => {
-  const [selectedQuarter, setSelectedQuarter] = useState(null);
-  const { average, maxEarnings, minEarnings } = calculateStatistics(data);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDatesCount, setSelectedDatesCount] = useState(0);
+  const [filteredData, setFilteredData] = useState(data);
+  const { average, maxEarnings, minEarnings } = calculateStatistics(filteredData);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -139,7 +151,21 @@ const StatisticsScreen = () => {
   }, []);
 
   const handleBarClick = (data) => {
-    setSelectedQuarter(data.datum.quarter);
+    setSelectedDate(data.datum.date);
+  };
+
+  const handleSelectDate = (date) => {
+    setSelectedDatesCount(selectedDatesCount + 1);
+    console.log(`Selected Date: ${date}, Total Selected Dates: ${selectedDatesCount + 1}`);
+    setSelectedDate(date);
+  };
+
+  const handleFilterPress = () => {
+    const filteredData = data.filter((item) => {
+      return item.date === selectedDate;
+    });
+
+    setFilteredData(filteredData);
   };
 
   return (
@@ -148,10 +174,13 @@ const StatisticsScreen = () => {
         <ActivityIndicator size="large" color={Color.colorText} style={styles.loadingContainer} />
       ) : (
         <>
-          <ToolbarStatistics />
-          <SelectedCalendar />
-          <ChartView onBarClick={handleBarClick} />
-          <ShowDetailChart selectedQuarter={selectedQuarter} />
+          <ToolbarStatistics
+            onPressFilter={handleFilterPress}
+            selectedDatesCount={selectedDatesCount}
+          />
+          <SelectedCalendar onSelectDate={handleSelectDate} />
+          <ChartView onBarClick={handleBarClick} selectedDate={selectedDate} data={filteredData} />
+          <ShowDetailChart selectedDate={selectedDate} data={filteredData} />
           <SummaryStatistics
             average={average}
             maxEarnings={maxEarnings}
