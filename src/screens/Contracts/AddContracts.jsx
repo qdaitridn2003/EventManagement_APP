@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Image,
@@ -9,10 +10,11 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-
-import { Dropdown } from 'react-native-element-dropdown';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles';
+import { axiosAuthGet, axiosAuthPost } from '../../configs/axiosInstance';
+import { accessTokenKey } from '../../constant/constant';
 import Calendar from '../items/Calendar';
 
 const ToolbarAdd = () => {
@@ -35,57 +37,104 @@ const ToolbarAdd = () => {
   );
 };
 
-const data = [
-  { label: 'Item 1', value: '1' },
-  { label: 'Item 2', value: '2' },
-  { label: 'Item 3', value: '3' },
-  { label: 'Item 4', value: '4' },
-];
-
-const data2 = [
-  { label: 'Choice A', value: 'choiceA' },
-  { label: 'Choice B', value: 'choiceB' },
-];
-const data3 = [
-  { label: 'Choice C', value: 'choiceC' },
-  { label: 'Choice D', value: 'choiceD' },
+const listStatus = [
+  { label: 'Có hiệu lực', value: 'active' },
+  { label: 'Đã hoàn thành', value: 'completed' },
+  { label: 'Đã hủy', value: 'cancelled' },
 ];
 
 const ContentEvent = () => {
+  const navigation = useNavigation();
   const [isCalendarVisible, setCalendarVisible] = useState(false);
-  const [value, setValue] = useState(null);
+  const [eventValue, setEventValue] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
   const [clientValue, setClientValue] = useState(null);
-  const [employeeValue, setEmployeeValue] = useState(null);
+  const [statusValue, setStatusValue] = useState(null);
+  const [listClients, setListClients] = useState([]);
+  const [listEvents, setListEvents] = useState([]);
+  const [contractName, setContractName] = useState('');
+  const [contractNote, setContractNote] = useState('');
+  const [attachments, setAttachments] = useState('');
 
   const toggleCalendar = () => {
     setCalendarVisible(!isCalendarVisible);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthGet('/client/get-client-list', accessToken, {
+        limit: Infinity,
+      });
+      const handledListClients = await response.listClient.map((item) => {
+        return { label: item.fullName, value: item._id };
+      });
+      setListClients(handledListClients);
+    })();
+    (async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthGet('/event/get-list-event', accessToken, {
+        limit: Infinity,
+      });
+      const handledListEvents = await response.listEvent.map((item) => {
+        return { label: item.name, value: item._id };
+      });
+      setListEvents(handledListEvents);
+    })();
+  }, []);
+
+  const createContract = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthPost('/contract/create-contract', accessToken, {
+        name: contractName,
+        startDate: '2023-01-01', //TODO: Hardcode
+        endDate: '2023-11-11', //TODO: Hardcode
+        status: statusValue,
+        note: contractNote,
+        clientId: clientValue,
+        eventIds: eventValue,
+        attachments: JSON.stringify(attachments.split(' ')),
+      });
+      console.log(response);
+      if (response.contract) {
+        navigation.navigate('ContractsScreen');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <View>
       <Text style={styles.labelInput}>Tên hợp đồng</Text>
       <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Hợp đồng mua bán" />
+        <TextInput
+          style={styles.textInput}
+          value={contractName}
+          onChangeText={(text) => setContractName(text)}
+          returnKeyType="next"
+          placeholder="Tên hợp đồng"
+        />
       </View>
 
       <Text style={styles.labelInput}>Tên sự kiện</Text>
-      <Dropdown
+      <MultiSelect
         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={data}
+        data={listEvents}
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? 'Select item' : '...'}
-        value={value}
+        value={eventValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setValue(item.value);
+          setEventValue(item);
           setIsFocus(false);
         }}
       />
@@ -96,7 +145,7 @@ const ContentEvent = () => {
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         iconStyle={styles.iconStyle}
-        data={data2}
+        data={listClients}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -110,22 +159,22 @@ const ContentEvent = () => {
         }}
       />
 
-      <Text style={styles.labelInput}>Tên nhân viên</Text>
+      <Text style={styles.labelInput}>Trạng thái</Text>
       <Dropdown
         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         iconStyle={styles.iconStyle}
-        data={data3}
+        data={listStatus}
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? 'Select item' : '...'}
-        value={employeeValue}
+        value={statusValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setEmployeeValue(item.value);
+          setStatusValue(item.value);
           setIsFocus(false);
         }}
       />
@@ -138,13 +187,26 @@ const ContentEvent = () => {
 
       <Text style={styles.labelInput}>Ghi chú</Text>
       <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
+        <TextInput
+          style={styles.textInput}
+          value={contractNote}
+          onChangeText={(text) => setContractNote(text)}
+          returnKeyType="next"
+          placeholder=""
+        />
       </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        // onPress={() => navigation.navigate('ContractsScreen')}
-      >
+      <Text style={styles.labelInput}>Tệp đính kèm</Text>
+      <View style={styles.containerTextInput}>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={(text) => setAttachments(text)}
+          returnKeyType="next"
+          placeholder=""
+        />
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={() => createContract()}>
         <Text style={styles.text}>Tạo hợp đồng</Text>
       </TouchableOpacity>
     </View>
@@ -153,10 +215,10 @@ const ContentEvent = () => {
 
 const AddContracts = () => {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <ToolbarAdd />
       <ContentEvent />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -167,7 +229,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 800,
     paddingHorizontal: Padding.p_5xl,
-    paddingVertical: Padding.p_base,
+    paddingVertical: Padding.p_7xs,
   },
   toolbarDetail: {
     flexDirection: 'row',
