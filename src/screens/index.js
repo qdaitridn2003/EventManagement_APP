@@ -12,6 +12,7 @@ export { default as ForgotPasswordScreen } from './auth/ForgotPasswordScreen';
 export { default as ChangePasswordScreen } from './accounts/ChangePasswordScreen';
 export { default as ResetPasswordScreen } from './auth/ResetPasswordScreen';
 export { default as DetailEmployeeScreen } from './employees/DetailEmployeeScreen';
+export { default as EditProfileScreen } from './profiles/EditProfileScreen';
 
 export { default as AddEvent } from './events/AddEvent';
 export { default as DetailEventScreen } from './events/DetailEventScreen';

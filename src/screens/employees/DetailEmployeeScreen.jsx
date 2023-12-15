@@ -3,7 +3,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 
-import { axiosAuthGet } from '../../configs/axiosInstance';
+import { axiosAuthDel, axiosAuthGet, axiosDel } from '../../configs/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { accessTokenKey } from '../../constant/constant';
 import { getAccessToken } from '../../configs/utils/getAccessToken';
@@ -19,10 +19,16 @@ const DetailEmployeeScreen = () => {
   const [idEmployee] = dataIdEmployee;
   const [isModalIndicator, setIsModalIndicator] = useState(true);
 
+  const handleDeleteEmployee = async () => {
+    const token = await AsyncStorage.getItem(accessTokenKey);
+    console.log(token);
+    const respone = await axiosAuthDel(`/employee/delete-employee/${data.id}`, token);
+    console.log(respone);
+  };
+
   useEffect(() => {
     (async () => {
       const accessToken = await getAccessToken();
-
       const respone = await axiosAuthGet(
         `/employee/get-employee-profile/${idEmployee}`,
         accessToken,
@@ -34,14 +40,16 @@ const DetailEmployeeScreen = () => {
       const dateString = employee.dateOfBirth;
       const formattedDate = format(new Date(dateString), 'dd/MM/yyyy');
       setData({
+        id: employee._id,
         name: employee.fullName,
-        role: employee.auth.role.name,
-        contract: employee.ccotract,
+        role: employee.auth ? employee.auth.role.name : 'auth: null',
+        contract: employee.contract,
         birthDay: formattedDate,
         gender: employee.gender,
         phone: employee.phoneNumber,
         adress: employee.address,
         email: employee.email,
+        avatar: employee.avatar,
       });
       console.log(data);
     })();
@@ -55,7 +63,7 @@ const DetailEmployeeScreen = () => {
         </TouchableOpacity>
         <View style={styles.btnHandle}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Employee')}
+            onPress={handleDeleteEmployee}
             style={[styles.btnDelEdit, styles.btnDel]}
           >
             <Image
@@ -64,12 +72,12 @@ const DetailEmployeeScreen = () => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('Employee')}
             style={[styles.btnDelEdit, styles.btnEdit]}
           >
             <Image source={require('../../assets/icons/Edit.png')} style={{ tintColor: 'white' }} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -82,19 +90,18 @@ const DetailEmployeeScreen = () => {
       ) : (
         <View>
           <View style={styles.containerAvatar}>
-            <Image source={require('../../assets/avatar-28x2823x.png')} style={styles.avatar} />
+            <Image
+              source={
+                data.avatar ? { uri: data.avatar } : require('../../assets/icons/AddAvatar.jpeg')
+              }
+              style={styles.avatar}
+            />
+          </View>
+          <View style={styles.containerTextName}>
+            <Text style={styles.textName}>{data.name}</Text>
           </View>
           <View style={styles.cotainerInformation}>
             <View style={styles.containerLabel}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
-                <Icon
-                  source={require('../../assets/icons/PersonOutline.png')}
-                  color={'#A29EB6'}
-                  size={'big'}
-                />
-                <Text style={styles.textLabel}>Họ và tên</Text>
-              </View>
-              <View style={styles.dash}></View>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
                 <Icon
                   source={require('../../assets/icons/BadgeOutline.png')}
@@ -103,14 +110,7 @@ const DetailEmployeeScreen = () => {
                 />
                 <Text style={styles.textLabel}>Chức vụ</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                <Icon
-                  source={require('../../assets/icons/Tag.png')}
-                  color={'#A29EB6'}
-                  size={'big'}
-                />
-                <Text style={styles.textLabel}>Loại hợp dồng</Text>
-              </View>
+
               <View style={styles.dash}></View>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
                 <Icon
@@ -158,15 +158,9 @@ const DetailEmployeeScreen = () => {
 
             <View style={styles.containerData}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
-                <Text style={styles.textData}>{data.name}</Text>
-              </View>
-              <View style={styles.dash}></View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
                 <Text style={styles.textData}>{data.role}</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                <Text style={styles.textData}>{data.contract}</Text>
-              </View>
+
               <View style={styles.dash}></View>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
                 <Text style={styles.textData}>{data.birthDay}</Text>
@@ -202,6 +196,7 @@ const styles = StyleSheet.create({
   btn: {
     flexDirection: 'row',
     width: '100%',
+    paddingRight: 30,
   },
   btnBack: {
     width: 40,
@@ -210,7 +205,8 @@ const styles = StyleSheet.create({
   },
   btnHandle: {
     flexDirection: 'row',
-    marginLeft: 210,
+    width: '100%',
+    justifyContent: 'flex-end',
   },
   btnDelEdit: {
     width: 40,
@@ -228,12 +224,14 @@ const styles = StyleSheet.create({
   containerAvatar: {
     height: 'auto',
     alignItems: 'center',
+    width: 'auto',
     padding: 8,
     justifyContent: 'center',
   },
   avatar: {
     width: 120,
     height: 120,
+    borderRadius: 90,
   },
   cotainerInformation: {
     flexDirection: 'row',
@@ -254,7 +252,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A29EB6',
   },
   containerData: {
-    width: 172,
+    width: '50%',
     height: 'auto',
     marginLeft: 16,
   },
@@ -264,5 +262,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
     lineHeight: 24,
+  },
+  containerTextName: {
+    width: '100%',
+    marginBottom: 20,
+    justifyContent: 'center',
+  },
+  textName: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });

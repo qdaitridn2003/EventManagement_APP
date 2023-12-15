@@ -1,12 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-<<<<<<< HEAD
-import React, { useContext, useState } from 'react';
-=======
 
 import React, { useContext, useEffect, useState } from 'react';
->>>>>>> 9539aa8af0d00de01ad074300b6bb29653aa8304
+
 import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
 
 import CustomIndicator from '../../components/common/CustomIndicator';
@@ -14,8 +11,9 @@ import CustomInput from '../../components/common/CustomInput';
 import CustomPassInput from '../../components/common/CustomPassInput';
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import { axiosPost } from '../../configs/axiosInstance';
-import { accessTokenKey, emailRegisterKey } from '../../constant/constant';
+import { accessTokenKey, emailRegisterKey, refreshTokenKey } from '../../constant/constant';
 import { AppContext } from '../../contexts/AppContext';
+import { getAccessToken } from '../../configs/utils/getAccessToken';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -39,7 +37,7 @@ const LoginScreen = () => {
       username: inputs.email,
       password: inputs.password,
     });
-
+    console.log(response);
     if (!inputs.email) {
       handleErrors('Vui lòng nhập email', 'email');
     } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
@@ -56,9 +54,11 @@ const LoginScreen = () => {
     if (response.accessToken) {
       setIsModalIndicatorVisible(true);
       await AsyncStorage.setItem(accessTokenKey, response.accessToken);
+      await AsyncStorage.setItem(refreshTokenKey, response.refreshToken);
       setIsLogin(true);
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.title}>

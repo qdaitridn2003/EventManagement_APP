@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import DummyDataEmployee from './employees/DummyDataEmployee';
@@ -18,9 +18,6 @@ const ToolbarEmployee = () => {
         <Text style={styles.dashboard}>Nhân viên</Text>
         <Image style={styles.logoEvent} source={require('../assets/icon--employee2.png')} />
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('AddEmployee')}>
-        <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -29,21 +26,26 @@ const EmployeeScreen = () => {
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
   const [data, setData] = useState([]);
+  const [isModalIndicator, setIsModalIndicator] = useState(true);
 
   useEffect(() => {
     (async () => {
       const token = await AsyncStorage.getItem(accessTokenKey);
-      const respone = await axiosAuthGet('/employee/get-employee-list', token, {});
-      const listEmployee = respone.listEmployee;
-
-      const data = listEmployee.map((employee) => ({
-        id: employee._id,
-        name: employee.fullName,
-        role: employee.auth.role.name,
-        image: employee.avatar,
-      }));
-      console.log(data);
-      setData(data);
+      const respone = await axiosAuthGet('/employee/get-employee-list', token);
+      console.log('ListEmployees', respone);
+      if (respone) {
+        const listEmployee = respone.listEmployee;
+        console.log(listEmployee[0]);
+        const data = listEmployee.map((employee) => ({
+          id: employee._id,
+          role: employee.auth ? employee.auth.role.name : 'auth: null',
+          name: employee.fullName,
+          image: employee.avatar,
+        }));
+        setData(data);
+        console.log(data);
+        setIsModalIndicator(false);
+      }
     })();
   }, []);
 
@@ -56,7 +58,15 @@ const EmployeeScreen = () => {
         clicked={clicked}
         setClicked={setClicked}
       />
-      <List searchPhrase={searchPhrase} data={data} setClicked={setClicked} />
+      {isModalIndicator ? (
+        <ActivityIndicator
+          size={40}
+          color={Color.primary}
+          style={{ height: '80%', justifyContent: 'center' }}
+        />
+      ) : (
+        <List searchPhrase={searchPhrase} data={data} setClicked={setClicked} />
+      )}
     </View>
   );
 };
@@ -76,6 +86,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'stretch',
+    paddingVertical: 10,
   },
   textFlexBox: {
     flexDirection: 'row',

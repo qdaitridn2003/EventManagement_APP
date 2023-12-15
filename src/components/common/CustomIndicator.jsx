@@ -16,7 +16,7 @@ const CustomIndicator = ({ size, color, backgroundModalColor, ...props }) => {
             styles.backgroundModal,
             backgroundModalColor
               ? { backgroundColor: backgroundModalColor }
-              : { backgroundColor: '000000aa' },
+              : { backgroundColor: '#000000aa' },
           ]}
         >
           <View style={styles.backgroundIndicator}>

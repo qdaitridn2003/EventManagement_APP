@@ -19,7 +19,7 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
           activeOutlineColor={error ? 'transparent' : Color.primary}
           outlineStyle={{
             backgroundColor: Color.neutral4,
-            elevation: 4,
+            elevation: 2,
             borderRadius: 16,
           }}
           contentStyle={{ paddingHorizontal: 25 }}

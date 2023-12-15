@@ -1,101 +1,118 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ToastAndroid,
+  Keyboard,
+} from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
+import CustomInput from '../../components/common/CustomInput';
+import CustomButton from '../../components/common/CustomButton';
+import CustomPassInput from '../../components/common/CustomPassInput';
+import { getAccessToken } from '../../configs/utils/getAccessToken';
+import { axiosAuthPut, axiosPut } from '../../configs/axiosInstance';
 
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
-  const [isPasswordVisible, setIsPasswordVisible] = React.useState(true);
+  const [errors, setErrors] = useState({});
+  const [inputs, setInputs] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
 
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
+  const handleErrors = (errorMessage, input) => {
+    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
+  const handleOnChange = (text, input) => {
+    setInputs((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleSavePassword = async () => {
+    Keyboard.dismiss();
+    const accessToken = await getAccessToken();
+    const respone = await axiosPut(
+      '/auth/change-password',
+      {
+        oldPassword: inputs.oldPassword,
+        newPassword: inputs.newPassword,
+        confirmPassword: inputs.confirmNewPassword,
+      },
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+    console.log(respone);
+    if (!inputs.oldPassword) {
+      handleErrors('Vui lòng nhập mật khẩu hiện tại', 'oldPassword');
+    } else if (inputs.oldPassword.length < 6) {
+      handleErrors('Mật khẩu ít nhất phải có 6 ký tự', 'oldPassword');
+    } else if (respone.message === 'Old password is not correct') {
+      handleErrors('Mật khẩu hiện tại không chính xác', 'oldPassword');
+    }
+
+    if (!inputs.newPassword) {
+      handleErrors('Vui lòng nhập mật khẩu mới', 'newPassword');
+    } else if (inputs.newPassword.length < 6) {
+      handleErrors('Mật khẩu mới ít nhất phải có 6 ký tự', 'newPassword');
+    } else if (inputs.newPassword === inputs.oldPassword) {
+      handleErrors('Mật khẩu mới phải khác mật khẩu hiện tại', 'newPassword');
+    }
+
+    if (!inputs.confirmNewPassword) {
+      handleErrors('Vui lòng xác nhận mật khẩu mới', 'confirmNewPassword');
+    } else if (inputs.confirmNewPassword.length < 6) {
+      handleErrors('Mật khẩu mới ít nhất phải có 6 ký tự', 'confirmNewPassword');
+    } else if (inputs.confirmNewPassword !== inputs.newPassword) {
+      handleErrors('Xác nhận mật khẩu phải khớp với mật khẩu hiện tại', 'confirmNewPassword');
+    }
+
+    if (!respone.message) {
+      ToastAndroid.show('Lưu thành công', ToastAndroid.SHORT);
+      navigation.goBack();
+    }
   };
 
-  const ref_input2 = React.useRef();
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Image style={styles.iconBackward} source={require('../../assets/backward.png')} />
+        <Image style={styles.iconBackward} source={require('../../assets/icon--backward3x.png')} />
       </TouchableOpacity>
-
+      <View style={styles.containerImage}>
+        <Image style={styles.image} source={require('../../assets/icons/Frame.png')} />
+      </View>
       <View style={[styles.title, styles.titleSpaceBlock]}>
         <Text style={styles.ngNhp}>Đổi mật khẩu</Text>
       </View>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--lock-outline3x.png')}
-        />
-        <TextInput
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Mật khẩu"
-          secureTextEntry={isPasswordVisible}
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--lock-outline3x.png')}
-        />
-        <TextInput
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Mật khẩu mới"
-          secureTextEntry
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.containerTextInput}>
-        <Image
-          style={styles.iconUsername}
-          contentFit="cover"
-          source={require('../../assets/icon--lock-outline3x.png')}
-        />
-        <TextInput
-          style={styles.textInput}
-          returnKeyType="next"
-          placeholder="Xác nhận lại mật khẩu"
-          secureTextEntry
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-          <Image
-            source={
-              isPasswordVisible
-                ? require('../../assets/eye-icon.png')
-                : require('../../assets/eye-off-icon.png')
-            }
-            style={styles.iconEyePass}
-          />
-        </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.text}>Lưu thay đổi</Text>
-      </TouchableOpacity>
+      <CustomPassInput
+        onChangeText={(text) => handleOnChange(text, 'oldPassword')}
+        label="Mật khẩu hiện tại"
+        placeholder="Nhập mật khẩu hiện tại"
+        onFocus={() => handleErrors(null, 'oldPassword')}
+        error={errors.oldPassword}
+      />
+      <CustomPassInput
+        onChangeText={(text) => handleOnChange(text, 'newPassword')}
+        label="Mật khẩu mới"
+        placeholder="Nhập mật khẩu mới"
+        onFocus={() => handleErrors(null, 'newPassword')}
+        error={errors.newPassword}
+      />
+      <CustomPassInput
+        onChangeText={(text) => handleOnChange(text, 'confirmNewPassword')}
+        label="Xác nhận mật khẩu mới"
+        placeholder="Xác nhận mật khẩu mới"
+        onFocus={() => handleErrors(null, 'confirmNewPassword')}
+        error={errors.confirmNewPassword}
+      />
+
+      <View style={styles.button}>
+        <CustomButton title="Lưu thay đổi" onPress={handleSavePassword} />
+      </View>
     </View>
   );
 };
@@ -109,69 +126,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_base,
   },
-  containerTextInput: {
-    marginTop: 16,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 3,
-    overflow: 'hidden',
-  },
-  iconUsername: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-    marginLeft: 24,
-  },
-  iconEyePass: {
-    width: 20,
-    height: 20,
-    marginRight: 12,
-  },
+
   iconBackward: {
-    width: 25,
-    height: 25,
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: 'white',
+    width: 40,
     height: 40,
-  },
-  containerGoogle: {
-    marginTop: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
-    backgroundColor: '#EFF1F3',
-    padding: 12,
-  },
-  iconGoogle: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
+    padding: 10,
   },
   iconContainer: {
     padding: 8,
-  },
-  iconLayout: {
-    height: 24,
-    width: 24,
-    overflow: 'hidden',
-  },
-  titleSpaceBlock: {
-    marginTop: 16,
-    alignSelf: 'stretch',
-  },
-  hocClr: {
-    color: Color.neutral2,
-    fontWeight: '500',
   },
   dividerLayout: {
     height: 2,
@@ -207,13 +169,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    marginTop: 16,
-    height: 48,
-    backgroundColor: '#643FDB',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 20,
   },
   text: {
     color: '#FFFFFF',
@@ -229,28 +185,12 @@ const styles = StyleSheet.create({
   dividerItem: {
     marginLeft: 8,
   },
-  divider: {
+  containerImage: {
     alignItems: 'center',
-    flexDirection: 'row',
   },
-  spacer: {
-    overflow: 'hidden',
-    flex: 1,
-    backgroundColor: Color.colorWhite,
-  },
-  chaCTi: {
-    color: Color.neutral2,
-    fontWeight: '500',
-  },
-  ngK: {
-    color: Color.colorDarkorange,
-    marginLeft: 8,
-    fontWeight: '700',
-    textAlign: 'left',
-  },
-  footer: {
-    justifyContent: 'center',
-    flexDirection: 'row',
+  image: {
+    width: 125,
+    height: 140,
   },
 });
 

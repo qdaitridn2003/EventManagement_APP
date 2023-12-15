@@ -11,9 +11,13 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Color, Padding } from '../components/styles/GlobalStyles';
 import { AppContext } from '../contexts/AppContext';
+import { accessTokenKey } from '../constant/constant';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { axiosAuthGet } from '../configs/axiosInstance';
 
 const { height, width } = Dimensions.get('window');
 
@@ -23,24 +27,36 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
   </View>
 );
 
-const Toolbar = () => {
-  return (
-    <View style={styles.infoImage}>
-      <TouchableOpacity>
-        <Image
-          style={styles.avatar}
-          resizeMode="cover"
-          source={require('../assets/avatar-28x283x.png')}
-        />
-      </TouchableOpacity>
-      <Text style={styles.textInfo}>Admin</Text>
-    </View>
-  );
-};
-
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const { setIsLogin } = useContext(AppContext);
+  const [dataAvatar, setDataAvatar] = useState('');
+
+  const handleLogOut = async () => {
+    await AsyncStorage.setItem(accessTokenKey, '');
+    setIsLogin(false);
+  };
+
+  const Toolbar = () => {
+    return (
+      <View style={styles.infoImage}>
+        <Image
+          style={styles.avatar}
+          resizeMode="cover"
+          source={dataAvatar ? { uri: dataAvatar } : require('../assets/icons/AddAvatar.jpeg')}
+        />
+        <Text style={styles.textInfo}>Admin</Text>
+      </View>
+    );
+  };
+  useEffect(() => {
+    (async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
+      const responeAvatar = respone.employee.avatar;
+      setDataAvatar(responeAvatar);
+    })();
+  }, []);
   return (
     <View style={styles.container}>
       <MyStatusBar backgroundColor={Color.colorMidnightblue} />
@@ -62,7 +78,7 @@ const ProfileScreen = () => {
           <Text style={styles.labelInput}>Đổi mật khẩu</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setIsLogin(false)}>
+        <TouchableOpacity onPress={handleLogOut}>
           <Text style={styles.labelInput}>Đăng xuất</Text>
         </TouchableOpacity>
       </View>
@@ -107,6 +123,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 100,
     height: 100,
+    borderRadius: 90,
   },
   containerTextInput: {
     marginTop: 6,

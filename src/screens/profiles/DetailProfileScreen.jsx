@@ -23,20 +23,33 @@ const DetailProfileScreen = () => {
   const [permissions, setPermissions] = useState();
   const [image, setImage] = useState(null);
   const [data, setData] = useState({});
+  const [checkData, setCheckData] = useState({});
   const [isModalIndicator, setIsModalIndicator] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      const accessToken = await AsyncStorage.getItem(accessTokenKey);
-      console.log(accessToken);
-      const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
-      if (respone) {
-        setIsModalIndicator(false);
-      }
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [checkData]);
+
+  const fetchData = async () => {
+    const accessToken = await AsyncStorage.getItem(accessTokenKey);
+    const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
+    if (respone) {
+      setIsModalIndicator(false);
+    }
+
+    if (checkData !== respone) {
+      setCheckData(respone);
       const employee = respone.employee;
       const dateString = employee.dateOfBirth;
       const formattedDate = format(new Date(dateString), 'dd/MM/yyyy');
       const gender = employee.gender === 'male' ? 'Nam' : 'Nữ';
+      console.log(1);
       setData({
         name: employee.fullName,
         role: employee.auth.role.name,
@@ -46,9 +59,10 @@ const DetailProfileScreen = () => {
         phone: employee.phoneNumber,
         adress: employee.address,
         email: employee.email,
+        avatar: employee.avatar,
       });
-    })();
-  }, []);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -79,19 +93,18 @@ const DetailProfileScreen = () => {
         ) : (
           <View>
             <View style={styles.containerAvatar}>
-              <Image source={require('../../assets/avatar-28x2823x.png')} style={styles.avatar} />
+              <Image
+                source={
+                  data.avatar ? { uri: data.avatar } : require('../../assets/icons/AddAvatar.jpeg')
+                }
+                style={styles.avatar}
+              />
+            </View>
+            <View style={styles.containerTextName}>
+              <Text style={styles.textName}>{data.name}</Text>
             </View>
             <View style={styles.cotainerInformation}>
               <View style={styles.containerLabel}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
-                  <Icon
-                    source={require('../../assets/icons/PersonOutline.png')}
-                    color={'#A29EB6'}
-                    size={'big'}
-                  />
-                  <Text style={styles.textLabel}>Họ và tên</Text>
-                </View>
-                <View style={styles.dash}></View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
                   <Icon
                     source={require('../../assets/icons/BadgeOutline.png')}
@@ -99,14 +112,6 @@ const DetailProfileScreen = () => {
                     size={'big'}
                   />
                   <Text style={styles.textLabel}>Chức vụ</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                  <Icon
-                    source={require('../../assets/icons/Tag.png')}
-                    color={'#A29EB6'}
-                    size={'big'}
-                  />
-                  <Text style={styles.textLabel}>Loại hợp dồng</Text>
                 </View>
                 <View style={styles.dash}></View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
@@ -155,14 +160,7 @@ const DetailProfileScreen = () => {
 
               <View style={styles.containerData}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
-                  <Text style={styles.textData}>{data.name}</Text>
-                </View>
-                <View style={styles.dash}></View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
                   <Text style={styles.textData}>{data.role}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                  <Text style={styles.textData}>{data.contract}</Text>
                 </View>
                 <View style={styles.dash}></View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 16 }}>
@@ -184,15 +182,10 @@ const DetailProfileScreen = () => {
             </View>
             <View style={styles.dash}></View>
             <View style={styles.option}>
-              <TouchableOpacity style={styles.setting}>
-                <Icon
-                  source={require('../../assets/icons/SettingsOutline.png')}
-                  color={Color.primary}
-                  size={'big'}
-                />
-                <Text style={styles.textSetting}>Cài đặt</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.setting}>
+              <TouchableOpacity
+                style={styles.setting}
+                onPress={() => navigation.navigate('ChangePassword')}
+              >
                 <Icon
                   source={require('../../assets/icons/Lock.png')}
                   color={Color.primary}
@@ -249,6 +242,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 120,
     height: 120,
+    borderRadius: 90,
   },
   cotainerInformation: {
     flexDirection: 'row',
@@ -262,7 +256,7 @@ const styles = StyleSheet.create({
   },
   containerLabel: {
     height: 'auto',
-    width: 152,
+    width: 142,
   },
   dash: {
     height: 1,
@@ -294,6 +288,16 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontWeight: '700',
     color: Color.primary,
+  },
+  containerTextName: {
+    width: '100%',
+    marginBottom: 20,
+    justifyContent: 'center',
+  },
+  textName: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 

@@ -8,14 +8,16 @@ import {
   Image,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import DummyDataEmployee from './DummyDataEmployee';
 import { Color } from '../../components/styles/GlobalStyles';
 import { AppContext } from '../../contexts';
+import CustomButton from '../../components/common/CustomButton';
 
-const Item = ({ name, role, imageSource, id }) => {
+const Item = ({ id, name, role, imageSource }) => {
   const [isMenu, setIsMenu] = useState(false);
   const navigation = useNavigation();
   const { dataIdEmployee } = useContext(AppContext);
@@ -25,14 +27,23 @@ const Item = ({ name, role, imageSource, id }) => {
     setIdEmployee(id);
     navigation.navigate('DetailEmployeeScreen');
   };
+  const handleClickDetail = () => {
+    setIsMenu(false);
+    handleClickItem();
+  };
   return (
-    <TouchableOpacity onPress={handleClickItem}>
+    <TouchableWithoutFeedback onPress={handleClickItem}>
       <View style={styles.itemContainer}>
         <View style={styles.item}>
-          <Image style={styles.image} source={require('../../assets/avatar-28x2813x.png')} />
+          <Image
+            style={styles.image}
+            source={
+              imageSource ? { uri: imageSource } : require('../../assets/icons/AddAvatar.jpeg')
+            }
+          />
           <View style={styles.textContainer}>
             <Text style={styles.title}>{name}</Text>
-            <Text style={styles.role}>{role}</Text>
+            <Text>{role}</Text>
           </View>
 
           <TouchableWithoutFeedback onPress={() => setIsMenu(!isMenu)}>
@@ -40,32 +51,37 @@ const Item = ({ name, role, imageSource, id }) => {
           </TouchableWithoutFeedback>
 
           {isMenu && (
-            <View style={styles.conainerPopupMenu}>
-              <TouchableOpacity>
-                <Text style={[styles.textPopupMenu, , styles.textBtnEdit]}>Sửa</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={[styles.textPopupMenu, , styles.textBtnDel]}>Xoá</Text>
-              </TouchableOpacity>
-            </View>
+            <Modal transparent visible={true} animationType="fade">
+              <View style={styles.containerModal}>
+                <TouchableWithoutFeedback onPress={() => setIsMenu(false)}>
+                  <View style={styles.background}></View>
+                </TouchableWithoutFeedback>
+                <View style={styles.backgroundPopup}>
+                  <View style={styles.containerButtonPopup}>
+                    <CustomButton color={Color.semanticRed} title="Xoá" />
+                    <CustomButton title="Thông tin chi tiết" onPress={handleClickDetail} />
+                    <TouchableOpacity style={styles.buttonCancel} onPress={() => setIsMenu(false)}>
+                      <Text style={styles.textCancel}>Huỷ</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 
 const ListEmployee = ({ searchPhrase, setClicked, data }) => {
   const renderItem = ({ item }) => {
-    const employeeData = data.find((employee) => employee.id === item.id);
-    const imageSource = employeeData ? employeeData.image : null;
-
     if (
       searchPhrase === '' ||
       item.name.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, '')) ||
       item.role.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ''))
     ) {
-      return <Item id={item.id} name={item.name} role={item.role} imageSource={imageSource} />;
+      return <Item id={item.id} name={item.name} role={item.role} imageSource={item.image} />;
     }
     return null;
   };
@@ -113,21 +129,14 @@ const styles = StyleSheet.create({
   image: {
     width: 60,
     height: 60,
-    borderRadius: 25,
+    borderRadius: 50,
   },
   title: {
     fontSize: 17,
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  conainerPopupMenu: {
-    position: 'absolute',
-    left: 265,
-    top: 60,
-    width: 70,
-    height: 70,
-    borderRadius: 10,
-  },
+  conainerPopupMenu: {},
   textPopupMenu: {
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -145,6 +154,43 @@ const styles = StyleSheet.create({
     backgroundColor: Color.semanticRed,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+  },
+  containerModal: {
+    flex: 1,
+    width: '100%',
+
+    flexDirection: 'column',
+    backgroundColor: '#000000aa',
+  },
+
+  backgroundPopup: {
+    backgroundColor: '#fff',
+    height: '30%',
+    marginHorizontal: 10,
+    borderTopLeftRadius: 20,
+    elevation: 10,
+    borderTopRightRadius: 20,
+  },
+  background: {
+    backgroundColor: 'transparent',
+    height: '70%',
+  },
+  containerButtonPopup: {
+    paddingHorizontal: 10,
+  },
+  buttonCancel: {
+    marginTop: 20,
+    height: 48,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: Color.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textCancel: {
+    color: 'black',
+    fontSize: 16,
   },
 });
 

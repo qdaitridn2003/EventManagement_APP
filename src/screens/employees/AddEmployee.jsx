@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 
 import CustomButton from '../../components/common/CustomButton';
 import CustomInput from '../../components/common/CustomInput';
@@ -19,21 +20,22 @@ const AddEmployee = () => {
   const [showDate, setShowDate] = useState(false);
   const [inputs, setInputs] = useState({
     fullName: '',
-    dateOfBirth: '1-1-2023',
+    dateOfBirth: '2023-11-11',
     gender: 'male',
     phone: '',
     address: '',
   });
-  console.log(inputs.dateOfBirth);
+
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowDate(Platform.OS === 'ios');
+    setShowDate(false);
     setDate(currentDate);
     const tempDate = new Date(currentDate);
     const fDate =
-      tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
+      tempDate.getFullYear() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getDate();
     handleOnChange(fDate, 'dateOfBirth');
   };
+
   const handleOnChange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
   };
@@ -52,7 +54,9 @@ const AddEmployee = () => {
       handleErrors('Vui lòng nhập Số điện thoại', 'phone');
     } else if (inputs.phone.length < 10 || inputs.phone.length > 11) {
       handleErrors('Số điện thoại không hợp lệ', 'phone');
-    } else {
+    }
+
+    if (errors.fullName === null && errors.phone === null) {
       const respone = await axiosPost('/employee/register-employee-profile', {
         authId: auth_id,
         email: emailRegister,
@@ -63,7 +67,9 @@ const AddEmployee = () => {
         address: inputs.address,
       });
       console.log(respone);
-      navigation.navigate('Login');
+      if (respone.employee) {
+        navigation.navigate('Login');
+      }
     }
   };
 
@@ -87,7 +93,7 @@ const AddEmployee = () => {
           <Text style={styles.dashboard}>{inputs.dateOfBirth}</Text>
         </TouchableOpacity>
 
-        {showDate ? (
+        {showDate && (
           <DateTimePicker
             testID="datePicker"
             value={date}
@@ -95,7 +101,7 @@ const AddEmployee = () => {
             display="default"
             onChange={onChangeDate}
           />
-        ) : null}
+        )}
 
         <Text style={styles.label}>Giới tính</Text>
         <View style={{ flexDirection: 'row' }}>
@@ -121,6 +127,7 @@ const AddEmployee = () => {
         <CustomInput
           placeholder="Nhập số điện thoại của bạn"
           label="Số điện thoại"
+          keyboardType="numeric"
           onChangeText={(text) => handleOnChange(text, 'phone')}
           error={errors.phone}
           onFocus={() => handleErrors(null, 'phone')}

@@ -81,7 +81,7 @@ const RegisterScreen = () => {
       handleErrors('Please input Confirm Password', 'confirmPassword');
     } else if (inputs.confirmPassword.length < 6) {
       handleErrors('Confirm password must be at least have 6 characters', 'confirmPassword');
-    } else if (!inputs.confirmPassword === inputs.password) {
+    } else if (inputs.confirmPassword !== inputs.password) {
       handleErrors('Confirm password must be matches to the current password', 'confirmPassword');
     }
 
@@ -108,7 +108,7 @@ const RegisterScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
-        <Text style={styles.ngNhp}>Đăng Ký Tài gitKhoản</Text>
+        <Text style={styles.ngNhp}>Đăng Ký Tài Khoản</Text>
       </View>
       <CustomInput
         placeholder="Nhập email đăng ký"
@@ -135,7 +135,7 @@ const RegisterScreen = () => {
           animated
         />
         <Icon
-          style={{ position: 'absolute', left: 306, top: 24 }}
+          style={{ position: 'absolute', left: '90%', top: '40%' }}
           source={require('../../assets/icons/ArrowDropDown.png')}
           color={Color.colorBlack}
         />

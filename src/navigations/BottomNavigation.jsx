@@ -20,6 +20,7 @@ import {
   AddContracts,
   DetailContractsScreen,
   DetailEmployeeScreen,
+  EditProfileScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
 
@@ -39,6 +40,11 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="DetailProfileScreen"
         component={DetailProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
