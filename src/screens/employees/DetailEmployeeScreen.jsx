@@ -36,16 +36,18 @@ const DetailEmployeeScreen = () => {
       if (respone) {
         setIsModalIndicator(false);
       }
+      console.log(respone);
       const employee = respone.employee;
       const dateString = employee.dateOfBirth;
       const formattedDate = format(new Date(dateString), 'dd/MM/yyyy');
+      const gender = employee.gender === 'male' ? 'Nam' : 'Nữ';
       setData({
         id: employee._id,
         name: employee.fullName,
-        role: employee.auth ? employee.auth.role.name : 'auth: null',
+        role: employee.auth ? employee.auth.role.name : 'null',
         contract: employee.contract,
         birthDay: formattedDate,
-        gender: employee.gender,
+        gender: gender,
         phone: employee.phoneNumber,
         adress: employee.address,
         email: employee.email,
@@ -144,14 +146,6 @@ const DetailEmployeeScreen = () => {
                 />
                 <Text style={[styles.textLabel, { marginLeft: 3 }]}>Địa chỉ</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                <Icon
-                  source={require('../../assets/icons/Email.png')}
-                  color={'#A29EB6'}
-                  size={'big'}
-                />
-                <Text style={styles.textLabel}>Email</Text>
-              </View>
             </View>
 
             {/* -------------------data----------------  */}
@@ -174,9 +168,25 @@ const DetailEmployeeScreen = () => {
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
                 <Text style={styles.textData}>{data.adress}</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                <Text style={[styles.textData, { width: 190 }]}>{data.email}</Text>
-              </View>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+              <Icon
+                source={require('../../assets/icons/Email.png')}
+                color={'#A29EB6'}
+                size={'big'}
+              />
+              <Text style={styles.textLabel}>Email</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 82,
+              }}
+            >
+              <Text style={[styles.textData, { width: 180 }]}>{data.email}</Text>
             </View>
           </View>
         </View>
