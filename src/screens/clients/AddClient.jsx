@@ -84,7 +84,7 @@ const AddClient = () => {
           <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Client')}>
           <Text style={styles.text}>Thêm khách hàng</Text>
         </TouchableOpacity>
       </View>

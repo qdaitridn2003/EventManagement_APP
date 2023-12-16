@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Image,
@@ -9,10 +10,11 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
-import Icon from '../../components/common/Icon';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 import { Color, Padding } from '../../components/styles/GlobalStyles';
+import { axiosAuthGet, axiosAuthPost } from '../../configs/axiosInstance';
+import { accessTokenKey } from '../../constant/constant';
 import Calendar from '../items/Calendar';
 
 const ToolbarAdd = () => {
@@ -35,53 +37,147 @@ const ToolbarAdd = () => {
   );
 };
 
+const listStatus = [
+  { label: 'Có hiệu lực', value: 'active' },
+  { label: 'Đã hoàn thành', value: 'completed' },
+  { label: 'Đã hủy', value: 'cancelled' },
+];
+
 const ContentEvent = () => {
   const navigation = useNavigation();
   const [isCalendarVisible, setCalendarVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('select an option');
-
-  const initialListRole = [
-    { label: 'Trần Nam', value: 'Trần Nam' },
-    { label: 'Nguyễn C', value: 'Nguyễn C' },
-    { label: 'Phạm Tấn', value: 'Phạm Tấn' },
-  ];
-  const [listRole, setListRole] = useState([...initialListRole]);
+  const [eventValue, setEventValue] = useState([]);
+  const [isFocus, setIsFocus] = useState(false);
+  const [clientValue, setClientValue] = useState(null);
+  const [statusValue, setStatusValue] = useState(null);
+  const [listClients, setListClients] = useState([]);
+  const [listEvents, setListEvents] = useState([]);
+  const [contractName, setContractName] = useState('');
+  const [contractNote, setContractNote] = useState('');
+  const [attachments, setAttachments] = useState('');
 
   const toggleCalendar = () => {
     setCalendarVisible(!isCalendarVisible);
   };
 
-  const handleItemSelect = (index, value) => {
-    setSelectedOption(value);
+  useEffect(() => {
+    (async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthGet('/client/get-client-list', accessToken, {
+        limit: Infinity,
+      });
+      const handledListClients = await response.listClient.map((item) => {
+        return { label: item.fullName, value: item._id };
+      });
+      setListClients(handledListClients);
+    })();
+    (async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthGet('/event/get-list-event', accessToken, {
+        limit: Infinity,
+      });
+      const handledListEvents = await response.listEvent.map((item) => {
+        return { label: item.name, value: item._id };
+      });
+      setListEvents(handledListEvents);
+    })();
+  }, []);
+
+  const createContract = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthPost('/contract/create-contract', accessToken, {
+        name: contractName,
+        startDate: '2023-01-01', //TODO: Hardcode
+        endDate: '2023-11-11', //TODO: Hardcode
+        status: statusValue,
+        note: contractNote,
+        clientId: clientValue,
+        eventIds: eventValue,
+        attachments: JSON.stringify(attachments.split(' ')),
+      });
+      console.log(response);
+      if (response.contract) {
+        navigation.navigate('ContractsScreen');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <View>
       <Text style={styles.labelInput}>Tên hợp đồng</Text>
       <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="Hợp đồng mua bán" />
+        <TextInput
+          style={styles.textInput}
+          value={contractName}
+          onChangeText={(text) => setContractName(text)}
+          returnKeyType="next"
+          placeholder="Tên hợp đồng"
+        />
       </View>
 
+      <Text style={styles.labelInput}>Tên sự kiện</Text>
+      <MultiSelect
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={listEvents}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Select item' : '...'}
+        value={eventValue}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setEventValue(item);
+          setIsFocus(false);
+        }}
+      />
+
       <Text style={styles.labelInput}>Tên khách hàng</Text>
-      <View style={{ padding: 2, flexDirection: 'row' }}>
-        <ModalDropdown
-          defaultIndex={0}
-          options={listRole.map((item) => item.label)}
-          defaultValue={selectedOption}
-          onSelect={(index, value) => handleItemSelect(index, listRole[index].value)}
-          style={styles.dropdown}
-          textStyle={styles.dropdownText}
-          dropdownStyle={styles.dropdownDropdown}
-          dropdownTextStyle={styles.dropdownDropdownText}
-          dropdownTextContainerStyle={{ width: '100%' }}
-          animated
-        />
-        <Icon
-          style={{ position: 'absolute', right: 20, top: 24 }}
-          source={require('../../assets/icons/ArrowDropDown.png')}
-          color={Color.colorBlack}
-        />
-      </View>
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        iconStyle={styles.iconStyle}
+        data={listClients}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Select item' : '...'}
+        value={clientValue}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setClientValue(item.value);
+          setIsFocus(false);
+        }}
+      />
+
+      <Text style={styles.labelInput}>Trạng thái</Text>
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        iconStyle={styles.iconStyle}
+        data={listStatus}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Select item' : '...'}
+        value={statusValue}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setStatusValue(item.value);
+          setIsFocus(false);
+        }}
+      />
 
       <Text style={styles.labelInput}>Bắt đầu</Text>
       <Calendar />
@@ -91,25 +187,37 @@ const ContentEvent = () => {
 
       <Text style={styles.labelInput}>Ghi chú</Text>
       <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
+        <TextInput
+          style={styles.textInput}
+          value={contractNote}
+          onChangeText={(text) => setContractNote(text)}
+          returnKeyType="next"
+          placeholder=""
+        />
       </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        // onPress={() => navigation.navigate('ContractsScreen')}
-      >
+      <Text style={styles.labelInput}>Tệp đính kèm</Text>
+      <View style={styles.containerTextInput}>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={(text) => setAttachments(text)}
+          returnKeyType="next"
+          placeholder=""
+        />
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={() => createContract()}>
         <Text style={styles.text}>Tạo hợp đồng</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
 const AddContracts = () => {
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
-        <ToolbarAdd />
-        <ContentEvent />
-      </View>
+    <ScrollView style={styles.container}>
+      <ToolbarAdd />
+      <ContentEvent />
     </ScrollView>
   );
 };
@@ -121,7 +229,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 800,
     paddingHorizontal: Padding.p_5xl,
-    paddingVertical: Padding.p_base,
+    paddingVertical: Padding.p_7xs,
   },
   toolbarDetail: {
     flexDirection: 'row',
@@ -208,9 +316,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
   },
-  dropDown: {
-    marginEnd: 10,
-  },
 
   textFlexBox: {
     flexDirection: 'row',
@@ -234,35 +339,37 @@ const styles = StyleSheet.create({
     height: 45,
   },
   dropdown: {
-    marginTop: 10,
-    width: '100%',
-    borderWidth: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'transparent',
-    backgroundColor: 'white',
-    paddingHorizontal: 12,
-    elevation: 3,
-  },
-
-  dropdownText: {
-    fontSize: 16,
-    paddingHorizontal: 12,
-    width: '100%',
-    paddingVertical: 12,
-  },
-  dropdownDropdown: {
-    width: '82%',
-    height: 200,
+    height: 50,
     borderColor: 'gray',
-    borderWidth: 1,
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
   },
-  dropdownDropdownText: {
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
     fontSize: 16,
-    backgroundColor: '#fff',
-    width: '100%',
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });
 

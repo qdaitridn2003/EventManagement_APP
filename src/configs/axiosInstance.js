@@ -63,9 +63,9 @@ export const axiosDel = async (path, query, config) => {
 export const axiosAuthGet = async (path, accessToken, query, config) => {
   try {
     const result = await axiosInstance.get(path, {
-      ...config,
-      params: query,
       headers: { Authorization: `Bearer ${accessToken}` },
+      params: query,
+      ...config,
     });
     return result.data.data;
   } catch (error) {
@@ -80,10 +80,10 @@ export const axiosAuthGet = async (path, accessToken, query, config) => {
 
 export const axiosAuthPost = async (path, accessToken, data, config) => {
   try {
-    const result = await axiosInstance.post(path, {
-      ...config,
-      data,
+    const result = await axiosInstance.post(path, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
+
+      ...config,
     });
     return result.data.data;
   } catch (error) {
@@ -98,10 +98,9 @@ export const axiosAuthPost = async (path, accessToken, data, config) => {
 
 export const axiosAuthPut = async (path, accessToken, data, config) => {
   try {
-    const result = await axiosInstance.put(path, {
-      ...config,
-      data,
+    const result = await axiosInstance.put(path, data, {
       headers: { Authorization: `Bearer ${accessToken}` },
+      ...config,
     });
     return result.data.data;
   } catch (error) {
@@ -117,9 +116,9 @@ export const axiosAuthPut = async (path, accessToken, data, config) => {
 export const axiosAuthDel = async (path, accessToken, query, config) => {
   try {
     const result = await axiosInstance.delete(path, {
-      ...config,
-      params: query,
       headers: { Authorization: `Bearer ${accessToken}` },
+      params: query,
+      ...config,
     });
     return result.data.data;
   } catch (error) {

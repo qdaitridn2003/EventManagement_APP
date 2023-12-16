@@ -71,7 +71,7 @@ const ContentEvent = () => {
         open={openDropdown}
         setOpen={() => setopenDropdown(!openDropdown)}
         value={currentvalue}
-        setValue={val => setcurrentvalue(val)}
+        setValue={(val) => setcurrentvalue(val)}
         maxHeight={200}
         autoScroll
         placeholder="Chọn loại hợp đồng"
@@ -134,7 +134,7 @@ const ContentEvent = () => {
         <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Event')}>
         <Text style={styles.text}>Thêm dịch vụ</Text>
       </TouchableOpacity>
     </View>
