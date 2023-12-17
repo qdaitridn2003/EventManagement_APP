@@ -11,9 +11,13 @@ export const AppContextProvider = (props) => {
 
   const [idEmployee, setIdEmployee] = useState('avc');
   const dataIdEmployee = [idEmployee, setIdEmployee];
+  const [idContract, setIdContract] = useState('avc');
+  const dataIdContract = [idContract, setIdContract];
 
   return (
-    <AppContext.Provider value={{ isLogin, setIsLogin, data, setIsData, popup, dataIdEmployee }}>
+    <AppContext.Provider
+      value={{ isLogin, setIsLogin, data, setIsData, popup, dataIdEmployee, dataIdContract }}
+    >
       {children}
     </AppContext.Provider>
   );

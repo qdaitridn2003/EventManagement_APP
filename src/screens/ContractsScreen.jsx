@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
@@ -14,7 +15,8 @@ import ItemListContracts from './Contracts/ItemListContracts';
 import SearchBar from './employees/SearchBar';
 import FilterBar from '../components/common/FilterBar';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
-import axiosGet from '../configs/axiosInstance';
+import { axiosAuthGet } from '../configs/axiosInstance';
+import { accessTokenKey } from '../constant/constant';
 
 const ContractsHeader = () => {
   const navigation = useNavigation();
@@ -42,10 +44,24 @@ const ContractsScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axiosGet('/api/contract/get-list-contract'); // Replace with your API endpoint
-        setContracts(result);
+        const accessToken = await AsyncStorage.getItem(accessTokenKey);
+        const response = await axiosAuthGet('/contract/get-list-contract', accessToken, {
+          limit: Infinity,
+        });
+
+        if (response) {
+          const listContract = response.listContract;
+          const data = listContract.map((contract) => ({
+            id: contract._id,
+            name: contract.name,
+            startDate: contract.startDate,
+            endDate: contract.endDate,
+            status: contract.status,
+          }));
+          setContracts(data);
+        }
       } catch (error) {
-        console.log('Error fetching contracts:', error);
+        console.log('Lỗi khi tải danh sách hợp đồng:', error);
       } finally {
         setIsLoading(false);
       }
@@ -53,6 +69,10 @@ const ContractsScreen = () => {
 
     fetchData();
   }, []);
+
+  const navigateToDetail = (itemId) => {
+    navigation.navigate('DetailContractsScreen', { itemId });
+  };
 
   return (
     <View style={styles.container}>
@@ -66,7 +86,11 @@ const ContractsScreen = () => {
 
           <FlatList
             data={contracts}
-            renderItem={({ item }) => <ItemListContracts data={item} />}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigateToDetail(item.id)}>
+                <ItemListContracts {...item} />
+              </TouchableOpacity>
+            )}
             keyExtractor={(item) => item.id}
             style={{ height: '100%', width: '100%' }}
             showsVerticalScrollIndicator={false}

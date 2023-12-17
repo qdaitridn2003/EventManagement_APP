@@ -20,7 +20,7 @@ const Calendar = () => {
     setSelectedDate(date);
     hideDatePicker();
 
-    // console.log('Ngày và giờ đã chọn:', date);
+    console.log('Ngày và giờ đã chọn:', date);
   };
 
   return (
