@@ -18,10 +18,12 @@ const DetailEmployeeScreen = () => {
   const { dataIdEmployee } = useContext(AppContext);
   const [idEmployee] = dataIdEmployee;
   const [isModalIndicator, setIsModalIndicator] = useState(true);
+  const [isModalDeleteIndicator, setIsModalDeleteIndicator] = useState(false);
   const { checkData } = useContext(AppContext);
   const [dataChange, setDataChange] = checkData;
 
   const handleDeleteEmployee = async () => {
+    setIsModalDeleteIndicator(true);
     const token = await AsyncStorage.getItem(accessTokenKey);
     const respone = await axiosAuthDel(`/employee/delete-employee/${data.id}`, token);
     console.log(respone);
@@ -194,6 +196,7 @@ const DetailEmployeeScreen = () => {
           </View>
         </View>
       )}
+      {isModalDeleteIndicator ? <CustomIndicator size={70} /> : null}
     </View>
   );
 };

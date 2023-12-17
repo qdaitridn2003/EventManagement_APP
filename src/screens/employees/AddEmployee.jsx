@@ -20,7 +20,7 @@ const AddEmployee = () => {
   const [showDate, setShowDate] = useState(false);
   const [inputs, setInputs] = useState({
     fullName: '',
-    dateOfBirth: '2023-11-11',
+    dateOfBirth: 'YYYY-MM-DD',
     gender: 'male',
     phone: '',
     address: '',
