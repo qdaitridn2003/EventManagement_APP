@@ -1,6 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+<<<<<<< HEAD
 import React from 'react';
+=======
+
+import React, { useEffect, useState } from 'react';
+>>>>>>> 7f49bd9e69a6002460578f8adbc7e3d40fac5202
 
 import Icon from '../components/common/Icon';
 import { Color } from '../components/styles/GlobalStyles';
@@ -24,6 +29,8 @@ import {
   DeviceScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { axiosAuthGet } from '../configs/axiosInstance';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -91,7 +98,54 @@ const BottomNavigation = () => {
 const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
-  return (
+  const [isEmployee, setIsEmployee] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const accessToken = await getAccessToken();
+      const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
+      if (respone.employee.auth.role.name !== 'Admin') {
+        setIsEmployee(true);
+      }
+    })();
+  });
+  return isEmployee ? (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => {
+          let iconSource;
+
+          if (route.name === 'Event') {
+            iconSource = require('../assets/icons/Event.png');
+          } else if (route.name === 'Profile') {
+            iconSource = require('../assets/icons/Manager.png');
+          }
+
+          return <Icon source={iconSource} color={color} style={{ marginTop: 8 }} />;
+        },
+        tabBarStyle: {
+          height: 64,
+          borderTopRightRadius: 16,
+          borderTopLeftRadius: 16,
+          paddingHorizontal: 20,
+        },
+        tabBarActiveTintColor: Color.primary,
+        tabBarInactiveTintColor: Color.neutral2,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: 'bold',
+          marginBottom: 10,
+        },
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+        backgroundColor: 'red',
+        borderTopWidth: 0,
+      })}
+    >
+      <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
+
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Cá nhân' }} />
+    </Tab.Navigator>
+  ) : (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
@@ -129,8 +183,11 @@ const HomeNavigation = () => {
       })}
     >
       <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
+
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
+
       <Tab.Screen name="Employee" component={EmployeeScreen} options={{ title: 'Nhân viên' }} />
+
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Cá nhân' }} />
     </Tab.Navigator>
   );

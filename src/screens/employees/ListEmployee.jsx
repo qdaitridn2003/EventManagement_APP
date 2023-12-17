@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -16,10 +17,14 @@ import DummyDataEmployee from './DummyDataEmployee';
 import { Color } from '../../components/styles/GlobalStyles';
 import { AppContext } from '../../contexts';
 import CustomButton from '../../components/common/CustomButton';
+import { getAccessToken } from '../../configs/utils/getAccessToken';
+import { axiosAuthDel } from '../../configs/axiosInstance';
 
-const Item = ({ id, name, role, imageSource }) => {
-  const [isMenu, setIsMenu] = useState(false);
+const Item = ({ id, name, role, imageSource, authId }) => {
   const navigation = useNavigation();
+  const { checkData } = useContext(AppContext);
+  const [dataChange, setDataChange] = checkData;
+  const [isMenu, setIsMenu] = useState(false);
   const { dataIdEmployee } = useContext(AppContext);
   const [idEmployee, setIdEmployee] = dataIdEmployee;
 
@@ -30,6 +35,13 @@ const Item = ({ id, name, role, imageSource }) => {
   const handleClickDetail = () => {
     setIsMenu(false);
     handleClickItem();
+  };
+  const handleClickDelete = async () => {
+    const accessToken = await getAccessToken();
+    const respone = await axiosAuthDel(`/employee/delete-employee/${id}`, accessToken);
+    const responeAcount = await axiosAuthDel(`/auth/delete-account/${authId}`, accessToken);
+    setDataChange((prev) => prev + 1);
+    setIsMenu(false);
   };
   return (
     <TouchableWithoutFeedback onPress={handleClickItem}>
@@ -58,7 +70,11 @@ const Item = ({ id, name, role, imageSource }) => {
                 </TouchableWithoutFeedback>
                 <View style={styles.backgroundPopup}>
                   <View style={styles.containerButtonPopup}>
-                    <CustomButton color={Color.semanticRed} title="Xoá" />
+                    <CustomButton
+                      color={Color.semanticRed}
+                      onPress={handleClickDelete}
+                      title="Xoá"
+                    />
                     <CustomButton title="Thông tin chi tiết" onPress={handleClickDetail} />
                     <TouchableOpacity style={styles.buttonCancel} onPress={() => setIsMenu(false)}>
                       <Text style={styles.textCancel}>Huỷ</Text>
@@ -81,11 +97,35 @@ const ListEmployee = ({ searchPhrase, setClicked, data }) => {
       item.name.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, '')) ||
       item.role.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ''))
     ) {
-      return <Item id={item.id} name={item.name} role={item.role} imageSource={item.image} />;
+      return (
+        <Item
+          id={item._id}
+          name={item.fullName}
+          role={item.auth.role.name}
+          imageSource={item.avatar}
+          authId={item.auth.id}
+        />
+      );
     }
     return null;
   };
+  const { loadingFooter, pagination, checkData } = useContext(AppContext);
+  const [isLoading, setIsLoading] = loadingFooter;
+  const [pageData, setPageData] = pagination;
+  const [dataChange, setDataChange] = checkData;
 
+  const renderLoader = () => {
+    return isLoading ? (
+      <View style={{ marginTop: 20 }}>
+        <ActivityIndicator size="large" />
+      </View>
+    ) : null;
+  };
+  const loadMoreItem = () => {
+    setPageData(pageData + 1);
+    setDataChange((prev) => prev + 1);
+    console.log('Load more Item');
+  };
   return (
     <SafeAreaView style={styles.list__container}>
       <View
@@ -96,8 +136,10 @@ const ListEmployee = ({ searchPhrase, setClicked, data }) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           showsVerticalScrollIndicator={false}
+          onEndReached={loadMoreItem}
+          ListFooterComponent={renderLoader}
         />
       </View>
     </SafeAreaView>

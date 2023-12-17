@@ -52,7 +52,7 @@ const AddEmployee = () => {
     }
     if (!inputs.phone) {
       handleErrors('Vui lòng nhập Số điện thoại', 'phone');
-    } else if (inputs.phone.length < 10 || inputs.phone.length > 11) {
+    } else if (inputs.phone.length < 10 || inputs.phone.length > 10) {
       handleErrors('Số điện thoại không hợp lệ', 'phone');
     }
 
