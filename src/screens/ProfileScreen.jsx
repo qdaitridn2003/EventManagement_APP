@@ -29,15 +29,38 @@ const MyStatusBar = ({ backgroundColor, ...props }) => (
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  const { setIsLogin } = useContext(AppContext);
+  const { setIsLogin, pagination, loadingFooter } = useContext(AppContext);
   const [dataAvatar, setDataAvatar] = useState('');
+  const [dataFullName, setDataFullName] = useState('');
+  const [pageData, setPageData] = pagination;
+  const [isLoading, setIsLoading] = loadingFooter;
+  const [checkData, setCheckData] = useState({});
 
   const handleLogOut = async () => {
     await AsyncStorage.setItem(accessTokenKey, '');
+    setPageData(1);
+    setIsLoading(true);
     setIsLogin(false);
   };
 
   const Toolbar = () => {
+    useEffect(() => {
+      const interval = setInterval(() => {
+        fetchData();
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }, [checkData]);
+    const fetchData = async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
+      const responeAvatar = respone.employee.avatar;
+      const responeFullName = respone.employee.fullName;
+      setDataAvatar(responeAvatar);
+      setDataFullName(responeFullName);
+    };
     return (
       <View style={styles.infoImage}>
         <Image
@@ -45,18 +68,11 @@ const ProfileScreen = () => {
           resizeMode="cover"
           source={dataAvatar ? { uri: dataAvatar } : require('../assets/icons/AddAvatar.jpeg')}
         />
-        <Text style={styles.textInfo}>Admin</Text>
+        <Text style={styles.textInfo}>{dataFullName}</Text>
       </View>
     );
   };
-  useEffect(() => {
-    (async () => {
-      const accessToken = await AsyncStorage.getItem(accessTokenKey);
-      const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
-      const responeAvatar = respone.employee.avatar;
-      setDataAvatar(responeAvatar);
-    })();
-  }, []);
+
   return (
     <View style={styles.container}>
       <MyStatusBar backgroundColor={Color.colorMidnightblue} />
