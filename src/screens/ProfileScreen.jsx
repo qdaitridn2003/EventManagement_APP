@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext, useEffect, useState } from 'react';
@@ -11,13 +12,12 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Color, Padding } from '../components/styles/GlobalStyles';
-import { AppContext } from '../contexts/AppContext';
-import { accessTokenKey } from '../constant/constant';
-import { getAccessToken } from '../configs/utils/getAccessToken';
 import { axiosAuthGet } from '../configs/axiosInstance';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { accessTokenKey } from '../constant/constant';
+import { AppContext } from '../contexts/AppContext';
 
 const { height, width } = Dimensions.get('window');
 
@@ -62,7 +62,10 @@ const ProfileScreen = () => {
       <MyStatusBar backgroundColor={Color.colorMidnightblue} />
       <Toolbar />
       <View style={styles.contentProfile}>
-        <TouchableOpacity onPress={() => navigation.navigate('DetailProfileScreen')}>
+        <TouchableOpacity
+          style={styles.lineItem}
+          onPress={() => navigation.navigate('DetailProfileScreen')}
+        >
           <Text style={styles.labelInput}>Thông tin</Text>
         </TouchableOpacity>
 
@@ -72,6 +75,14 @@ const ProfileScreen = () => {
 
         <TouchableOpacity onPress={() => navigation.navigate('ContractsScreen')}>
           <Text style={styles.labelInput}>Hợp đồng</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('DeviceScreen')}>
+          <Text style={styles.labelInput}>Thiết bị</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('TransportScreen')}>
+          <Text style={styles.labelInput}>Phương tiện</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
@@ -149,6 +160,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     height: 40,
+  },
+  lineItem: {
+    flexDirection: 'row',
   },
 });
 

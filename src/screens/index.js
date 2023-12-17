@@ -4,6 +4,8 @@ export { default as EventScreen } from './EventScreen';
 export { default as HomeScreen } from './HomeScreen';
 export { default as LoginScreen } from './auth/LoginScreen';
 export { default as ProfileScreen } from './ProfileScreen';
+export { default as DeviceScreen } from './DeviceScreen';
+export { default as TransportScreen } from './TransportScreen';
 export { default as NotificationScreen } from './NotificationScreen';
 export { default as RegisterScreen } from './auth/RegisterScreen';
 export { default as StatisticsScreen } from './StatisticsScreen';

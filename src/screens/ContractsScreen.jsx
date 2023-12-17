@@ -13,7 +13,7 @@ import {
 
 import ItemListContracts from './Contracts/ItemListContracts';
 import SearchBar from './employees/SearchBar';
-import FilterBar from '../components/common/FilterBar';
+import FilterBar from './Contracts/FilterBar';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { accessTokenKey } from '../constant/constant';
@@ -33,13 +33,19 @@ const ContractsHeader = () => {
   );
 };
 
-const listFilter = [{ status: 'Tất cả' }, { status: 'Đang hoạt động' }, { status: 'Hoàn thành' }];
-
 const ContractsScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [contracts, setContracts] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState('Tất cả');
+
+  const listFilter = [
+    { status: 'Tất cả' },
+    { status: 'Đang hoạt động' },
+    { status: 'Hoàn thành' },
+    { status: 'Đã hủy' },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +64,16 @@ const ContractsScreen = () => {
             endDate: contract.endDate,
             status: contract.status,
           }));
-          setContracts(data);
+
+          data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+          // Lọc dữ liệu theo trạng thái được chọn
+          const filteredData =
+            selectedStatus === 'Tất cả'
+              ? data
+              : data.filter((item) => item.status === selectedStatus);
+
+          setContracts(filteredData);
         }
       } catch (error) {
         console.log('Lỗi khi tải danh sách hợp đồng:', error);
@@ -68,10 +83,14 @@ const ContractsScreen = () => {
     };
 
     fetchData();
-  }, []);
+  }, [selectedStatus]);
 
   const navigateToDetail = (itemId) => {
     navigation.navigate('DetailContractsScreen', { itemId });
+  };
+
+  const handleFilterChange = (status) => {
+    setSelectedStatus(status);
   };
 
   return (
@@ -82,7 +101,11 @@ const ContractsScreen = () => {
         <>
           <ContractsHeader />
           <SearchBar searchPhrase={searchPhrase} setSearchPhrase={setSearchPhrase} />
-          <FilterBar listTab={listFilter} style={styles.filterBar} />
+          <FilterBar
+            listTab={listFilter}
+            selectedStatus={selectedStatus}
+            onTabPress={handleFilterChange}
+          />
 
           <FlatList
             data={contracts}

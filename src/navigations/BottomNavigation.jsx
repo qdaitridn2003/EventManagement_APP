@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import React from 'react';
 
 import Icon from '../components/common/Icon';
@@ -21,6 +20,8 @@ import {
   DetailContractsScreen,
   DetailEmployeeScreen,
   EditProfileScreen,
+  TransportScreen,
+  DeviceScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
 
@@ -70,6 +71,12 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="ContractsScreen"
         component={ContractsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="DeviceScreen" component={DeviceScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="TransportScreen"
+        component={TransportScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -38,13 +38,33 @@ const ItemListContracts = ({ id, name, startDate, endDate, status }) => {
           <Image source={require('../../assets/icon--event2.png')} style={styles.imageCalendar} />
           <Text style={{ alignSelf: 'center' }}>{formatDate(endDate)}</Text>
         </View>
-        <View style={styles.line2}>
-          <Image
-            source={require('../../assets/icons8-green-dot.png')}
-            style={styles.imageCalendar}
-          />
-          <Text style={{ alignSelf: 'center' }}>Trạng thái: {status}</Text>
-        </View>
+        {status === 'Đang hoạt động' && (
+          <View style={styles.statusGreen}>
+            <Image
+              source={require('../../assets/icons8-green-dot.png')}
+              style={styles.imageCalendar}
+            />
+            <Text style={styles.textStatusGreen}>{status}</Text>
+          </View>
+        )}
+        {status === 'Đã hủy' && (
+          <View style={styles.statusRed}>
+            <Image
+              source={require('../../assets/icons8-red-dot.png')}
+              style={styles.imageCalendar}
+            />
+            <Text style={styles.textStatusRed}>{status}</Text>
+          </View>
+        )}
+        {status === 'Hoàn thành' && (
+          <View style={styles.statusBlue}>
+            <Image
+              source={require('../../assets/icons8-blue-dot.png')}
+              style={styles.imageCalendar}
+            />
+            <Text style={styles.textStatusBlue}>{status}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -66,7 +86,38 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   line2: {
+    marginTop: 6,
     flexDirection: 'row',
+  },
+  statusGreen: {
+    marginTop: 6,
+    flexDirection: 'row',
+  },
+  statusRed: {
+    marginTop: 6,
+    flexDirection: 'row',
+  },
+  statusBlue: {
+    marginTop: 6,
+    flexDirection: 'row',
+  },
+  textStatusGreen: {
+    alignSelf: 'center',
+    fontSize: 15,
+    color: '#009900',
+    fontWeight: 'bold',
+  },
+  textStatusRed: {
+    alignSelf: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#FF3300',
+  },
+  textStatusBlue: {
+    alignSelf: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#3366CC',
   },
   textName: {
     fontSize: 18,
