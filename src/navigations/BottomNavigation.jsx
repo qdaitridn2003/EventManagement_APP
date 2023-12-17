@@ -23,6 +23,8 @@ import {
   EditProfileScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
+import DetailClientScreen from '../screens/clients/DetailClientScreen';
+import { Text, View } from 'react-native';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -77,6 +79,11 @@ const BottomNavigation = () => {
         component={HomeNavigation}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="DetailClientScreen"
+        component={DetailClientScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -121,7 +128,7 @@ const HomeNavigation = () => {
         borderTopWidth: 0,
       })}
     >
-      <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
+      <Tab.Screen name="Event" component={EventScreen} options={{ title: 'Sự kiện' }} />
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
       <Tab.Screen name="Employee" component={EmployeeScreen} options={{ title: 'Nhân viên' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Cá nhân' }} />

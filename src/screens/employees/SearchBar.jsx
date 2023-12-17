@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Color } from '../../components/styles/GlobalStyles';
 
-const SearchBar = ({ searchPhrase, setSearchPhrase }) => {
+export const SearchBar = ({ searchPhrase, setSearchPhrase }) => {
   const [clicked, setClicked] = useState(false);
   return (
     <View style={styles.container}>

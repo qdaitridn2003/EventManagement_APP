@@ -11,6 +11,7 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={{ flexDirection: 'row', padding: 2 }}>
         <TextInput
+          theme={{ colors: { onSurfaceVariant: Color.neutral2 } }}
           autoCorrect={false}
           autoCapitalize="none"
           placeholder=""
