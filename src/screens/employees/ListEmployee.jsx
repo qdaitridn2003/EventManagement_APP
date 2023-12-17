@@ -19,6 +19,7 @@ import { AppContext } from '../../contexts';
 import CustomButton from '../../components/common/CustomButton';
 import { getAccessToken } from '../../configs/utils/getAccessToken';
 import { axiosAuthDel } from '../../configs/axiosInstance';
+import Icon from '../../components/common/Icon';
 
 const Item = ({ id, name, role, imageSource, authId }) => {
   const navigation = useNavigation();
@@ -27,6 +28,7 @@ const Item = ({ id, name, role, imageSource, authId }) => {
   const [isMenu, setIsMenu] = useState(false);
   const { dataIdEmployee } = useContext(AppContext);
   const [idEmployee, setIdEmployee] = dataIdEmployee;
+  const [isModalDeleteIndicator, setIsModalDeleteIndicator] = useState(false);
 
   const handleClickItem = () => {
     setIdEmployee(id);
@@ -37,6 +39,7 @@ const Item = ({ id, name, role, imageSource, authId }) => {
     handleClickItem();
   };
   const handleClickDelete = async () => {
+    setIsModalDeleteIndicator(true);
     const accessToken = await getAccessToken();
     const respone = await axiosAuthDel(`/employee/delete-employee/${id}`, accessToken);
     const responeAcount = await axiosAuthDel(`/auth/delete-account/${authId}`, accessToken);
@@ -58,15 +61,17 @@ const Item = ({ id, name, role, imageSource, authId }) => {
             <Text>{role}</Text>
           </View>
 
-          <TouchableWithoutFeedback onPress={() => setIsMenu(!isMenu)}>
-            <Image source={require('../../assets/icons/MoreVert.png')} />
-          </TouchableWithoutFeedback>
+          <TouchableOpacity onPress={() => setIsMenu(!isMenu)}>
+            <Icon source={require('../../assets/icons/MoreVert.png')} color={Color.neutral2} />
+          </TouchableOpacity>
 
           {isMenu && (
             <Modal transparent visible={true} animationType="fade">
               <View style={styles.containerModal}>
                 <TouchableWithoutFeedback onPress={() => setIsMenu(false)}>
-                  <View style={styles.background}></View>
+                  <View style={styles.background}>
+                    {isModalDeleteIndicator ? <ActivityIndicator size={'large'} /> : null}
+                  </View>
                 </TouchableWithoutFeedback>
                 <View style={styles.backgroundPopup}>
                   <View style={styles.containerButtonPopup}>
@@ -94,8 +99,10 @@ const ListEmployee = ({ searchPhrase, setClicked, data }) => {
   const renderItem = ({ item }) => {
     if (
       searchPhrase === '' ||
-      item.name.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, '')) ||
-      item.role.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ''))
+      item.fullName.toUpperCase().includes(searchPhrase.toUpperCase().trim().replace(/\s/g, '')) ||
+      item.auth.role.name
+        .toUpperCase()
+        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ''))
     ) {
       return (
         <Item
@@ -116,7 +123,7 @@ const ListEmployee = ({ searchPhrase, setClicked, data }) => {
 
   const renderLoader = () => {
     return isLoading ? (
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 10, justifyContent: 'center' }}>
         <ActivityIndicator size="large" />
       </View>
     ) : null;
@@ -155,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     elevation: 4,
-    margin: 20,
+    marginVertical: 16,
     marginHorizontal: 4,
   },
   item: {
@@ -216,6 +223,7 @@ const styles = StyleSheet.create({
   background: {
     backgroundColor: 'transparent',
     height: '70%',
+    justifyContent: 'center',
   },
   containerButtonPopup: {
     paddingHorizontal: 10,

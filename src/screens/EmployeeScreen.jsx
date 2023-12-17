@@ -38,7 +38,7 @@ const EmployeeScreen = () => {
       const token = await AsyncStorage.getItem(accessTokenKey);
 
       const respone = await axiosAuthGet('/employee/get-employee-list', token, {
-        limit: 5,
+        limit: 7,
         page: pageData,
       });
 
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 812,
     paddingVertical: Padding.p_base,
-    paddingHorizontal: Padding.p_5xl,
+    paddingHorizontal: 20,
     alignItems: 'center',
     flex: 1,
     backgroundColor: Color.colorWhite,
