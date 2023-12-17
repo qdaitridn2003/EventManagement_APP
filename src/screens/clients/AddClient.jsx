@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Image,
@@ -9,180 +9,200 @@ import {
   Text,
   TextInput,
   ScrollView,
+  Button,
 } from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
 import MyCalendar from '../items/MyCalendar';
+import SubHeaderBar from '../../components/headerBar/SubHeaderBar';
+import { accessTokenKey } from '../../constant/constant';
+import { getAccessToken } from '../../configs/utils/getAccessToken';
+import { axiosAuthPost, axiosAuthPut } from '../../configs/axiosInstance';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomInput from '../../components/common/CustomInput';
+import { RadioButton } from 'react-native-paper';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import moment from 'moment';
+import IconButton from '../../components/common/IconButton';
+import CustomButton from '../../components/common/CustomButton';
 
-const AddClient = () => {
+const AddClient = ({ route }) => {
   const navigation = useNavigation();
-  const [isCalendarVisible, setCalendarVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const toggleCalendar = () => {
-    setCalendarVisible(!isCalendarVisible);
+  const { editData } = route.params || {};
+
+  const [fullName, setFullName] = useState(editData?.fullName || '');
+  const [dateOfBirth, setDateOfBirth] = useState(editData?.dateOfBirth || '');
+  const [gender, setGender] = useState(editData?.gender || '');
+  const [phoneNumber, setPhoneNumber] = useState(editData?.phoneNumber || '');
+  const [email, setEmail] = useState(editData?.email || '');
+  const [address, setAddress] = useState(editData?.address || '');
+
+  useEffect(() => {
+    if (editData) {
+      setFullName(editData.fullName);
+      setDateOfBirth(editData.dateOfBirth);
+      setGender(editData.gender);
+      setPhoneNumber(editData.phoneNumber);
+      setEmail(editData.email);
+      setAddress(editData.address);
+    }
+  }, [editData]);
+
+  const handleDateConfirm = (date) => {
+    // Format the selected date to '2023-11-11T00:00:00.000Z'
+    const formattedDate = moment(date).toISOString();
+    setDateOfBirth(formattedDate);
+    setDatePickerVisibility(false);
   };
 
-  const handleImageClick = () => {
-    Alert.alert('Image Clicked!');
+  const addNewClient = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem(accessTokenKey);
+      await axiosAuthPost('/client/create-info-client', token, {
+        fullName,
+        dateOfBirth,
+        gender,
+        phoneNumber,
+        email,
+        address,
+      });
+
+      console.log('Client added successfully');
+
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error adding client:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateClient = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem(accessTokenKey);
+      await axiosAuthPut(`/client/update-info-client/${editData._id}`, token, {
+        fullName,
+        dateOfBirth,
+        gender,
+        phoneNumber,
+        email,
+        address,
+      });
+
+      console.log('Client updated successfully');
+
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error updating client:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Tạo khách hàng</Text>
+    <View style={styles.container}>
+      <SubHeaderBar
+        title={editData ? 'Sửa khách hàng' : 'Thêm khách hàng'}
+        onBackPress={() => navigation.goBack()}
+      />
 
-        <TouchableOpacity onPress={handleImageClick} style={styles.touchable}>
-          <Image
-            style={styles.avatar}
-            resizeMode="cover"
-            source={require('../../assets/avatar-28x283x.png')}
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+        <CustomInput
+          label={'Họ và tên'}
+          placeholder="Họ và tên khách hàng"
+          value={fullName}
+          onChangeText={(text) => setFullName(text)}
+        />
+
+        {/* Date of Birth */}
+        <Text style={styles.label}>Ngày sinh</Text>
+        <View style={styles.datePicker}>
+          <IconButton
+            iconSource={require('../../assets/icons/Cake.png')}
+            isSizeSmall={true}
+            onPress={() => setDatePickerVisibility(true)}
           />
-        </TouchableOpacity>
 
-        <Text style={styles.labelInput}>Họ và tên</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="Team Cook" />
-        </View>
-        <Text style={styles.labelInput}>Ngày sinh</Text>
-        <View style={styles.textFlexBox}>
-          <TouchableOpacity>
-            <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-          </TouchableOpacity>
-          <Text style={styles.dashboard}>20/09/2023</Text>
+          {/* Display selected date in DD-MM-YYYY format */}
+          <Text style={styles.datePickerText}>
+            {dateOfBirth ? moment(dateOfBirth).format('DD-MM-YYYY') : 'Chọn ngày sinh'}
+          </Text>
         </View>
 
-        {isCalendarVisible && <MyCalendar />}
-
-        <Text style={styles.labelInput}>Giới tính</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="Giới tính" />
-          <Image source={require('../../assets/drop-down.png')} style={styles.dropDown} />
+        <View>
+          <Text style={styles.label}>Giới tính</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <RadioButton.Group onValueChange={(value) => setGender(value)} value={gender}>
+              <RadioButton.Item label="Nam" value="male" />
+              <RadioButton.Item label="Nữ" value="female" />
+            </RadioButton.Group>
+          </View>
         </View>
 
-        <Text style={styles.labelInput}>Số điện thoại</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="0123456789" />
-        </View>
-        <Text style={styles.labelInput}>Email</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput
-            style={styles.textInput}
-            returnKeyType="next"
-            placeholder="teamcook@gmail.com"
-          />
-        </View>
-        <Text style={styles.labelInput}>Địa chỉ</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput
-            style={styles.textInput}
-            returnKeyType="next"
-            placeholder="127 Nguyễn Thị Thập"
-          />
-        </View>
-        <Text style={styles.labelInput}>Ghi chú</Text>
-        <View style={styles.containerTextInput}>
-          <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
-        </View>
+        <CustomInput
+          label={'Số điện thoại'}
+          placeholder="0000 000 000"
+          value={phoneNumber}
+          onChangeText={(text) => setPhoneNumber(text)}
+        />
+        <CustomInput
+          label={'Email'}
+          placeholder="Địa chỉ email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <CustomInput
+          label={'Địa chỉ'}
+          placeholder="Số nhà, tên đường, quận, thành phố"
+          value={address}
+          onChangeText={(text) => setAddress(text)}
+        />
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Client')}>
-          <Text style={styles.text}>Thêm khách hàng</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {/* Add client button */}
+        <CustomButton
+          title={editData ? 'Lưu thay đổi' : 'Thêm khách hàng'}
+          onPress={editData ? updateClient : addNewClient}
+        />
+      </ScrollView>
+
+      {/* Date Picker Modal */}
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        date={new Date(2000, 0, 1)}
+        onConfirm={handleDateConfirm}
+        onCancel={() => setDatePickerVisibility(false)}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.colorWhite,
-    width: '100%',
-    paddingHorizontal: Padding.p_5xl,
-    paddingVertical: Padding.p_base,
+    backgroundColor: Color.neutral4,
   },
-
-  title: {
-    fontSize: 25,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: '#643FDB',
-    backgroundColor: '#FFFFFF',
-    paddingTop: 15,
-    paddingBottom: 15,
+  scrollView: {
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
-  touchable: {
-    alignItems: 'center',
-  },
-  labelInput: {
-    marginTop: 16,
-    color: '#1C1243',
+  label: {
+    marginVertical: 8,
     fontWeight: 'bold',
     fontSize: 16,
   },
-  avatar: {
-    width: 100,
-    height: 100,
-  },
-  containerTextInput: {
-    marginTop: 6,
-    width: '100%',
-    height: 45,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    elevation: 3,
-    overflow: 'hidden',
-  },
-  iconUsername: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-    marginLeft: 24,
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: 'white',
-    height: 40,
-    marginLeft: 20,
-  },
-  button: {
-    marginTop: 25,
-    height: 48,
-    backgroundColor: '#643FDB',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  text: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  dropDown: {
-    marginEnd: 10,
-  },
-
-  textFlexBox: {
+  datePicker: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  dashboard: {
+  datePickerText: {
     fontSize: 16,
-    lineHeight: 29,
-    textAlign: 'left',
-    color: Color.colorMidnightblue,
-    fontWeight: '700',
-  },
-  logoEvent: {
     marginLeft: 8,
-    height: 24,
-    width: 24,
-    margin: 7,
   },
 });
 

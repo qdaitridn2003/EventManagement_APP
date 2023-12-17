@@ -25,8 +25,8 @@ import {
   DeviceScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
-import { getAccessToken } from '../configs/utils/getAccessToken';
-import { axiosAuthGet } from '../configs/axiosInstance';
+import DetailClientScreen from '../screens/clients/DetailClientScreen';
+import { Text, View } from 'react-native';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -85,6 +85,11 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="HomeNavigation"
         component={HomeNavigation}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailClientScreen"
+        component={DetailClientScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -178,7 +183,7 @@ const HomeNavigation = () => {
         borderTopWidth: 0,
       })}
     >
-      <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
+      <Tab.Screen name="Event" component={EventScreen} options={{ title: 'Sự kiện' }} />
 
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
 
