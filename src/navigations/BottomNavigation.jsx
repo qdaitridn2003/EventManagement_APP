@@ -1,11 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-<<<<<<< HEAD
-import React from 'react';
-=======
 
 import React, { useEffect, useState } from 'react';
->>>>>>> 7f49bd9e69a6002460578f8adbc7e3d40fac5202
 
 import Icon from '../components/common/Icon';
 import { Color } from '../components/styles/GlobalStyles';

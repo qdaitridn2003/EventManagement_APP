@@ -11,7 +11,7 @@ export const AppContextProvider = (props) => {
 
   const [idEmployee, setIdEmployee] = useState('');
   const dataIdEmployee = [idEmployee, setIdEmployee];
-  const [idContract, setIdContract] = useState('avc');
+  const [idContract, setIdContract] = useState('');
   const dataIdContract = [idContract, setIdContract];
 
   const [dataChange, setDataChange] = useState(1);
@@ -38,6 +38,7 @@ export const AppContextProvider = (props) => {
         pagination,
         loadingFooter,
         checkAcount,
+        dataIdContract,
       }}
     >
       {children}

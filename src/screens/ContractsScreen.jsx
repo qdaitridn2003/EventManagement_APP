@@ -11,9 +11,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
+import FilterBar from './Contracts/FilterBar';
 import ItemListContracts from './Contracts/ItemListContracts';
 import SearchBar from './employees/SearchBar';
-import FilterBar from './Contracts/FilterBar';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { accessTokenKey } from '../constant/constant';
@@ -37,6 +37,7 @@ const ContractsScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [searchPhrase, setSearchPhrase] = useState('');
+  const [clicked, setClicked] = useState(false);
   const [contracts, setContracts] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('Tất cả');
 
@@ -100,7 +101,12 @@ const ContractsScreen = () => {
       ) : (
         <>
           <ContractsHeader />
-          <SearchBar searchPhrase={searchPhrase} setSearchPhrase={setSearchPhrase} />
+          <SearchBar
+            searchPhrase={searchPhrase}
+            setSearchPhrase={setSearchPhrase}
+            clicked={clicked}
+            setClicked={setClicked}
+          />
           <FilterBar
             listTab={listFilter}
             selectedStatus={selectedStatus}
