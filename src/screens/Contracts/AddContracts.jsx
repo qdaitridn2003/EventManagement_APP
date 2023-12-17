@@ -37,28 +37,17 @@ const ToolbarAdd = () => {
   );
 };
 
-const listStatus = [
-  { label: 'Có hiệu lực', value: 'active' },
-  { label: 'Đã hoàn thành', value: 'completed' },
-  { label: 'Đã hủy', value: 'cancelled' },
-];
-
 const ContentEvent = () => {
   const navigation = useNavigation();
-  const [isCalendarVisible, setCalendarVisible] = useState(false);
   const [eventValue, setEventValue] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
   const [clientValue, setClientValue] = useState(null);
-  const [statusValue, setStatusValue] = useState(null);
   const [listClients, setListClients] = useState([]);
   const [listEvents, setListEvents] = useState([]);
   const [contractName, setContractName] = useState('');
   const [contractNote, setContractNote] = useState('');
   const [attachments, setAttachments] = useState('');
-
-  const toggleCalendar = () => {
-    setCalendarVisible(!isCalendarVisible);
-  };
+  const [status, setStatus] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -66,6 +55,7 @@ const ContentEvent = () => {
       const response = await axiosAuthGet('/client/get-client-list', accessToken, {
         limit: Infinity,
       });
+      console.log(response);
       const handledListClients = await response.listClient.map((item) => {
         return { label: item.fullName, value: item._id };
       });
@@ -90,7 +80,7 @@ const ContentEvent = () => {
         name: contractName,
         startDate: '2023-01-01', //TODO: Hardcode
         endDate: '2023-11-11', //TODO: Hardcode
-        status: statusValue,
+        status,
         note: contractNote,
         clientId: clientValue,
         eventIds: eventValue,
@@ -129,7 +119,6 @@ const ContentEvent = () => {
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'Select item' : '...'}
         value={eventValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
@@ -149,7 +138,6 @@ const ContentEvent = () => {
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'Select item' : '...'}
         value={clientValue}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
@@ -160,24 +148,7 @@ const ContentEvent = () => {
       />
 
       <Text style={styles.labelInput}>Trạng thái</Text>
-      <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        iconStyle={styles.iconStyle}
-        data={listStatus}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? 'Select item' : '...'}
-        value={statusValue}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setStatusValue(item.value);
-          setIsFocus(false);
-        }}
-      />
+      <Text>Có hiệu lực</Text>
 
       <Text style={styles.labelInput}>Bắt đầu</Text>
       <Calendar />
@@ -185,22 +156,15 @@ const ContentEvent = () => {
       <Text style={styles.labelInput}>Kết thúc</Text>
       <Calendar />
 
+      <Text style={styles.labelInput}>Đính kèm</Text>
+      <View style={styles.containerTextInput}></View>
+
       <Text style={styles.labelInput}>Ghi chú</Text>
       <View style={styles.containerTextInput}>
         <TextInput
           style={styles.textInput}
           value={contractNote}
           onChangeText={(text) => setContractNote(text)}
-          returnKeyType="next"
-          placeholder=""
-        />
-      </View>
-
-      <Text style={styles.labelInput}>Tệp đính kèm</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => setAttachments(text)}
           returnKeyType="next"
           placeholder=""
         />
@@ -305,12 +269,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 25,
+    marginBottom: 25,
     height: 48,
     backgroundColor: '#643FDB',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
   },
   text: {
     color: '#FFFFFF',

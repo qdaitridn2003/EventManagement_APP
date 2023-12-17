@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import {
   VictoryBar,
   VictoryChart,
@@ -10,47 +10,67 @@ import {
   VictoryContainer,
 } from 'victory-native';
 
+import Calendar from './statistics/Calendar';
 import { Border, Color, FontSize } from '../components/styles/GlobalStyles';
-import Calendar from './items/Calendar';
 
-// Thay đổi cấu trúc của data để thêm thông tin về ngày
 const data = [
-  { date: '2023-12-01', earnings: 13000 },
-  { date: '2023-12-11', earnings: 16500 },
-  { date: '2023-12-19', earnings: 14250 },
-  { date: '2023-12-18', earnings: 14250 },
-  { date: '2023-12-02', earnings: 14250 },
-  { date: '2023-12-16', earnings: 14250 },
-  { date: '2023-12-19', earnings: 14250 },
-  { date: '2023-12-17', earnings: 14250 },
+  { date: '2023-12-01', earnings: 3 },
+  { date: '2023-12-07', earnings: 6 },
+  { date: '2023-12-18', earnings: 4 },
+  { date: '2023-12-17', earnings: 4 },
+  { date: '2023-12-13', earnings: 1 },
+  { date: '2023-12-12', earnings: 4 },
+  { date: '2023-12-11', earnings: 15 },
+  { date: '2023-12-17', earnings: 4 },
+  { date: '2023-12-18', earnings: 1 },
+  { date: '2023-12-28', earnings: 2 },
+  { date: '2023-12-16', earnings: 4 },
 ];
 
-const ToolbarStatistics = ({ onPressFilter, selectedDatesCount }) => {
+const parseDate = (dateString) => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const sortedData = [...data].sort((a, b) => parseDate(a.date) - parseDate(b.date));
+// console.log('Data Dates:', sortedData);
+
+const aggregatedData = [];
+sortedData.forEach((item) => {
+  const existingItem = aggregatedData.find((aggItem) => aggItem.date === item.date);
+  if (existingItem) {
+    existingItem.earnings += item.earnings;
+  } else {
+    aggregatedData.push({ date: item.date, earnings: item.earnings });
+  }
+});
+// console.log('Aggregated Data:', aggregatedData);
+
+const ToolbarStatistics = () => {
   return (
     <View style={styles.nameScreenAndBtnAdd}>
       <View style={styles.textFlexBox}>
         <Text style={styles.dashboard}>Thống kê</Text>
         <Image style={styles.logoEvent} source={require('../assets/icon--employee2.png')} />
       </View>
-      <TouchableOpacity onPress={onPressFilter}>
-        <Image style={styles.buttonFab} source={require('../assets/icons8-filter-80.png')} />
-        <Text style={styles.selectedDatesCountText}>{selectedDatesCount}</Text>
-      </TouchableOpacity>
     </View>
   );
 };
 
-const SelectedCalendar = ({ onSelectDate }) => {
+const SelectedCalendar = ({ onSelectDate, onConfirm }) => {
+  const handleDateSelection = (date) => {
+    onSelectDate(date);
+  };
+
   return (
     <View style={styles.calendarContainer}>
-      <Calendar onSelectDate={onSelectDate} />
-      <Text> --- </Text>
-      <Calendar onSelectDate={onSelectDate} />
+      <Calendar onSelectDate={onSelectDate} onConfirm={onConfirm} />
     </View>
   );
 };
 
-const ChartView = ({ onBarClick, selectedDate, data }) => {
+const ChartView = ({ onBarClick, selectedDate, data, selectedDatesCount }) => {
+  // Format dd/MM/yyyy
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -65,32 +85,28 @@ const ChartView = ({ onBarClick, selectedDate, data }) => {
         containerComponent={<VictoryContainer />}
       >
         <VictoryAxis
-          tickValues={data.map((item, index) => index + 1)} // Sử dụng chỉ số của mảng làm giá trị của tick
-          tickFormat={(tick) => (selectedDate ? formatDate(data[tick - 1].date) : tick)}
+          tickValues={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+          tickFormat={[
+            '11/09/2023',
+            '12/09/2023',
+            '13/09/2023',
+            '14/09/2023',
+            '15/09/2023',
+            '16/09/2023',
+            '17/09/2023',
+            '18/09/2023',
+            '19/09/2023',
+          ]}
           tickLabelComponent={<VictoryLabel angle={-45} style={{ fontSize: 8 }} />}
         />
-        <VictoryAxis dependentAxis tickFormat={(x) => `$${x / 1000}k`} />
+
+        <VictoryAxis dependentAxis tickFormat={(x) => `${x}`} />
         <VictoryBar
-          data={data}
+          data={sortedData}
           x="date"
           y="earnings"
-          labels={({ datum }) => `$${datum.earnings / 1000}k`}
+          labels={({ datum }) => `${datum.earnings}`}
           labelComponent={<VictoryTooltip renderInPortal={false} />}
-          events={[
-            {
-              target: 'data',
-              eventHandlers: {
-                onClick: () => [
-                  {
-                    target: 'data',
-                    mutation: (props) => {
-                      onBarClick(props);
-                    },
-                  },
-                ],
-              },
-            },
-          ]}
         />
       </VictoryChart>
     </View>
@@ -139,7 +155,9 @@ const SummaryStatistics = ({ average, maxEarnings, minEarnings }) => {
 
 const StatisticsScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDatesArray, setSelectedDatesArray] = useState([]);
   const [selectedDatesCount, setSelectedDatesCount] = useState(0);
+
   const [filteredData, setFilteredData] = useState(data);
   const { average, maxEarnings, minEarnings } = calculateStatistics(filteredData);
   const [isLoading, setIsLoading] = useState(true);
@@ -155,17 +173,23 @@ const StatisticsScreen = () => {
   };
 
   const handleSelectDate = (date) => {
-    setSelectedDatesCount(selectedDatesCount + 1);
-    console.log(`Selected Date: ${date}, Total Selected Dates: ${selectedDatesCount + 1}`);
     setSelectedDate(date);
+    setSelectedDatesArray((prevDates) => [...prevDates, date]);
+    setSelectedDatesCount((prevCount) => prevCount + 1);
   };
 
   const handleFilterPress = () => {
+    console.log('Mảng số ngày đã được chọn:', selectedDatesArray);
+
     const filteredData = data.filter((item) => {
       return item.date === selectedDate;
     });
 
     setFilteredData(filteredData);
+  };
+
+  const handleConfirm = (selectedDates) => {
+    console.log('Ngày đã chọn từ Calendar: ', selectedDates);
   };
 
   return (
@@ -174,12 +198,16 @@ const StatisticsScreen = () => {
         <ActivityIndicator size="large" color={Color.colorText} style={styles.loadingContainer} />
       ) : (
         <>
-          <ToolbarStatistics
-            onPressFilter={handleFilterPress}
+          <ToolbarStatistics onPressFilter={handleFilterPress} />
+          <SelectedCalendar onSelectDate={handleSelectDate} onConfirm={handleConfirm} />
+
+          <ChartView
+            onBarClick={handleBarClick}
+            selectedDate={selectedDate}
+            data={filteredData}
             selectedDatesCount={selectedDatesCount}
           />
-          <SelectedCalendar onSelectDate={handleSelectDate} />
-          <ChartView onBarClick={handleBarClick} selectedDate={selectedDate} data={filteredData} />
+
           <ShowDetailChart selectedDate={selectedDate} data={filteredData} />
           <SummaryStatistics
             average={average}

@@ -1,36 +1,49 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
-import { Color, FontSize, Border } from '../../components/styles/GlobalStyles';
+import { Color, Border } from '../../components/styles/GlobalStyles';
+import { AppContext } from '../../contexts';
 
-const ItemListContracts = ({ data }) => {
+const ItemListContracts = ({ id, name, startDate, endDate, status }) => {
   const navigation = useNavigation();
+  const { dataIdContract } = useContext(AppContext);
+  const [idContract, setIdContract] = dataIdContract;
 
-  const handleItemClick = () => {
-    navigation.navigate('DetailContractsScreen', { eventData: data });
+  const handleClickItem = () => {
+    setIdContract(id);
+    navigation.navigate('DetailContractsScreen');
   };
+  const handleClickDetail = () => {
+    handleClickItem();
+  };
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.line1}>
-        <Text style={styles.textName}>Hợp đồng mua bán</Text>
+        <Text style={styles.textName}>{name}</Text>
         <Image style={styles.more} source={require('../../assets/icon--more-vert3.png')} />
       </View>
-      <TouchableOpacity onPress={handleItemClick}>
+      <TouchableOpacity onPress={handleClickItem}>
         <View style={styles.line2}>
           <Image source={require('../../assets/icon--event2.png')} style={styles.imageCalendar} />
-          <Text style={{ alignSelf: 'center' }}>11/09/2023</Text>
+          <Text style={{ alignSelf: 'center' }}>{formatDate(startDate)}</Text>
+        </View>
+        <View style={styles.line2}>
+          <Image source={require('../../assets/icon--event2.png')} style={styles.imageCalendar} />
+          <Text style={{ alignSelf: 'center' }}>{formatDate(endDate)}</Text>
         </View>
         <View style={styles.line2}>
           <Image
-            source={require('../../assets/icon--person-outline3x.png')}
+            source={require('../../assets/icons8-green-dot.png')}
             style={styles.imageCalendar}
           />
-          <Text style={{ alignSelf: 'center' }}>Anh</Text>
-        </View>
-        <View style={styles.line2}>
-          <Image source={require('../../assets/contract.png')} style={styles.imageCalendar} />
-          <Text style={{ alignSelf: 'center' }}>Hóa đơn: </Text>
+          <Text style={{ alignSelf: 'center' }}>Trạng thái: {status}</Text>
         </View>
       </TouchableOpacity>
     </View>

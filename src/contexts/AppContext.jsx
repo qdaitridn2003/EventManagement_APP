@@ -11,6 +11,8 @@ export const AppContextProvider = (props) => {
 
   const [idEmployee, setIdEmployee] = useState('');
   const dataIdEmployee = [idEmployee, setIdEmployee];
+  const [idContract, setIdContract] = useState('avc');
+  const dataIdContract = [idContract, setIdContract];
 
   const [dataChange, setDataChange] = useState(1);
   const checkData = [dataChange, setDataChange];
