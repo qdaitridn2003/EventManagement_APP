@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,6 +9,7 @@ import SearchBar from './employees/SearchBar';
 import { Border, Color, FontSize, Padding } from '../components/styles/GlobalStyles';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { accessTokenKey } from '../constant/constant';
+import { AppContext } from '../contexts';
 
 const ToolbarEmployee = () => {
   const navigation = useNavigation();
@@ -27,27 +28,42 @@ const EmployeeScreen = () => {
   const [clicked, setClicked] = useState(false);
   const [data, setData] = useState([]);
   const [isModalIndicator, setIsModalIndicator] = useState(true);
+  const { checkData, pagination, loadingFooter } = useContext(AppContext);
+  const [dataChange, setDataChange] = checkData;
+  const [pageData, setPageData] = pagination;
+  const [isLoading, setIsLoading] = loadingFooter;
 
   useEffect(() => {
     (async () => {
       const token = await AsyncStorage.getItem(accessTokenKey);
-      const respone = await axiosAuthGet('/employee/get-employee-list', token);
-      console.log('ListEmployees', respone);
+
+      const respone = await axiosAuthGet('/employee/get-employee-list', token, {
+        limit: 7,
+        page: pageData,
+      });
+
       if (respone) {
         const listEmployee = respone.listEmployee;
-        console.log(listEmployee[0]);
-        const data = listEmployee.map((employee) => ({
-          id: employee._id,
-          role: employee.auth ? employee.auth.role.name : 'auth: null',
-          name: employee.fullName,
-          image: employee.avatar,
-        }));
-        setData(data);
-        console.log(data);
+        if (pageData === 1) {
+          setData(listEmployee);
+        } else {
+          const dataMore = listEmployee.map((employ) => {
+            const employs = employ;
+            data.push(employs);
+          });
+          if (dataMore) {
+            setIsLoading(false);
+          }
+          return dataMore;
+        }
         setIsModalIndicator(false);
       }
+      if (respone.listEmployee.length === 0) {
+        setIsLoading(false);
+      }
     })();
-  }, []);
+    console.log(data);
+  }, [dataChange]);
 
   return (
     <View style={styles.container}>
@@ -76,7 +92,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 812,
     paddingVertical: Padding.p_base,
-    paddingHorizontal: Padding.p_5xl,
+    paddingHorizontal: 20,
     alignItems: 'center',
     flex: 1,
     backgroundColor: Color.colorWhite,

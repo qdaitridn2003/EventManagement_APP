@@ -20,7 +20,7 @@ const AddEmployee = () => {
   const [showDate, setShowDate] = useState(false);
   const [inputs, setInputs] = useState({
     fullName: '',
-    dateOfBirth: '2023-11-11',
+    dateOfBirth: 'YYYY-MM-DD',
     gender: 'male',
     phone: '',
     address: '',
@@ -52,7 +52,7 @@ const AddEmployee = () => {
     }
     if (!inputs.phone) {
       handleErrors('Vui lòng nhập Số điện thoại', 'phone');
-    } else if (inputs.phone.length < 10 || inputs.phone.length > 11) {
+    } else if (inputs.phone.length < 10 || inputs.phone.length > 10) {
       handleErrors('Số điện thoại không hợp lệ', 'phone');
     }
 

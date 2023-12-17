@@ -49,7 +49,6 @@ const DetailProfileScreen = () => {
       const dateString = employee.dateOfBirth;
       const formattedDate = format(new Date(dateString), 'dd/MM/yyyy');
       const gender = employee.gender === 'male' ? 'Nam' : 'Nữ';
-      console.log(1);
       setData({
         name: employee.fullName,
         role: employee.auth.role.name,

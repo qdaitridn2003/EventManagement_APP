@@ -65,28 +65,28 @@ const RegisterScreen = () => {
     });
     console.log(response);
     if (!inputs.email) {
-      handleErrors('Please input Email', 'email');
+      handleErrors('Vui Lòng nhập email', 'email');
     } else if (response.message === 'Email is already exist') {
-      handleErrors('Email is already exist', 'email');
+      handleErrors('Email này đã tồn tại', 'email');
     } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
-      handleErrors('Please input valid Email', 'email');
+      handleErrors('Vui lòng nhập email đúng định dạng', 'email');
     }
     if (!inputs.password) {
-      handleErrors('Please input Password', 'password');
+      handleErrors('Vui lòng nhập mật khẩu', 'password');
     } else if (inputs.password.length < 6) {
-      handleErrors('Password must be at least have 6 characters', 'password');
+      handleErrors('Mật khẩu ít nhất phải có 6 ký tự', 'password');
     }
 
     if (!inputs.confirmPassword) {
-      handleErrors('Please input Confirm Password', 'confirmPassword');
+      handleErrors('Vui lòng xác nhận lại mật khẩu', 'confirmPassword');
     } else if (inputs.confirmPassword.length < 6) {
-      handleErrors('Confirm password must be at least have 6 characters', 'confirmPassword');
+      handleErrors('Mật khẩu ít nhất phải có 6 ký tự', 'confirmPassword');
     } else if (inputs.confirmPassword !== inputs.password) {
-      handleErrors('Confirm password must be matches to the current password', 'confirmPassword');
+      handleErrors('Xác nhận mật khẩu không khớp với mật khẩu đăng ký', 'confirmPassword');
     }
 
     if (roleId === '') {
-      handleErrors('Please choose a role', 'roleId');
+      handleErrors('Vui lòng chọn chức vụ', 'roleId');
     }
 
     if (response.otpSecret) {

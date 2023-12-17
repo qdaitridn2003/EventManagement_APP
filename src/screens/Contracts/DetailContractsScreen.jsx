@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -11,24 +11,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
-import BottomSheetModal from '../items/BottomSheetModal';
+import { axiosAuthGet } from '../../configs/axiosInstance';
+import { getAccessToken } from '../../configs/utils/getAccessToken';
+import { AppContext } from '../../contexts';
 
 const { widthScreen } = Dimensions.get('window');
-//const { heightScreen } = Dimensions.get('window');
 
 const ToolbarDetail = () => {
   const navigation = useNavigation();
-  const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
-  const openBottomSheet = () => {
-    setBottomSheetVisible(true);
-  };
-  const closeBottomSheet = () => {
-    setBottomSheetVisible(false);
-  };
   const goBack = () => {
     navigation.goBack();
   };
@@ -38,98 +31,111 @@ const ToolbarDetail = () => {
       <TouchableOpacity onPress={goBack}>
         <Image style={styles.backward} source={require('../../assets/icon--backward3x.png')} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={openBottomSheet}>
-        <Image style={styles.more} source={require('../../assets/more.png')} />
-        <BottomSheetModal isVisible={isBottomSheetVisible} onClose={closeBottomSheet} />
-      </TouchableOpacity>
     </View>
   );
 };
-const itemsPosition = [
-  { label: 'Sinh nhật', value: 'Sinh nhật' },
-  { label: 'Đám cưới', value: 'Đám cưới' },
-  { label: 'Hộp mặt', value: 'Bảo vệ' },
-];
-const ContentEvent = ({ route }) => {
-  const eventData = route.params.eventData;
-  const navigation = useNavigation();
-  const [openDropdown, setopenDropdown] = useState(false);
-  const [currentvalue, setcurrentvalue] = useState([]);
+
+const ContentContract = () => {
+  const [data, setData] = useState({});
+  const { dataIdContract } = useContext(AppContext);
+  const [idContract] = dataIdContract;
+  const [isModalIndicator, setIsModalIndicator] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const accessToken = await getAccessToken();
+        const response = await axiosAuthGet(
+          `/contract/get-detail-contract/${idContract}`,
+          accessToken,
+        );
+
+        if (response) {
+          setIsModalIndicator(false);
+          const contract = response.contract;
+          setData({
+            id: contract._id,
+            name: contract.name,
+            startDate: contract.startDate,
+            endDate: contract.endDate,
+            status: contract.status,
+          });
+        }
+      } catch (error) {
+        console.log('Error fetching contract details:', error);
+      }
+    };
+
+    fetchData();
+  }, [idContract]);
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <View>
-      <Text style={styles.title}>{eventData.name}</Text>
-      <Text style={styles.status}>{eventData.status}</Text>
-      <View>
-        <Text style={styles.labelInput}>Chủ hợp đồng</Text>
-        <View style={styles.image}>
-          <Image
-            style={styles.avatar}
-            contentFit="cover"
-            source={require('../../assets/avatar-28x2823x.png')}
-          />
+      {/* {isModalIndicator && (
+        <ActivityIndicator size="large" color={Color.colorText} style={styles.loadingContainer} />
+      )}
+      {!isModalIndicator && ( */}
+      <>
+        <Text style={styles.title}>{data.name}</Text>
+        <View style={styles.textFlexBox}>
+          <Image style={styles.logoEvent} source={require('../../assets/icons8-green-dot.png')} />
+          <Text style={styles.status}>{data.status}</Text>
         </View>
-      </View>
-
-      <Text style={styles.labelInput}>Bắt đầu</Text>
-      <View style={styles.textFlexBox}>
-        <TouchableOpacity>
+        <View>
+          <Text style={styles.labelInput}>Chủ hợp đồng</Text>
+          <View style={styles.image}>
+            <Image
+              style={styles.avatar}
+              contentFit="cover"
+              source={require('../../assets/avatar-28x2823x.png')}
+            />
+          </View>
+        </View>
+        <Text style={styles.labelInput}>Bắt đầu</Text>
+        <View style={styles.textFlexBox}>
           <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-        </TouchableOpacity>
-        <Text style={styles.dashboard}>Thứ ba, 20/09/2023</Text>
-      </View>
-
-      <Text style={styles.labelInput}>Kết thúc</Text>
-      <View style={styles.textFlexBox}>
-        <TouchableOpacity>
+          <Text style={styles.dashboard}>{formatDate(data.startDate)}</Text>
+        </View>
+        <Text style={styles.labelInput}>Kết thúc</Text>
+        <View style={styles.textFlexBox}>
           <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-        </TouchableOpacity>
-        <Text style={styles.dashboard}>Thứ ba, 20/09/2023</Text>
-      </View>
-
-      <Text style={styles.labelInput}>Tên khách hàng</Text>
-      <DropDownPicker
-        underlineColor
-        style={[styles.containerTextInput, { borderWidth: 0, marginTop: 10 }]}
-        items={itemsPosition}
-        open={openDropdown}
-        setOpen={() => setopenDropdown(!openDropdown)}
-        value={currentvalue}
-        setValue={(val) => setcurrentvalue(val)}
-        maxHeight={200}
-        autoScroll
-        placeholder="Vui lòng chọn"
-        showArrowIcon
-        showTickIcon
-        disableBorderRadius={false}
-      />
-
-      <Text style={styles.labelInput}>Sự kiện liên quan</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
-      </View>
-
-      <Text style={styles.labelInput}>Ghi chú</Text>
-      <View style={styles.containerTextInput}>
-        <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('ContractsScreen')}
-      >
-        <Text style={styles.text}>Xác nhận</Text>
-      </TouchableOpacity>
+          <Text style={styles.dashboard}>{formatDate(data.endDate)}</Text>
+        </View>
+        <Text style={styles.labelInput}>Sự kiện liên quan</Text>
+        <View style={styles.containerTextInput}>
+          <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
+        </View>
+        <Text style={styles.labelInput}>Ghi chú</Text>
+        <View style={styles.containerTextInput}>
+          <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
+        </View>
+        {data.status === 'active' && (
+          <TouchableOpacity
+            style={styles.button}
+            // onPress={() => handleCancelContract()}
+          >
+            <Text style={styles.text}>Hủy hợp đồng</Text>
+          </TouchableOpacity>
+        )}
+      </>
+      {/* )} */}
     </View>
   );
 };
 
 const DetailContractsScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
+  // const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
+      // setDataLoaded(true);
     }, 0);
   }, []);
 
@@ -141,7 +147,7 @@ const DetailContractsScreen = ({ route }) => {
         ) : (
           <>
             <ToolbarDetail />
-            <ContentEvent route={route} />
+            <ContentContract route={route} />
           </>
         )}
       </View>
@@ -166,7 +172,6 @@ const styles = StyleSheet.create({
   backward: {
     width: 30,
     height: 30,
-    // backgroundColor: Color.overlayRed,
   },
   more: {
     width: 25,
@@ -188,7 +193,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 20,
     marginTop: 10,
-    color: Color.colorDarkorange,
     marginBottom: 10,
   },
   nameLabel: {
@@ -275,7 +279,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 25,
     height: 48,
-    backgroundColor: '#643FDB',
+    backgroundColor: Color.overlayRed,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
