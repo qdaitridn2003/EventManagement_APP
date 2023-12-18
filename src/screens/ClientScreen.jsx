@@ -20,39 +20,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MainHeaderBar from '../components/headerBar/MainHeaderBar';
 import SubHeaderBar from '../components/headerBar/SubHeaderBar';
 
-// Navigation Clients
-const HeaderClients = () => {
-  const navigation = useNavigation();
-  return (
-    <View style={styles.nameScreenAndBtnAdd}>
-      <View style={styles.textFlexBox}>
-        <Text style={styles.dashboard}>Khách hàng</Text>
-        <Image style={styles.logoClients} source={require('../assets/Group.png')} />
-      </View>
-      <TouchableOpacity onPress={() => navigation.navigate('AddClient')}>
-        <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-// Search
-// Directly export the component with the desired name
-const CustomSearchComponent = () => {
-  return (
-    <View style={styles.SearchClients}>
-      <Image style={styles.imageSearch} source={require('../assets/vector.png')} />
-      <View style={[styles.text, styles.inputSearch]}>
-        <Text style={[styles.search, styles.text1Clr]}>Tìm khách hàng</Text>
-      </View>
-      <Image
-        style={[styles.vectorIcon1, styles.imageTune]}
-        source={require('../assets/tune-icon.png')}
-      />
-    </View>
-  );
-};
-
 const ClientScreen = () => {
   const navigation = useNavigation();
   // Data

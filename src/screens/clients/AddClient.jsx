@@ -1,22 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Text,
-  TextInput,
-  ScrollView,
-  Button,
-} from 'react-native';
+import { View, StyleSheet, Text, ScrollView } from 'react-native';
 
-import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
-import MyCalendar from '../items/MyCalendar';
+import { Color } from '../../components/styles/GlobalStyles';
 import SubHeaderBar from '../../components/headerBar/SubHeaderBar';
 import { accessTokenKey } from '../../constant/constant';
-import { getAccessToken } from '../../configs/utils/getAccessToken';
 import { axiosAuthPost, axiosAuthPut } from '../../configs/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomInput from '../../components/common/CustomInput';
