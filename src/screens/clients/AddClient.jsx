@@ -13,11 +13,9 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
-import MyCalendar from '../items/MyCalendar';
+import { Color } from '../../components/styles/GlobalStyles';
 import SubHeaderBar from '../../components/headerBar/SubHeaderBar';
 import { accessTokenKey } from '../../constant/constant';
-import { getAccessToken } from '../../configs/utils/getAccessToken';
 import { axiosAuthPost, axiosAuthPut } from '../../configs/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomInput from '../../components/common/CustomInput';
@@ -95,7 +93,12 @@ const AddClient = ({ route }) => {
       });
       if (response.client) {
         if (avatarUri) {
-          const result = await uploadImage(`/client/upload-avatar-client/${response.client._id}`, avatarUri, 'avatar', token);
+          const result = await uploadImage(
+            `/client/upload-avatar-client/${response.client._id}`,
+            avatarUri,
+            'avatar',
+            token,
+          );
           console.log(result);
         }
       }
@@ -124,7 +127,12 @@ const AddClient = ({ route }) => {
       });
 
       if (avatarUri) {
-        const result = await uploadImage(`/client/upload-avatar-client/${editData._id}`, avatarUri, 'avatar', token);
+        const result = await uploadImage(
+          `/client/upload-avatar-client/${editData._id}`,
+          avatarUri,
+          'avatar',
+          token,
+        );
         console.log(result);
       }
 
@@ -146,11 +154,14 @@ const AddClient = ({ route }) => {
       />
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
-        {
-          avatarUri ? 
-            <Image style={{ width: 48, height: 48 }} source={{ uri: avatarUri }} /> :
-            <Image style={{ width: 48, height: 48 }} source={require('../../assets/images/favicon.png')} />
-        }
+        {avatarUri ? (
+          <Image style={{ width: 48, height: 48 }} source={{ uri: avatarUri }} />
+        ) : (
+          <Image
+            style={{ width: 48, height: 48 }}
+            source={require('../../assets/images/favicon.png')}
+          />
+        )}
         <TouchableOpacity onPress={imagePicker}>
           <Text>Chọn Ảnh</Text>
         </TouchableOpacity>

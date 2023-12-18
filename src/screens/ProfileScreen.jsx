@@ -112,7 +112,6 @@ const ProfileScreen = () => {
             <Text style={styles.textBox}>Thống kê</Text>
           </TouchableOpacity>
         </View>
-
         <View
           style={{
             flexDirection: 'row',
@@ -144,7 +143,18 @@ const ProfileScreen = () => {
             <Text style={styles.textBox}>Đổi mật khẩu</Text>
           </TouchableOpacity>
         </View>
-
+        {/* <TouchableOpacity onPress={() => navigation.navigate('DeviceScreen')}>
+          <Text style={styles.labelInput}>Thiết bị</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity onPress={() => navigation.navigate('TransportScreen')}>
+          <Text style={styles.labelInput}>Phương tiện</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
+          <Text style={styles.labelInput}>Đổi mật khẩu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogOut}>
+          <Text style={styles.labelInput}>Đăng xuất</Text>
+        </TouchableOpacity>
         <View
           style={{
             flexDirection: 'row',

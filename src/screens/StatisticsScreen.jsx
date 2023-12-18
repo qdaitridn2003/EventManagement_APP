@@ -27,40 +27,6 @@ const ToolbarStatistics = () => {
   );
 };
 
-const SelectedCalendar = ({ onSelectDate, onConfirm, setSelectedDateRange }) => {
-  const [startDates, setStartDates] = useState();
-  const [endDates, setEndDates] = useState();
-
-  // const handleConfirm = (selectedDates) => {
-  //   console.log('Ngày bắt đầu: ', selectedDates[0]);
-  //   console.log('Ngày kết thúc: ', selectedDates[1]);
-
-  //   if (selectedDates[0] && selectedDates[1]) {
-  //     logDateRange(selectedDates[0], selectedDates[1]);
-  //     setSelectedDateRange([selectedDates[0], selectedDates[1]]);
-  //   }
-  // }
-
-  const handleStartDateChange = (date) => {
-    setStartDates(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDates(date);
-  };
-
-  return (
-    <View style={styles.calendarContainer}>
-      <Calendar onSelectDate={handleStartDateChange} />
-      <Text style={styles.labelInput}>---</Text>
-      <Calendar onSelectDate={handleEndDateChange} />
-      {/* <TouchableOpacity onPress={() => handleConfirm([startDates, endDates])}> */}
-      <Image style={styles.imageFilter} source={require('../assets/icons8-filter-80.png')} />
-      {/* </TouchableOpacity> */}
-    </View>
-  );
-};
-
 const ChartView = ({ selectedDate, selectedDateRange }) => {
   const [chartData, setChartData] = useState([]);
   const [totalEarnings, setTotalEarnings] = useState(0);
@@ -108,7 +74,7 @@ const ChartView = ({ selectedDate, selectedDateRange }) => {
 
     const date = new Date(dateString);
     const day = date.getDate();
-    const month = date.getMonth() + 1; // Tháng trong JavaScript là 0-indexed, nên cần cộng thêm 1
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     const formattedDay = day < 10 ? `0${day}` : day;
@@ -152,27 +118,12 @@ const ChartView = ({ selectedDate, selectedDateRange }) => {
 
 const StatisticsScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  // const [selectedDatesArray, setSelectedDatesArray] = useState([]);
   const [selectedDatesCount, setSelectedDatesCount] = useState(0);
 
   const [filteredData, setFilteredData] = useState(chartData);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDateRange, setSelectedDateRange] = useState([]);
   const [chartData, setChartData] = useState([]);
-
-  const handleStartDateChange = (date) => {
-    setStartDates(date);
-  };
-
-  // const handleConfirm = (selectedDates) => {
-  //   console.log('Ngày bắt đầu: ', selectedDates[0]);
-  //   console.log('Ngày kết thúc: ', selectedDates[1]);
-
-  //   if (selectedDates[0] && selectedDates[1]) {
-  //     logDateRange(selectedDates[0], selectedDates[1]);
-  //     setSelectedDateRange([selectedDates[0], selectedDates[1]]);
-  //   }
-  // };
 
   useEffect(() => {
     setTimeout(() => {
@@ -183,21 +134,6 @@ const StatisticsScreen = () => {
   const handleBarClick = (data) => {
     setSelectedDate(data.datum.date);
   };
-
-  // const handleSelectDate = (date) => {
-  //   setSelectedDate(date);
-  //   setSelectedDatesArray((prevDates) => [...prevDates, date]);
-  //   setSelectedDatesCount((prevCount) => prevCount + 1);
-  // };
-
-  const handleFilterPress = () => {
-    const filteredData = chartData.filter((item) => {
-      return item.date === selectedDate;
-    });
-
-    setFilteredData(filteredData);
-    setChartData([]);
-  };
   return (
     <View style={styles.container}>
       {isLoading ? (
@@ -205,12 +141,7 @@ const StatisticsScreen = () => {
       ) : (
         <>
           <ToolbarStatistics />
-          <SelectedCalendar
-            onSelectDate={handleStartDateChange}
-            // onConfirm={handleConfirm}
-            setSelectedDateRange={setSelectedDateRange}
-            onFilterPress={handleFilterPress}
-          />
+
           <ChartView
             onBarClick={handleBarClick}
             selectedDate={selectedDate}
@@ -268,6 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'stretch',
     marginTop: 10,
+    marginBottom: 20,
   },
   summary: {
     textAlign: 'center',
