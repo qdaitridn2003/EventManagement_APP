@@ -11,71 +11,47 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import FilterBar from './Contracts/FilterBar';
-import ItemListContracts from './Contracts/ItemListContracts';
-import SearchBar from './Contracts/SearchBar';
+import ItemListContracts from './transport/ItemListTransport';
+import SearchBar from './employees/SearchBar';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { accessTokenKey } from '../constant/constant';
 
 const ContractsHeader = () => {
-  const navigation = useNavigation();
   return (
     <View style={styles.nameScreenAndBtnAdd}>
       <View style={styles.textFlexBox}>
-        <Text style={styles.dashboard}>Hợp đồng</Text>
-        <Image style={styles.logoEvent} source={require('../assets/contract.png')} />
+        <Text style={styles.dashboard}>Phương tiện</Text>
+        <Image style={styles.logoEvent} source={require('../assets/Car.png')} />
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('AddContracts')}>
-        <Image style={styles.buttonFab} source={require('../assets/plus-icon.png')} />
-      </TouchableOpacity>
     </View>
   );
 };
 
-const ContractsScreen = () => {
+const TransportScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
   const [contracts, setContracts] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState('Tất cả');
-  const [filteredContracts, setFilteredContracts] = useState([]);
-
-  const listFilter = [
-    { status: 'Tất cả' },
-    { status: 'Đang hoạt động' },
-    { status: 'Hoàn thành' },
-    { status: 'Đã hủy' },
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const accessToken = await AsyncStorage.getItem(accessTokenKey);
-        const response = await axiosAuthGet('/contract/get-list-contract', accessToken, {
+        const response = await axiosAuthGet('/transport/get-list-transport', accessToken, {
           limit: Infinity,
         });
 
         if (response) {
-          const listContract = response.listContract;
-          const data = listContract.map((contract) => ({
-            id: contract._id,
-            name: contract.name,
-            startDate: contract.startDate,
-            endDate: contract.endDate,
-            status: contract.status,
+          const listTransport = response.listTransport;
+          const data = listTransport.map((transport) => ({
+            id: transport._id,
+            name: transport.name,
+            image: transport.image,
           }));
 
-          data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-          // Lọc dữ liệu theo trạng thái được chọn
-          const filteredData =
-            selectedStatus === 'Tất cả'
-              ? data
-              : data.filter((item) => item.status === selectedStatus);
-
-          setContracts(filteredData);
+          setContracts(data);
         }
       } catch (error) {
         console.log('Lỗi khi tải danh sách hợp đồng:', error);
@@ -85,23 +61,10 @@ const ContractsScreen = () => {
     };
 
     fetchData();
-  }, [selectedStatus, searchPhrase]);
-
-  const handleSearch = (text) => {
-    setSearchPhrase(text);
-
-    const filteredData = contracts.filter((contract) =>
-      contract.name.toLowerCase().includes(text.toLowerCase()),
-    );
-    setFilteredContracts(filteredData);
-  };
+  }, []);
 
   const navigateToDetail = (itemId) => {
-    navigation.navigate('DetailContractsScreen', { itemId });
-  };
-
-  const handleFilterChange = (status) => {
-    setSelectedStatus(status);
+    // navigation.navigate('TransportScreen', { itemId });
   };
 
   return (
@@ -116,17 +79,10 @@ const ContractsScreen = () => {
             setSearchPhrase={setSearchPhrase}
             clicked={clicked}
             setClicked={setClicked}
-            onSearch={handleSearch}
-          />
-
-          <FilterBar
-            listTab={listFilter}
-            selectedStatus={selectedStatus}
-            onTabPress={handleFilterChange}
           />
 
           <FlatList
-            data={searchPhrase ? filteredContracts : contracts}
+            data={contracts}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => navigateToDetail(item.id)}>
                 <ItemListContracts {...item} />
@@ -142,7 +98,7 @@ const ContractsScreen = () => {
   );
 };
 
-export default ContractsScreen;
+export default TransportScreen;
 
 const styles = StyleSheet.create({
   container: {

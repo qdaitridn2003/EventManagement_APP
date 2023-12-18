@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext, useEffect, useState } from 'react';
@@ -10,14 +11,15 @@ import {
   TextInput,
   Dimensions,
   StatusBar,
+  ScrollView,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Color, Padding } from '../components/styles/GlobalStyles';
-import { AppContext } from '../contexts/AppContext';
-import { accessTokenKey } from '../constant/constant';
-import { getAccessToken } from '../configs/utils/getAccessToken';
 import { axiosAuthGet } from '../configs/axiosInstance';
+import Icon from '../components/common/Icon';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { accessTokenKey } from '../constant/constant';
+import { AppContext } from '../contexts/AppContext';
 
 const { height, width } = Dimensions.get('window');
 
@@ -74,31 +76,94 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} show={false}>
       <MyStatusBar backgroundColor={Color.colorMidnightblue} />
       <Toolbar />
       <View style={styles.contentProfile}>
-        <TouchableOpacity onPress={() => navigation.navigate('DetailProfileScreen')}>
-          <Text style={styles.labelInput}>Thông tin</Text>
-        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 10,
+            paddingHorizontal: 3,
+          }}
+        >
+          <TouchableOpacity
+            style={styles.box}
+            onPress={() => navigation.navigate('DetailProfileScreen')}
+          >
+            <Icon
+              source={require('../assets/icons/profileDetail.png')}
+              color={'#1C1243'}
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.textBox}>Thông tin</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('StatisticsScreen')}>
-          <Text style={styles.labelInput}>Thống kê</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.box}
+            onPress={() => navigation.navigate('StatisticsScreen')}
+          >
+            <Icon
+              source={require('../assets/icons/Statistical.png')}
+              color={'#1C1243'}
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.textBox}>Thống kê</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('ContractsScreen')}>
-          <Text style={styles.labelInput}>Hợp đồng</Text>
-        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 10,
+            paddingHorizontal: 3,
+          }}
+        >
+          <TouchableOpacity
+            style={styles.box}
+            onPress={() => navigation.navigate('ContractsScreen')}
+          >
+            <Icon
+              source={require('../assets/Contract2.png')}
+              color={'#1C1243'}
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.textBox}>Hợp đồng</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.box}
+            onPress={() => navigation.navigate('ChangePassword')}
+          >
+            <Icon
+              source={require('../assets/icons/changePass.png')}
+              color={'#1C1243'}
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.textBox}>Đổi mật khẩu</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
-          <Text style={styles.labelInput}>Đổi mật khẩu</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={handleLogOut}>
-          <Text style={styles.labelInput}>Đăng xuất</Text>
-        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            paddingVertical: 10,
+            paddingHorizontal: 3,
+          }}
+        >
+          <TouchableOpacity style={styles.box} onPress={handleLogOut}>
+            <Icon
+              source={require('../assets/icons/LogOut.png')}
+              color={'#1C1243'}
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.textBox}>Đăng xuất</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -110,7 +175,6 @@ const styles = StyleSheet.create({
   },
   contentProfile: {
     width: '100%',
-    height: 812,
     paddingVertical: Padding.p_base,
     paddingHorizontal: Padding.p_5xl,
     flex: 1,
@@ -166,6 +230,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 40,
   },
+  box: {
+    width: '45%',
+    height: 130,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    backgroundColor: 'white',
+    elevation: 4,
+  },
+  textBox: { marginTop: 16, color: '#1C1243', fontWeight: 'bold', fontSize: 16 },
 });
 
 export default ProfileScreen;

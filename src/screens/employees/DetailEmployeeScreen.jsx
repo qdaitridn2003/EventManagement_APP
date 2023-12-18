@@ -143,13 +143,20 @@ const DetailEmployeeScreen = () => {
                 />
                 <Text style={styles.textLabel}>Số điện thoại</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 16,
+                  marginLeft: -3,
+                }}
+              >
                 <Icon
                   source={require('../../assets/icons/Location.png')}
                   color={'#A29EB6'}
                   size={'superBig'}
                 />
-                <Text style={[styles.textLabel, { marginLeft: 3 }]}>Địa chỉ</Text>
+                <Text style={[styles.textLabel, { marginLeft: 6 }]}>Địa chỉ</Text>
               </View>
             </View>
 

@@ -1,6 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Text,
+  TextInput,
+  ScrollView,
+  Button,
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 import { Color } from '../../components/styles/GlobalStyles';
 import SubHeaderBar from '../../components/headerBar/SubHeaderBar';
@@ -13,6 +24,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import IconButton from '../../components/common/IconButton';
 import CustomButton from '../../components/common/CustomButton';
+import { uploadImage } from '../../utils/uploadImageHandler';
 
 const AddClient = ({ route }) => {
   const navigation = useNavigation();
@@ -27,6 +39,7 @@ const AddClient = ({ route }) => {
   const [phoneNumber, setPhoneNumber] = useState(editData?.phoneNumber || '');
   const [email, setEmail] = useState(editData?.email || '');
   const [address, setAddress] = useState(editData?.address || '');
+  const [avatarUri, setAvatarUri] = useState(editData?.avatar || '');
 
   useEffect(() => {
     if (editData) {
@@ -46,11 +59,31 @@ const AddClient = ({ route }) => {
     setDatePickerVisibility(false);
   };
 
+  const imagePicker = async () => {
+    try {
+      const { canceled, assets } = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log('Image: ', assets[0]);
+
+      if (!canceled) {
+        const imageUri = assets[0].uri;
+        setAvatarUri(imageUri);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addNewClient = async () => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem(accessTokenKey);
-      await axiosAuthPost('/client/create-info-client', token, {
+      const response = await axiosAuthPost('/client/create-info-client', token, {
         fullName,
         dateOfBirth,
         gender,
@@ -58,6 +91,17 @@ const AddClient = ({ route }) => {
         email,
         address,
       });
+      if (response.client) {
+        if (avatarUri) {
+          const result = await uploadImage(
+            `/client/upload-avatar-client/${response.client._id}`,
+            avatarUri,
+            'avatar',
+            token,
+          );
+          console.log(result);
+        }
+      }
 
       console.log('Client added successfully');
 
@@ -82,6 +126,16 @@ const AddClient = ({ route }) => {
         address,
       });
 
+      if (avatarUri) {
+        const result = await uploadImage(
+          `/client/upload-avatar-client/${editData._id}`,
+          avatarUri,
+          'avatar',
+          token,
+        );
+        console.log(result);
+      }
+
       console.log('Client updated successfully');
 
       navigation.goBack();
@@ -100,6 +154,17 @@ const AddClient = ({ route }) => {
       />
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+        {avatarUri ? (
+          <Image style={{ width: 48, height: 48 }} source={{ uri: avatarUri }} />
+        ) : (
+          <Image
+            style={{ width: 48, height: 48 }}
+            source={require('../../assets/images/favicon.png')}
+          />
+        )}
+        <TouchableOpacity onPress={imagePicker}>
+          <Text>Chọn Ảnh</Text>
+        </TouchableOpacity>
         <CustomInput
           label={'Họ và tên'}
           placeholder="Họ và tên khách hàng"

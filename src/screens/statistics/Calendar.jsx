@@ -1,85 +1,43 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import { Color } from '../../components/styles/GlobalStyles';
 
-const DateRangePicker = () => {
-  const [isStartDatePickerVisible, setStartDatePickerVisible] = useState(false);
-  const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [selectedDates, setSelectedDates] = useState([]);
+const Calendar = ({ onSelectDate }) => {
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
-  const showStartDatePicker = () => {
-    setStartDatePickerVisible(true);
+  const showDatePicker = () => {
+    setDatePickerVisible(true);
   };
 
-  const showEndDatePicker = () => {
-    setEndDatePickerVisible(true);
+  const hideDatePicker = () => {
+    setDatePickerVisible(false);
   };
 
-  const hideStartDatePicker = () => {
-    setStartDatePickerVisible(false);
+  const handleConfirm = (date) => {
+    setSelectedDate(date);
+    hideDatePicker();
+    onSelectDate && onSelectDate(date);
   };
-
-  const hideEndDatePicker = () => {
-    setEndDatePickerVisible(false);
-  };
-
-  const handleStartDateConfirm = (date) => {
-    setStartDate(date);
-    hideStartDatePicker();
-  };
-
-  const handleEndDateConfirm = (date) => {
-    setEndDate(date);
-    hideEndDatePicker();
-  };
-
-  const generateDateArray = () => {
-    // Generate array of dates between startDate and endDate
-    const dates = [];
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    setSelectedDates(dates);
-
-    // console.log('Selected Dates:', dates);
-  };
-
   return (
-    <View>
-      <View style={styles.textFlexBox}>
-        <TouchableOpacity onPress={showStartDatePicker}>
-          <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-        </TouchableOpacity>
-        {startDate && <Text> {startDate.toLocaleDateString('en-GB')}</Text>}
-
-        <Text> ---</Text>
-        <TouchableOpacity onPress={showEndDatePicker}>
-          <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
-        </TouchableOpacity>
-        {endDate && <Text> {endDate.toLocaleDateString('en-GB')}</Text>}
-      </View>
-
+    <View style={styles.textFlexBox}>
+      <TouchableOpacity onPress={showDatePicker}>
+        <Image style={styles.logoEvent} source={require('../../assets/icon--event2.png')} />
+      </TouchableOpacity>
       <DateTimePickerModal
-        isVisible={isStartDatePickerVisible}
+        isVisible={isDatePickerVisible}
         mode="date"
-        onConfirm={handleStartDateConfirm}
-        onCancel={hideStartDatePicker}
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
       />
 
-      <DateTimePickerModal
-        isVisible={isEndDatePickerVisible}
-        mode="date"
-        onConfirm={handleEndDateConfirm}
-        onCancel={hideEndDatePicker}
-      />
-
-      <Button title="Generate Date Array" onPress={generateDateArray} />
+      {selectedDate && (
+        <Text style={styles.dashboard}>
+          {`${selectedDate.getDate()}/${selectedDate.getMonth() + 1}/${selectedDate.getFullYear()}`}
+        </Text>
+      )}
     </View>
   );
 };
@@ -87,7 +45,6 @@ const DateRangePicker = () => {
 const styles = StyleSheet.create({
   textFlexBox: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   dashboard: {
@@ -105,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DateRangePicker;
+export default Calendar;

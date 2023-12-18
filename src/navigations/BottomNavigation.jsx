@@ -21,10 +21,15 @@ import {
   DetailContractsScreen,
   DetailEmployeeScreen,
   EditProfileScreen,
+  TransportScreen,
+  DeviceScreen,
+  DetailTransportScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { axiosAuthGet } from '../configs/axiosInstance';
+import { ActivityIndicator, View } from 'react-native';
 import DetailClientScreen from '../screens/clients/DetailClientScreen';
-import { Text, View } from 'react-native';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -74,6 +79,12 @@ const BottomNavigation = () => {
         component={ContractsScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="DeviceScreen" component={DeviceScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="TransportScreen"
+        component={TransportScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="HomeNavigation"
         component={HomeNavigation}
@@ -84,6 +95,11 @@ const BottomNavigation = () => {
         component={DetailClientScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="DetailTransportScreen"
+        component={DetailTransportScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -92,16 +108,24 @@ const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
   const [isEmployee, setIsEmployee] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     (async () => {
       const accessToken = await getAccessToken();
       const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
-      if (respone.employee.auth.role.name !== 'Admin') {
-        setIsEmployee(true);
+      if (respone) {
+        if (respone.employee.auth.role.name !== 'Admin') {
+          setIsEmployee(true);
+        }
+        setIsLoading(false);
       }
     })();
   });
-  return isEmployee ? (
+  return isLoading ? (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <ActivityIndicator size={48} color={Color.primary} />
+    </View>
+  ) : isEmployee ? (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {

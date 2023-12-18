@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useContext, useState } from 'react';
 
-import { StyleSheet, View, Text, TouchableOpacity, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Keyboard, ToastAndroid } from 'react-native';
 
 import CustomIndicator from '../../components/common/CustomIndicator';
 import CustomInput from '../../components/common/CustomInput';
@@ -51,7 +51,6 @@ const LoginScreen = () => {
       handleErrors('Sai mật khẩu', 'password');
     }
     if (response.accessToken) {
-      setIsModalIndicatorVisible(true);
       await AsyncStorage.setItem(accessTokenKey, response.accessToken);
       await AsyncStorage.setItem(refreshTokenKey, response.refreshToken);
       setIsLogin(true);
@@ -61,7 +60,7 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Text style={styles.ngNhp}>Đăng Nhập</Text>
+        <Text style={styles.ngNhp}>Đăng nhập</Text>
       </View>
       <CustomInput
         label="Email"
@@ -100,7 +99,9 @@ const LoginScreen = () => {
         <View style={[styles.dividerItem, styles.dividerLayout]} />
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => ToastAndroid.show('Tính năng đang được phát triển', ToastAndroid.SHORT)}
+      >
         <View style={styles.containerGoogle}>
           <Image
             style={styles.iconGoogle}
@@ -119,7 +120,7 @@ const LoginScreen = () => {
           Đăng ký
         </Text>
       </View>
-      {isModalIndicatorVisible ? <CustomIndicator size={70} /> : null}
+      {/* {isModalIndicatorVisible ? <CustomIndicator size={70} /> : null} */}
     </View>
   );
 };
