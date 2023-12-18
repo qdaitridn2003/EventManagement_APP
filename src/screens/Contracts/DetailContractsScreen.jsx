@@ -72,12 +72,15 @@ const ContentContract = () => {
 
     fetchData();
   }, [idContract]);
+  console.log(data);
 
   const handleCancelContract = async () => {
     try {
       setIsCanceling(true);
       const token = await AsyncStorage.getItem(accessTokenKey);
-      await axiosAuthPut(`/contract/update-contract/${idContract}`, {}, token);
+      await axiosAuthPut(`/contract/update-contract/${idContract}`, token, {
+        status: 'Đã hủy',
+      });
 
       console.log('Contract update successfully');
 

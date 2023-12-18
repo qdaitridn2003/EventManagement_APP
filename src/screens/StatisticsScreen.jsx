@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import {
   VictoryBar,
   VictoryChart,
@@ -12,7 +13,6 @@ import {
 
 import Calendar from './statistics/Calendar';
 import { Border, Color, FontSize } from '../components/styles/GlobalStyles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { accessTokenKey } from '../constant/constant';
 
@@ -31,15 +31,15 @@ const SelectedCalendar = ({ onSelectDate, onConfirm, setSelectedDateRange }) => 
   const [startDates, setStartDates] = useState();
   const [endDates, setEndDates] = useState();
 
-  const handleConfirm = (selectedDates) => {
-    console.log('Ngày bắt đầu: ', selectedDates[0]);
-    console.log('Ngày kết thúc: ', selectedDates[1]);
+  // const handleConfirm = (selectedDates) => {
+  //   console.log('Ngày bắt đầu: ', selectedDates[0]);
+  //   console.log('Ngày kết thúc: ', selectedDates[1]);
 
-    if (selectedDates[0] && selectedDates[1]) {
-      logDateRange(selectedDates[0], selectedDates[1]);
-      setSelectedDateRange([selectedDates[0], selectedDates[1]]);
-    }
-  };
+  //   if (selectedDates[0] && selectedDates[1]) {
+  //     logDateRange(selectedDates[0], selectedDates[1]);
+  //     setSelectedDateRange([selectedDates[0], selectedDates[1]]);
+  //   }
+  // }
 
   const handleStartDateChange = (date) => {
     setStartDates(date);
@@ -94,6 +94,8 @@ const ChartView = ({ selectedDate, selectedDateRange }) => {
       );
 
       setChartData(sortedAggregatedData);
+      console.log(sortedAggregatedData);
+
       setTotalEarnings(sortedAggregatedData.reduce((acc, item) => acc + item.earnings, 0));
       setMaxEarnings(Math.max(...sortedAggregatedData.map((item) => item.earnings)));
       setMinEarnings(Math.min(...sortedAggregatedData.map((item) => item.earnings)));
@@ -109,11 +111,10 @@ const ChartView = ({ selectedDate, selectedDateRange }) => {
     const month = date.getMonth() + 1; // Tháng trong JavaScript là 0-indexed, nên cần cộng thêm 1
     const year = date.getFullYear();
 
-    // Thêm số 0 phía trước nếu ngày hoặc tháng chỉ có một chữ số
     const formattedDay = day < 10 ? `0${day}` : day;
     const formattedMonth = month < 10 ? `0${month}` : month;
 
-    return `${formattedDay}/${formattedMonth}/${year}`;
+    return `${formattedDay}-${formattedMonth}-${year}`;
   };
 
   console.log(chartData);
