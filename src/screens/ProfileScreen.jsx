@@ -148,11 +148,22 @@ const ProfileScreen = () => {
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             paddingVertical: 10,
             paddingHorizontal: 3,
           }}
         >
+          <TouchableOpacity
+            style={styles.box}
+            onPress={() => navigation.navigate('TransportScreen')}
+          >
+            <Icon
+              source={require('../assets/icons/Car2.png')}
+              color={'#1C1243'}
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.textBox}>Phương tiện</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.box} onPress={handleLogOut}>
             <Icon
               source={require('../assets/icons/LogOut.png')}
