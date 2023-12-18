@@ -37,7 +37,6 @@ const ContractsScreen = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const [searchPhrase, setSearchPhrase] = useState('');
-  const [clicked, setClicked] = useState(false);
   const [contracts, setContracts] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('Tất cả');
   const [filteredContracts, setFilteredContracts] = useState([]);
@@ -87,15 +86,6 @@ const ContractsScreen = () => {
     fetchData();
   }, [selectedStatus, searchPhrase]);
 
-  const handleSearch = (text) => {
-    setSearchPhrase(text);
-
-    const filteredData = contracts.filter((contract) =>
-      contract.name.toLowerCase().includes(text.toLowerCase()),
-    );
-    setFilteredContracts(filteredData);
-  };
-
   const navigateToDetail = (itemId) => {
     navigation.navigate('DetailContractsScreen', { itemId });
   };
@@ -111,13 +101,6 @@ const ContractsScreen = () => {
       ) : (
         <>
           <ContractsHeader />
-          <SearchBar
-            searchPhrase={searchPhrase}
-            setSearchPhrase={setSearchPhrase}
-            clicked={clicked}
-            setClicked={setClicked}
-            onSearch={handleSearch}
-          />
 
           <FilterBar
             listTab={listFilter}
@@ -158,6 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'stretch',
     marginTop: 16,
+    marginBottom: 16,
   },
   textFlexBox: {
     flexDirection: 'row',
