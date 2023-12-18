@@ -84,11 +84,7 @@ const DetailProfileScreen = () => {
         </View>
 
         {isModalIndicator ? (
-          <ActivityIndicator
-            size={'large'}
-            color={Color.primary}
-            style={styles.activityIndicator}
-          />
+          <ActivityIndicator size={48} color={Color.primary} style={styles.activityIndicator} />
         ) : (
           <View>
             <View style={styles.containerAvatar}>
@@ -137,13 +133,20 @@ const DetailProfileScreen = () => {
                   />
                   <Text style={styles.textLabel}>Số điện thoại</Text>
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 16,
+                    marginLeft: -4,
+                  }}
+                >
                   <Icon
                     source={require('../../assets/icons/Location.png')}
                     color={'#A29EB6'}
                     size={'superBig'}
                   />
-                  <Text style={[styles.textLabel, { marginLeft: 3 }]}>Địa chỉ</Text>
+                  <Text style={[styles.textLabel, { marginLeft: 6 }]}>Địa chỉ</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
                   <Icon
@@ -216,8 +219,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   btnHandle: {
+    flex: 1,
     flexDirection: 'row',
-    marginLeft: '70%',
+    justifyContent: 'flex-end',
   },
   btnDelEdit: {
     width: 40,

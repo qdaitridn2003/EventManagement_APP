@@ -23,12 +23,12 @@ import Icon from '../../components/common/Icon';
 
 const Item = ({ id, name, role, imageSource, authId }) => {
   const navigation = useNavigation();
-  const { checkData } = useContext(AppContext);
+  const { checkData, dataIdEmployee, pagination } = useContext(AppContext);
   const [dataChange, setDataChange] = checkData;
   const [isMenu, setIsMenu] = useState(false);
-  const { dataIdEmployee } = useContext(AppContext);
   const [idEmployee, setIdEmployee] = dataIdEmployee;
   const [isModalDeleteIndicator, setIsModalDeleteIndicator] = useState(false);
+  const [pageData, setPageData] = pagination;
 
   const handleClickItem = () => {
     setIdEmployee(id);
@@ -43,7 +43,7 @@ const Item = ({ id, name, role, imageSource, authId }) => {
     const accessToken = await getAccessToken();
     const respone = await axiosAuthDel(`/employee/delete-employee/${id}`, accessToken);
     const responeAcount = await axiosAuthDel(`/auth/delete-account/${authId}`, accessToken);
-    setDataChange((prev) => prev + 1);
+    setPageData(1);
     setIsMenu(false);
   };
   return (
@@ -123,14 +123,14 @@ const ListEmployee = ({ searchPhrase, setClicked, data }) => {
 
   const renderLoader = () => {
     return isLoading ? (
-      <View style={{ marginTop: 10, justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
+      <View style={{ marginBottom: 10, justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color={Color.primary} />
       </View>
     ) : null;
   };
   const loadMoreItem = () => {
+    setIsLoading(true);
     setPageData(pageData + 1);
-    setDataChange((prev) => prev + 1);
     console.log('Load more Item');
   };
   return (
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     elevation: 4,
-    marginVertical: 16,
+    marginVertical: 8,
     marginHorizontal: 4,
   },
   item: {

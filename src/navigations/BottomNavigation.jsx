@@ -26,6 +26,9 @@ import {
   DetailTransportScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { axiosAuthGet } from '../configs/axiosInstance';
+import { ActivityIndicator, View } from 'react-native';
 import DetailClientScreen from '../screens/clients/DetailClientScreen';
 
 const BottomNavigation = () => {
@@ -105,16 +108,24 @@ const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
   const [isEmployee, setIsEmployee] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     (async () => {
       const accessToken = await getAccessToken();
       const respone = await axiosAuthGet('/employee/get-employee-profile', accessToken);
-      if (respone.employee.auth.role.name !== 'Admin') {
-        setIsEmployee(true);
+      if (respone) {
+        if (respone.employee.auth.role.name !== 'Admin') {
+          setIsEmployee(true);
+        }
+        setIsLoading(false);
       }
     })();
   });
-  return isEmployee ? (
+  return isLoading ? (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <ActivityIndicator size={48} color={Color.primary} />
+    </View>
+  ) : isEmployee ? (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => {
