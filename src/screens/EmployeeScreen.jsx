@@ -28,7 +28,7 @@ const EmployeeScreen = () => {
   const [clicked, setClicked] = useState(false);
   const [data, setData] = useState([]);
   const [isModalIndicator, setIsModalIndicator] = useState(true);
-  const { checkData, pagination, loadingFooter } = useContext(AppContext);
+  const { checkData, pagination, loadingFooter, deleteEmployees } = useContext(AppContext);
   const [dataChange, setDataChange] = checkData;
   const [pageData, setPageData] = pagination;
   const [isLoading, setIsLoading] = loadingFooter;
@@ -63,7 +63,7 @@ const EmployeeScreen = () => {
       }
     })();
     console.log(data);
-  }, [dataChange]);
+  }, [pageData]);
 
   return (
     <View style={styles.container}>

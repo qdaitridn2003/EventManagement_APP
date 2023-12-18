@@ -25,6 +25,9 @@ export const AppContextProvider = (props) => {
 
   const [isEmployee, setIsEmployee] = useState(false);
   const checkAcount = [isEmployee, setIsEmployee];
+
+  const [deleteEmployee, setDeleteEmployee] = useState(false);
+  const deleteEmployees = [deleteEmployee, setDeleteEmployee];
   return (
     <AppContext.Provider
       value={{
@@ -38,6 +41,7 @@ export const AppContextProvider = (props) => {
         pagination,
         loadingFooter,
         checkAcount,
+        deleteEmployees,
       }}
     >
       {children}

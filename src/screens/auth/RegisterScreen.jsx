@@ -2,7 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Keyboard,
+  ScrollView,
+  ToastAndroid,
+} from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import PopupScreen from './PopupScreen';
@@ -88,7 +96,7 @@ const RegisterScreen = () => {
     if (roleId === '') {
       handleErrors('Vui lòng chọn chức vụ', 'roleId');
     }
-
+    console.log(response);
     if (response.otpSecret) {
       await AsyncStorage.setItem(otpSecretKey, response.otpSecret);
       await AsyncStorage.setItem(emailRegisterKey, inputs.email);
@@ -108,7 +116,7 @@ const RegisterScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={[styles.title, styles.titleSpaceBlock]}>
-        <Text style={styles.ngNhp}>Đăng Ký Tài Khoản</Text>
+        <Text style={styles.ngNhp}>Đăng ký tài khoản</Text>
       </View>
       <CustomInput
         placeholder="Nhập email đăng ký"
@@ -177,7 +185,9 @@ const RegisterScreen = () => {
         <View style={[styles.dividerItem, styles.dividerLayout]} />
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => ToastAndroid.show('Tính năng đang được phát triển', ToastAndroid.SHORT)}
+      >
         <View style={styles.containerGoogle}>
           <Image
             style={styles.iconGoogle}
