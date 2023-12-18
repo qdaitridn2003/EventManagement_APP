@@ -93,9 +93,9 @@ const ProfileScreen = () => {
           <Text style={styles.labelInput}>Hợp đồng</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('DeviceScreen')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('DeviceScreen')}>
           <Text style={styles.labelInput}>Thiết bị</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity onPress={() => navigation.navigate('TransportScreen')}>
           <Text style={styles.labelInput}>Phương tiện</Text>
