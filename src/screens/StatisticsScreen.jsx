@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import {
   VictoryBar,
   VictoryChart,
@@ -12,39 +12,9 @@ import {
 
 import Calendar from './statistics/Calendar';
 import { Border, Color, FontSize } from '../components/styles/GlobalStyles';
-
-const data = [
-  { date: '2023-12-01', earnings: 3 },
-  { date: '2023-12-07', earnings: 6 },
-  { date: '2023-12-18', earnings: 4 },
-  { date: '2023-12-17', earnings: 4 },
-  { date: '2023-12-13', earnings: 1 },
-  { date: '2023-12-12', earnings: 4 },
-  { date: '2023-12-11', earnings: 15 },
-  { date: '2023-12-17', earnings: 4 },
-  { date: '2023-12-18', earnings: 1 },
-  { date: '2023-12-28', earnings: 2 },
-  { date: '2023-12-16', earnings: 4 },
-];
-
-const parseDate = (dateString) => {
-  const [year, month, day] = dateString.split('-').map(Number);
-  return new Date(year, month - 1, day);
-};
-
-const sortedData = [...data].sort((a, b) => parseDate(a.date) - parseDate(b.date));
-// console.log('Data Dates:', sortedData);
-
-const aggregatedData = [];
-sortedData.forEach((item) => {
-  const existingItem = aggregatedData.find((aggItem) => aggItem.date === item.date);
-  if (existingItem) {
-    existingItem.earnings += item.earnings;
-  } else {
-    aggregatedData.push({ date: item.date, earnings: item.earnings });
-  }
-});
-// console.log('Aggregated Data:', aggregatedData);
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { axiosAuthGet } from '../configs/axiosInstance';
+import { accessTokenKey } from '../constant/constant';
 
 const ToolbarStatistics = () => {
   return (
@@ -57,58 +27,124 @@ const ToolbarStatistics = () => {
   );
 };
 
-const SelectedCalendar = ({ onSelectDate, onConfirm }) => {
-  const handleDateSelection = (date) => {
-    onSelectDate(date);
+const SelectedCalendar = ({ onSelectDate, onConfirm, setSelectedDateRange }) => {
+  const [startDates, setStartDates] = useState();
+  const [endDates, setEndDates] = useState();
+
+  const handleConfirm = (selectedDates) => {
+    console.log('Ngày bắt đầu: ', selectedDates[0]);
+    console.log('Ngày kết thúc: ', selectedDates[1]);
+
+    if (selectedDates[0] && selectedDates[1]) {
+      logDateRange(selectedDates[0], selectedDates[1]);
+      setSelectedDateRange([selectedDates[0], selectedDates[1]]);
+    }
+  };
+
+  const handleStartDateChange = (date) => {
+    setStartDates(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDates(date);
   };
 
   return (
     <View style={styles.calendarContainer}>
-      <Calendar onSelectDate={onSelectDate} onConfirm={onConfirm} />
+      <Calendar onSelectDate={handleStartDateChange} />
+      <Text style={styles.labelInput}>---</Text>
+      <Calendar onSelectDate={handleEndDateChange} />
+      {/* <TouchableOpacity onPress={() => handleConfirm([startDates, endDates])}> */}
+      <Image style={styles.imageFilter} source={require('../assets/icons8-filter-80.png')} />
+      {/* </TouchableOpacity> */}
     </View>
   );
 };
 
-const ChartView = ({ onBarClick, selectedDate, data, selectedDatesCount }) => {
-  // Format dd/MM/yyyy
+const ChartView = ({ selectedDate, selectedDateRange }) => {
+  const [chartData, setChartData] = useState([]);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  const [maxEarnings, setMaxEarnings] = useState(0);
+  const [minEarnings, setMinEarnings] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      const accessToken = await AsyncStorage.getItem(accessTokenKey);
+      const response = await axiosAuthGet('/event/get-list-event', accessToken, {
+        limit: Infinity,
+      });
+
+      const formattedListEvents = response.listEvent.map((item) => ({
+        label: formatDate(item.dateTime),
+        earnings: 1,
+      }));
+
+      const aggregatedData = [];
+      formattedListEvents.forEach((item) => {
+        const existingItem = aggregatedData.find((aggItem) => aggItem.label === item.label);
+        if (existingItem) {
+          existingItem.earnings += item.earnings;
+        } else {
+          aggregatedData.push(item);
+        }
+      });
+
+      const sortedAggregatedData = aggregatedData.sort(
+        (a, b) => new Date(a.label) - new Date(b.label),
+      );
+
+      setChartData(sortedAggregatedData);
+      setTotalEarnings(sortedAggregatedData.reduce((acc, item) => acc + item.earnings, 0));
+      setMaxEarnings(Math.max(...sortedAggregatedData.map((item) => item.earnings)));
+      setMinEarnings(Math.min(...sortedAggregatedData.map((item) => item.earnings)));
+    })();
+  }, []);
+
+  // Format DateTime
   const formatDate = (dateString) => {
     if (!dateString) return '';
+
     const date = new Date(dateString);
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Tháng trong JavaScript là 0-indexed, nên cần cộng thêm 1
+    const year = date.getFullYear();
+
+    // Thêm số 0 phía trước nếu ngày hoặc tháng chỉ có một chữ số
+    const formattedDay = day < 10 ? `0${day}` : day;
+    const formattedMonth = month < 10 ? `0${month}` : month;
+
+    return `${formattedDay}/${formattedMonth}/${year}`;
   };
+
+  console.log(chartData);
 
   return (
     <View style={styles.chartContainer}>
       <VictoryChart
         theme={VictoryTheme.material}
-        domainPadding={12}
+        domainPadding={30}
         containerComponent={<VictoryContainer />}
       >
         <VictoryAxis
-          tickValues={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
-          tickFormat={[
-            '11/09/2023',
-            '12/09/2023',
-            '13/09/2023',
-            '14/09/2023',
-            '15/09/2023',
-            '16/09/2023',
-            '17/09/2023',
-            '18/09/2023',
-            '19/09/2023',
-          ]}
+          tickValues={chartData.map((item, index) => index)}
+          tickFormat={chartData.map((item) => item.label)}
           tickLabelComponent={<VictoryLabel angle={-45} style={{ fontSize: 8 }} />}
         />
 
         <VictoryAxis dependentAxis tickFormat={(x) => `${x}`} />
         <VictoryBar
-          data={sortedData}
-          x="date"
+          data={chartData}
+          x="label"
           y="earnings"
           labels={({ datum }) => `${datum.earnings}`}
           labelComponent={<VictoryTooltip renderInPortal={false} />}
         />
       </VictoryChart>
+
+      <Text style={styles.title}>Sự kiện</Text>
+      <Text style={styles.totalEarningsText}>Tổng cộng: {totalEarnings}</Text>
+      <Text style={styles.maxEarningsText}>Cao nhất: {maxEarnings}</Text>
+      <Text style={styles.minEarningsText}>Thấp nhất: {minEarnings}</Text>
     </View>
   );
 };
@@ -128,39 +164,29 @@ const ShowDetailChart = ({ selectedDate, data }) => {
   );
 };
 
-const calculateStatistics = (data) => {
-  const earningsArray = data.map((item) => item.earnings);
-
-  const sum = earningsArray.reduce((acc, value) => acc + value, 0);
-  const average = Math.round((sum / earningsArray.length) * 100) / 100;
-
-  const maxEarnings = Math.max(...earningsArray);
-  const minEarnings = Math.min(...earningsArray);
-
-  return { average, maxEarnings, minEarnings };
-};
-
-const SummaryStatistics = ({ average, maxEarnings, minEarnings }) => {
-  return (
-    <View style={styles.detailContainer}>
-      <Text style={styles.summary}>Tổng kết</Text>
-      <View>
-        <Text style={styles.detailSummary}>Trung bình: {average}</Text>
-        <Text style={styles.detailSummary}>Cao nhất: {maxEarnings}</Text>
-        <Text style={styles.detailSummary}>Thấp nhất: {minEarnings}</Text>
-      </View>
-    </View>
-  );
-};
-
 const StatisticsScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedDatesArray, setSelectedDatesArray] = useState([]);
+  // const [selectedDatesArray, setSelectedDatesArray] = useState([]);
   const [selectedDatesCount, setSelectedDatesCount] = useState(0);
 
-  const [filteredData, setFilteredData] = useState(data);
-  const { average, maxEarnings, minEarnings } = calculateStatistics(filteredData);
+  const [filteredData, setFilteredData] = useState(chartData);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDateRange, setSelectedDateRange] = useState([]);
+  const [chartData, setChartData] = useState([]);
+
+  const handleStartDateChange = (date) => {
+    setStartDates(date);
+  };
+
+  // const handleConfirm = (selectedDates) => {
+  //   console.log('Ngày bắt đầu: ', selectedDates[0]);
+  //   console.log('Ngày kết thúc: ', selectedDates[1]);
+
+  //   if (selectedDates[0] && selectedDates[1]) {
+  //     logDateRange(selectedDates[0], selectedDates[1]);
+  //     setSelectedDateRange([selectedDates[0], selectedDates[1]]);
+  //   }
+  // };
 
   useEffect(() => {
     setTimeout(() => {
@@ -172,47 +198,39 @@ const StatisticsScreen = () => {
     setSelectedDate(data.datum.date);
   };
 
-  const handleSelectDate = (date) => {
-    setSelectedDate(date);
-    setSelectedDatesArray((prevDates) => [...prevDates, date]);
-    setSelectedDatesCount((prevCount) => prevCount + 1);
-  };
+  // const handleSelectDate = (date) => {
+  //   setSelectedDate(date);
+  //   setSelectedDatesArray((prevDates) => [...prevDates, date]);
+  //   setSelectedDatesCount((prevCount) => prevCount + 1);
+  // };
 
   const handleFilterPress = () => {
-    console.log('Mảng số ngày đã được chọn:', selectedDatesArray);
-
-    const filteredData = data.filter((item) => {
+    const filteredData = chartData.filter((item) => {
       return item.date === selectedDate;
     });
 
     setFilteredData(filteredData);
+    setChartData([]);
   };
-
-  const handleConfirm = (selectedDates) => {
-    console.log('Ngày đã chọn từ Calendar: ', selectedDates);
-  };
-
   return (
     <View style={styles.container}>
       {isLoading ? (
         <ActivityIndicator size="large" color={Color.colorText} style={styles.loadingContainer} />
       ) : (
         <>
-          <ToolbarStatistics onPressFilter={handleFilterPress} />
-          <SelectedCalendar onSelectDate={handleSelectDate} onConfirm={handleConfirm} />
-
+          <ToolbarStatistics />
+          <SelectedCalendar
+            onSelectDate={handleStartDateChange}
+            // onConfirm={handleConfirm}
+            setSelectedDateRange={setSelectedDateRange}
+            onFilterPress={handleFilterPress}
+          />
           <ChartView
             onBarClick={handleBarClick}
             selectedDate={selectedDate}
             data={filteredData}
             selectedDatesCount={selectedDatesCount}
-          />
-
-          <ShowDetailChart selectedDate={selectedDate} data={filteredData} />
-          <SummaryStatistics
-            average={average}
-            maxEarnings={maxEarnings}
-            minEarnings={minEarnings}
+            selectedDateRange={selectedDateRange}
           />
         </>
       )}
@@ -248,6 +266,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageCalendar: {
+    width: 30,
+    height: 30,
+  },
+  imageFilter: {
     width: 30,
     height: 30,
   },
@@ -298,6 +320,27 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  totalEarningsText: {
+    fontSize: 16,
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  maxEarningsText: {
+    fontSize: 16,
+    marginTop: 5,
+    marginLeft: 10,
+  },
+  minEarningsText: {
+    fontSize: 16,
+    marginTop: 5,
+    marginLeft: 10,
   },
 });
 

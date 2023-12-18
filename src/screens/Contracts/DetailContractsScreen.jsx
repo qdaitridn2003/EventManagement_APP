@@ -17,6 +17,7 @@ import { axiosAuthGet, axiosAuthPut } from '../../configs/axiosInstance';
 import { getAccessToken } from '../../configs/utils/getAccessToken';
 import { accessTokenKey } from '../../constant/constant';
 import { AppContext } from '../../contexts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { widthScreen } = Dimensions.get('window');
 
@@ -37,6 +38,7 @@ const ToolbarDetail = () => {
 };
 
 const ContentContract = () => {
+  const navigation = useNavigation();
   const [data, setData] = useState({});
   const { dataIdContract } = useContext(AppContext);
   const [idContract] = dataIdContract;
@@ -74,14 +76,13 @@ const ContentContract = () => {
   const handleCancelContract = async () => {
     try {
       setIsCanceling(true);
-      const token = await getAccessToken(accessTokenKey);
+      const token = await AsyncStorage.getItem(accessTokenKey);
+      await axiosAuthPut(`/contract/update-contract/${idContract}`, {}, token);
 
-      const response = await axiosAuthPut(`/contract/update-contract/${idContract}`, {}, token);
+      console.log('Contract update successfully');
 
-      if (response) {
-        setData((prevData) => ({ ...prevData, status: 'Đã hủy' }));
-        console.log('Hợp đồng đã bị hủy thành công.');
-      }
+      setData((prevData) => ({ ...prevData, status: 'Đã hủy' }));
+      navigation.goBack();
     } catch (error) {
       console.log('Error canceling contract:', error);
     } finally {
