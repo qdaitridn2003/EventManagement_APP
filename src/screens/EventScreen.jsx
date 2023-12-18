@@ -55,6 +55,20 @@ const listFilter = [
 
 const renderItem = ({ item }) => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const accessToken = await getAccessToken();
+      if (accessToken) {
+        console.log('Access Token:', accessToken);
+      } else {
+        console.log('Access Token not found.');
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <EventCard
       style={styles.eventCard}
@@ -69,67 +83,6 @@ const EventScreen = () => {
   const navigation = useNavigation();
 
   const accessToken = useAccessToken();
-
-  const [data, setData] = useState({
-    listEvent: [
-      {
-        _id: '656ebb2fa5eb9f2856f611cc',
-        name: 'Khai trương cửa hàng',
-        contract: {
-          _id: '656eba94a5eb9f2856f611b9',
-          name: 'Công ty Việt Hoàng',
-          startDate: '2023-01-05T00:00:00.000Z',
-          endDate: '2023-03-09T00:00:00.000Z',
-          payment: '656eba94a5eb9f2856f611b7',
-          status: 'active',
-          note: 'note',
-          attachments: ['https://example.com'],
-        },
-        services: [],
-        employees: [],
-        timelines: [],
-        equipments: [],
-        dateTime: '2023-11-11T06:48:25.462Z',
-        attachments: [],
-        images: ['https://i.imgur.com/Uc89OdN.png'],
-      },
-      {
-        _id: '656ebc96a5eb9f2856f611dc',
-        name: 'Dọn dẹp',
-        contract: {
-          _id: '656eba94a5eb9f2856f611b9',
-          name: 'Công ty Việt Hoàng',
-          startDate: '2023-01-05T00:00:00.000Z',
-          endDate: '2023-03-09T00:00:00.000Z',
-          payment: '656eba94a5eb9f2856f611b7',
-          status: 'active',
-          note: 'note',
-          attachments: ['https://example.com'],
-        },
-        services: [],
-        employees: [],
-        timelines: [],
-        equipments: [],
-        dateTime: '2023-11-12T06:48:25.462Z',
-        attachments: [],
-        images: ['https://i.imgur.com/Uc89OdN.png'],
-      },
-    ],
-    totalEvent: 2,
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const accessToken = await getAccessToken();
-      if (accessToken) {
-        console.log('Access Token:', accessToken);
-      } else {
-        console.log('Access Token not found.');
-      }
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -148,13 +101,13 @@ const EventScreen = () => {
 
       <FilterBar listTab={listFilter} style={styles.filterBar} />
 
-      <FlatList
+      {/* <FlatList
         style={styles.flatlist}
         data={data.listEvent}
         keyExtractor={(item) => item._id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-      />
+      /> */}
 
       <DoubleBackToExit navigation={navigation} />
     </View>

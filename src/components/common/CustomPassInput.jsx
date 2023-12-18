@@ -17,6 +17,7 @@ const CustomPassInput = ({ label, error, iconName, password, onFocus = () => {},
     <View style={{ width: '100%', marginTop: 20, padding: 2 }}>
       {label && <Text style={{ marginBottom: 8, fontWeight: 'bold', fontSize: 16 }}>{label}</Text>}
       <TextInput
+        theme={{ colors: { onSurfaceVariant: Color.neutral2 } }}
         placeholder=""
         mode="outlined"
         autoCapitalize="none"

@@ -13,9 +13,11 @@ import {
 } from 'react-native';
 
 import { Color, FontSize, Padding } from '../../components/styles/GlobalStyles';
-import { axiosAuthGet } from '../../configs/axiosInstance';
+import { axiosAuthGet, axiosAuthPut } from '../../configs/axiosInstance';
 import { getAccessToken } from '../../configs/utils/getAccessToken';
+import { accessTokenKey } from '../../constant/constant';
 import { AppContext } from '../../contexts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { widthScreen } = Dimensions.get('window');
 
@@ -36,10 +38,12 @@ const ToolbarDetail = () => {
 };
 
 const ContentContract = () => {
+  const navigation = useNavigation();
   const [data, setData] = useState({});
   const { dataIdContract } = useContext(AppContext);
   const [idContract] = dataIdContract;
   const [isModalIndicator, setIsModalIndicator] = useState(true);
+  const [isCanceling, setIsCanceling] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +72,26 @@ const ContentContract = () => {
 
     fetchData();
   }, [idContract]);
+  console.log(data);
+
+  const handleCancelContract = async () => {
+    try {
+      setIsCanceling(true);
+      const token = await AsyncStorage.getItem(accessTokenKey);
+      await axiosAuthPut(`/contract/update-contract/${idContract}`, token, {
+        status: 'Đã hủy',
+      });
+
+      console.log('Contract update successfully');
+
+      setData((prevData) => ({ ...prevData, status: 'Đã hủy' }));
+      navigation.goBack();
+    } catch (error) {
+      console.log('Error canceling contract:', error);
+    } finally {
+      setIsCanceling(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -82,10 +106,35 @@ const ContentContract = () => {
       {!isModalIndicator && ( */}
       <>
         <Text style={styles.title}>{data.name}</Text>
-        <View style={styles.textFlexBox}>
-          <Image style={styles.logoEvent} source={require('../../assets/icons8-green-dot.png')} />
-          <Text style={styles.status}>{data.status}</Text>
-        </View>
+
+        {data.status === 'Đang hoạt động' && (
+          <View style={styles.statusGreen}>
+            <Image
+              source={require('../../assets/icons8-green-dot.png')}
+              style={styles.imageCalendar}
+            />
+            <Text style={styles.textStatusGreen}>{data.status}</Text>
+          </View>
+        )}
+        {data.status === 'Đã hủy' && (
+          <View style={styles.statusRed}>
+            <Image
+              source={require('../../assets/icons8-red-dot.png')}
+              style={styles.imageCalendar}
+            />
+            <Text style={styles.textStatusRed}>{data.status}</Text>
+          </View>
+        )}
+        {data.status === 'Hoàn thành' && (
+          <View style={styles.statusBlue}>
+            <Image
+              source={require('../../assets/icons8-blue-dot.png')}
+              style={styles.imageCalendar}
+            />
+            <Text style={styles.textStatusBlue}>{data.status}</Text>
+          </View>
+        )}
+
         <View>
           <Text style={styles.labelInput}>Chủ hợp đồng</Text>
           <View style={styles.image}>
@@ -114,12 +163,17 @@ const ContentContract = () => {
         <View style={styles.containerTextInput}>
           <TextInput style={styles.textInput} returnKeyType="next" placeholder="" />
         </View>
-        {data.status === 'active' && (
+        {data.status === 'Đang hoạt động' && (
           <TouchableOpacity
             style={styles.button}
-            // onPress={() => handleCancelContract()}
+            onPress={handleCancelContract}
+            disabled={isCanceling}
           >
-            <Text style={styles.text}>Hủy hợp đồng</Text>
+            {isCanceling ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text style={styles.text}>Hủy hợp đồng</Text>
+            )}
           </TouchableOpacity>
         )}
       </>
@@ -288,6 +342,44 @@ const styles = StyleSheet.create({
   text: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  imageCalendar: {
+    marginRight: 5,
+    width: 24,
+    height: 24,
+  },
+  textStatusGreen: {
+    alignSelf: 'center',
+    fontSize: 17,
+    marginLeft: 10,
+    color: '#009900',
+    fontWeight: 'bold',
+  },
+  textStatusRed: {
+    alignSelf: 'center',
+    fontSize: 17,
+    marginLeft: 10,
+    fontWeight: 'bold',
+    color: '#FF3300',
+  },
+  textStatusBlue: {
+    alignSelf: 'center',
+    fontSize: 17,
+    marginLeft: 10,
+    fontWeight: 'bold',
+    color: '#3366CC',
+  },
+  statusGreen: {
+    marginTop: 6,
+    flexDirection: 'row',
+  },
+  statusRed: {
+    marginTop: 6,
+    flexDirection: 'row',
+  },
+  statusBlue: {
+    marginTop: 6,
+    flexDirection: 'row',
   },
 });
 

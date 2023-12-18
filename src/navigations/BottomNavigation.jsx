@@ -21,11 +21,15 @@ import {
   DetailContractsScreen,
   DetailEmployeeScreen,
   EditProfileScreen,
+  TransportScreen,
+  DeviceScreen,
+  DetailTransportScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
 import { getAccessToken } from '../configs/utils/getAccessToken';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { ActivityIndicator, View } from 'react-native';
+import DetailClientScreen from '../screens/clients/DetailClientScreen';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -75,9 +79,25 @@ const BottomNavigation = () => {
         component={ContractsScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="DeviceScreen" component={DeviceScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="TransportScreen"
+        component={TransportScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="HomeNavigation"
         component={HomeNavigation}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailClientScreen"
+        component={DetailClientScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailTransportScreen"
+        component={DetailTransportScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -179,7 +199,7 @@ const HomeNavigation = () => {
         borderTopWidth: 0,
       })}
     >
-      <Tab.Screen name="Event" component={APITestScreen} options={{ title: 'Sự kiện' }} />
+      <Tab.Screen name="Event" component={EventScreen} options={{ title: 'Sự kiện' }} />
 
       <Tab.Screen name="Client" component={ClientScreen} options={{ title: 'Khách hàng' }} />
 

@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
+import Calendar from './Calendar';
 import { Color, Padding } from '../../components/styles/GlobalStyles';
 import { axiosAuthGet, axiosAuthPost } from '../../configs/axiosInstance';
 import { accessTokenKey } from '../../constant/constant';
-import Calendar from '../items/Calendar';
 
 const ToolbarAdd = () => {
   const navigation = useNavigation();
@@ -46,6 +46,9 @@ const ContentEvent = () => {
   const [listEvents, setListEvents] = useState([]);
   const [contractName, setContractName] = useState('');
   const [contractNote, setContractNote] = useState('');
+  const [startDates, setStartDates] = useState();
+  const [endDates, setEndDates] = useState();
+  const [contractStatus, setContractStatus] = useState('');
   const [attachments, setAttachments] = useState('');
   const [status, setStatus] = useState([]);
 
@@ -78,9 +81,9 @@ const ContentEvent = () => {
       const accessToken = await AsyncStorage.getItem(accessTokenKey);
       const response = await axiosAuthPost('/contract/create-contract', accessToken, {
         name: contractName,
-        startDate: '2023-01-01', //TODO: Hardcode
-        endDate: '2023-11-11', //TODO: Hardcode
-        status,
+        startDate: startDates,
+        endDate: endDates,
+        status: 'Đang hoạt động',
         note: contractNote,
         clientId: clientValue,
         eventIds: eventValue,
@@ -93,6 +96,14 @@ const ContentEvent = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleStartDateChange = (date) => {
+    setStartDates(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDates(date);
   };
 
   return (
@@ -147,17 +158,20 @@ const ContentEvent = () => {
         }}
       />
 
-      <Text style={styles.labelInput}>Trạng thái</Text>
-      <Text>Có hiệu lực</Text>
+      <View style={styles.statusContainer}>
+        <Text style={styles.labelInputStatus}>Trạng thái: </Text>
+        <Image source={require('../../assets/icons8-green-dot.png')} style={styles.imageCalendar} />
+        <Text style={styles.textStatusGreen}>Đang hoạt động</Text>
+      </View>
 
       <Text style={styles.labelInput}>Bắt đầu</Text>
-      <Calendar />
+      <Calendar onSelectDate={handleStartDateChange} />
 
       <Text style={styles.labelInput}>Kết thúc</Text>
-      <Calendar />
+      <Calendar onSelectDate={handleEndDateChange} />
 
       <Text style={styles.labelInput}>Đính kèm</Text>
-      <View style={styles.containerTextInput}></View>
+      <View style={styles.containerTextInput} />
 
       <Text style={styles.labelInput}>Ghi chú</Text>
       <View style={styles.containerTextInput}>
@@ -227,6 +241,21 @@ const styles = StyleSheet.create({
     color: '#1C1243',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  statusContainer: {
+    marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  labelInputStatus: {
+    color: '#1C1243',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  imageCalendar: {
+    width: 24,
+    height: 24,
+    marginLeft: 10,
   },
   avatar: {
     width: 100,

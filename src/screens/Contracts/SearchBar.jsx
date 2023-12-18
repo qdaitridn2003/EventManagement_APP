@@ -1,14 +1,6 @@
 import { Feather, Entypo } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Keyboard,
-  Button,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import { Color } from '../../components/styles/GlobalStyles';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 export const SearchBar = ({ searchPhrase, setSearchPhrase }) => {
   const [clicked, setClicked] = useState(false);

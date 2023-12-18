@@ -5,14 +5,14 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Color, Border } from '../../components/styles/GlobalStyles';
 import { AppContext } from '../../contexts';
 
-const ItemListContracts = ({ id, name, startDate, endDate, status }) => {
+const ItemListTransport = ({ id, name, image }) => {
   const navigation = useNavigation();
-  const { dataIdContract } = useContext(AppContext);
-  const [idContract, setIdContract] = dataIdContract;
+  const { dataIdTransport } = useContext(AppContext);
+  const [idTransport, setIdTransport] = dataIdTransport;
 
   const handleClickItem = () => {
-    setIdContract(id);
-    navigation.navigate('DetailContractsScreen');
+    setIdTransport(id);
+    // navigation.navigate('TransportScreen');
   };
   const handleClickDetail = () => {
     handleClickItem();
@@ -25,52 +25,23 @@ const ItemListContracts = ({ id, name, startDate, endDate, status }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.avatarContainer}>
+        <Image
+          style={styles.avatarImage}
+          source={{ uri: image }}
+          onError={(e) => console.log('Error loading image:', e.nativeEvent.error)}
+        />
+      </View>
       <View style={styles.line1}>
         <Text style={styles.textName}>{name}</Text>
         <Image style={styles.more} source={require('../../assets/icon--more-vert3.png')} />
       </View>
-      <TouchableOpacity onPress={handleClickItem}>
-        <View style={styles.line2}>
-          <Image source={require('../../assets/icon--event2.png')} style={styles.imageCalendar} />
-          <Text style={{ alignSelf: 'center' }}>{formatDate(startDate)}</Text>
-        </View>
-        <View style={styles.line2}>
-          <Image source={require('../../assets/icon--event2.png')} style={styles.imageCalendar} />
-          <Text style={{ alignSelf: 'center' }}>{formatDate(endDate)}</Text>
-        </View>
-        {status === 'Đang hoạt động' && (
-          <View style={styles.statusGreen}>
-            <Image
-              source={require('../../assets/icons8-green-dot.png')}
-              style={styles.imageCalendar}
-            />
-            <Text style={styles.textStatusGreen}>{status}</Text>
-          </View>
-        )}
-        {status === 'Đã hủy' && (
-          <View style={styles.statusRed}>
-            <Image
-              source={require('../../assets/icons8-red-dot.png')}
-              style={styles.imageCalendar}
-            />
-            <Text style={styles.textStatusRed}>{status}</Text>
-          </View>
-        )}
-        {status === 'Hoàn thành' && (
-          <View style={styles.statusBlue}>
-            <Image
-              source={require('../../assets/icons8-blue-dot.png')}
-              style={styles.imageCalendar}
-            />
-            <Text style={styles.textStatusBlue}>{status}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+      <TouchableOpacity onPress={handleClickItem}></TouchableOpacity>
     </View>
   );
 };
 
-export default ItemListContracts;
+export default ItemListTransport;
 
 const styles = StyleSheet.create({
   container: {

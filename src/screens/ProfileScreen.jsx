@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useContext, useEffect, useState } from 'react';
@@ -12,14 +13,13 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Color, Padding } from '../components/styles/GlobalStyles';
-import { AppContext } from '../contexts/AppContext';
-import { accessTokenKey } from '../constant/constant';
-import { getAccessToken } from '../configs/utils/getAccessToken';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import Icon from '../components/common/Icon';
+import { getAccessToken } from '../configs/utils/getAccessToken';
+import { accessTokenKey } from '../constant/constant';
+import { AppContext } from '../contexts/AppContext';
 
 const { height, width } = Dimensions.get('window');
 

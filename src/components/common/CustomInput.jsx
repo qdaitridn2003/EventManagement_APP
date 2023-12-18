@@ -11,6 +11,7 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={{ flexDirection: 'row', padding: 2 }}>
         <TextInput
+          theme={{ colors: { onSurfaceVariant: Color.neutral2 } }}
           autoCorrect={false}
           autoCapitalize="none"
           placeholder=""
@@ -19,7 +20,7 @@ const CustomInput = ({ label, iconName, error, onFocus = () => {}, ...props }) =
           activeOutlineColor={error ? 'transparent' : Color.primary}
           outlineStyle={{
             backgroundColor: Color.neutral4,
-            elevation: 2,
+            elevation: 4,
             borderRadius: 16,
           }}
           contentStyle={{ paddingHorizontal: 25 }}

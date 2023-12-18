@@ -28,7 +28,7 @@ const RegisterScreen = () => {
   const { popup } = useContext(AppContext);
   const [isModalVisible, setisModalVisible] = popup;
   const [listRole, setListRole] = useState([]);
-  const [selectedOption, setSelectedOption] = useState('select an option');
+  const [selectedOption, setSelectedOption] = useState('Chọn chức vụ');
   const [roleId, setRoleId] = useState('');
   const [errors, setErrors] = useState({});
   const [inputs, setInputs] = useState({
