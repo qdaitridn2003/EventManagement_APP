@@ -19,6 +19,7 @@ export { default as EditProfileScreen } from './profiles/EditProfileScreen';
 export { default as AddEvent } from './events/AddEvent';
 export { default as DetailEventScreen } from './events/DetailEventScreen';
 export { default as AddEmployee } from './employees/AddEmployee';
+export { default as DetailTransportScreen } from './transport/DetailTransportScreen';
 export { default as AddClient } from './clients/AddClient';
 export { default as AddContracts } from './Contracts/AddContracts';
 export { default as DetailContractsScreen } from './Contracts/DetailContractsScreen';

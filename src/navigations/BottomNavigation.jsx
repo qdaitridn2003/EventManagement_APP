@@ -23,10 +23,10 @@ import {
   EditProfileScreen,
   TransportScreen,
   DeviceScreen,
+  DetailTransportScreen,
 } from '../screens';
 import APITestScreen from '../screens/test/APITestScreen';
 import DetailClientScreen from '../screens/clients/DetailClientScreen';
-import { Text, View } from 'react-native';
 
 const BottomNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -90,6 +90,11 @@ const BottomNavigation = () => {
       <Stack.Screen
         name="DetailClientScreen"
         component={DetailClientScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DetailTransportScreen"
+        component={DetailTransportScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

@@ -14,6 +14,11 @@ export const AppContextProvider = (props) => {
   const [idContract, setIdContract] = useState('');
   const dataIdContract = [idContract, setIdContract];
 
+  const [idTransport, setIdTransport] = useState('');
+  const dataIdTransport = [idTransport, setIdTransport];
+  const [idDevice, setIdDevice] = useState('');
+  const dataIdDevice = [idDevice, setIdDevice];
+
   const [dataChange, setDataChange] = useState(1);
   const checkData = [dataChange, setDataChange];
 
@@ -39,6 +44,8 @@ export const AppContextProvider = (props) => {
         loadingFooter,
         checkAcount,
         dataIdContract,
+        dataIdTransport,
+        dataIdDevice,
       }}
     >
       {children}

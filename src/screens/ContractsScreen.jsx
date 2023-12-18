@@ -13,7 +13,7 @@ import {
 
 import FilterBar from './Contracts/FilterBar';
 import ItemListContracts from './Contracts/ItemListContracts';
-import SearchBar from './employees/SearchBar';
+import SearchBar from './Contracts/SearchBar';
 import { Padding, Color, FontSize, Border } from '../components/styles/GlobalStyles';
 import { axiosAuthGet } from '../configs/axiosInstance';
 import { accessTokenKey } from '../constant/constant';
@@ -40,6 +40,7 @@ const ContractsScreen = () => {
   const [clicked, setClicked] = useState(false);
   const [contracts, setContracts] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('Tất cả');
+  const [filteredContracts, setFilteredContracts] = useState([]);
 
   const listFilter = [
     { status: 'Tất cả' },
@@ -84,7 +85,16 @@ const ContractsScreen = () => {
     };
 
     fetchData();
-  }, [selectedStatus]);
+  }, [selectedStatus, searchPhrase]);
+
+  const handleSearch = (text) => {
+    setSearchPhrase(text);
+
+    const filteredData = contracts.filter((contract) =>
+      contract.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredContracts(filteredData);
+  };
 
   const navigateToDetail = (itemId) => {
     navigation.navigate('DetailContractsScreen', { itemId });
@@ -106,7 +116,9 @@ const ContractsScreen = () => {
             setSearchPhrase={setSearchPhrase}
             clicked={clicked}
             setClicked={setClicked}
+            onSearch={handleSearch}
           />
+
           <FilterBar
             listTab={listFilter}
             selectedStatus={selectedStatus}
@@ -114,7 +126,7 @@ const ContractsScreen = () => {
           />
 
           <FlatList
-            data={contracts}
+            data={searchPhrase ? filteredContracts : contracts}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => navigateToDetail(item.id)}>
                 <ItemListContracts {...item} />

@@ -149,21 +149,6 @@ const ChartView = ({ selectedDate, selectedDateRange }) => {
   );
 };
 
-const ShowDetailChart = ({ selectedDate, data }) => {
-  const selectedData = data.find((item) => item.date === selectedDate);
-
-  return (
-    <View>
-      {selectedData && (
-        <>
-          <Text>Date: {selectedData.date}</Text>
-          <Text>Earnings: {selectedData.earnings}</Text>
-        </>
-      )}
-    </View>
-  );
-};
-
 const StatisticsScreen = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   // const [selectedDatesArray, setSelectedDatesArray] = useState([]);
