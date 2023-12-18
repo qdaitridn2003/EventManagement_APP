@@ -6,7 +6,6 @@ import { Color } from '../../components/styles/GlobalStyles';
 import Icon from '../../components/common/Icon';
 import CustomPopup from '../../components/popup/CustomPopup';
 import { accessTokenKey } from '../../constant/constant';
-import { getAccessToken } from '../../configs/utils/getAccessToken';
 import { axiosAuthDel, axiosAuthGet } from '../../configs/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

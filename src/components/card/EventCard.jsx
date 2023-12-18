@@ -4,15 +4,12 @@ import Icon from '../common/Icon';
 import { Color } from '../styles/GlobalStyles';
 import { ImageBackground } from 'expo-image';
 
-const EventCard = ({ imageUrl, title, subtitle, overflowIconPress, style }) => {
-  const source = typeof imageUrl === 'string'
-    ? { uri: imageUrl } : imageUrl
+const EventCard = ({ imageUrl, title, subtitle, overflowIconPress, style, onPress }) => {
+  const source = typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl;
 
   return (
     <View style={style}>
-
-      <TouchableOpacity style={styles.container}>
-
+      <TouchableOpacity style={styles.container} onPress={onPress}>
         <ImageBackground
           style={styles.top}
           source={source}
@@ -33,19 +30,16 @@ const EventCard = ({ imageUrl, title, subtitle, overflowIconPress, style }) => {
           </View>
 
           <TouchableOpacity onPress={overflowIconPress} style={styles.overflowIconContainer}>
-            <Icon source={require('../../assets/icons/MoreVert.png')} color={Color.neutral1} />
+            <Icon source={require('../../assets/icons/MoreVert.png')} color={Color.neutral2} />
           </TouchableOpacity>
         </View>
-
       </TouchableOpacity>
-      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  outerContainer: {
-  },
+  outerContainer: {},
   container: {
     width: '100%',
     aspectRatio: 1.5,
